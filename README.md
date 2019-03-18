@@ -1,2 +1,2 @@
-# adv-prog-course-proj
-Advanced Programming Course Project
+# Advanced Programming Course Project
+Lior Gingihashvili, Nir Shmuel
