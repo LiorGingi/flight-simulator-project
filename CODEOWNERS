@@ -4,5 +4,4 @@
 # user/directory user
 
 
-*.java  @LiorGingi
-/src  @LiorGingi
+* @LiorGingi
