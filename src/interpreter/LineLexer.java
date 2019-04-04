@@ -7,10 +7,10 @@ public class LineLexer implements Lexer<String> {
 	Scanner sc;
 
 	@Override
-	public String[] separate(String input) {
+	public String[] tokenize(String input) {
 		sc=new Scanner(input);
 		ArrayList<String> wordsList = new ArrayList<>();
-		while(sc.hasNextLine()) {
+		while(sc.hasNext()) {
 			wordsList.add(sc.next());
 		}
 		return (String[]) wordsList.toArray();

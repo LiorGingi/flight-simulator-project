@@ -2,8 +2,11 @@ package commands;
 
 import java.util.HashMap;
 
+import expression.CommandExpression;
+import expression.Expression;
+
 public class CommandMap {
-	HashMap<String, Command> map;
+	HashMap<String, Expression> map;
 	
 	public CommandMap() {
 		map = new HashMap<>();
@@ -11,14 +14,14 @@ public class CommandMap {
 	}
 	
 	private void loadCommands() {
-		map.put("openDataServer", new OpenServerCommand());
-		map.put("connect", new ConnectCommand());
-		map.put("var", new VarCommand());
-		map.put("=", new PlacementCommand());
-		map.put("bind", new BindCommand());
+		map.put("openDataServer", new CommandExpression(new OpenServerCommand()));
+		map.put("connect", new CommandExpression(new ConnectCommand()));
+		map.put("var", new CommandExpression(new VarCommand()));
+		map.put("=", new CommandExpression(new PlacementCommand()));
+		map.put("bind", new CommandExpression(new BindCommand()));
 	}
 	
-	public Command get(String command) {
-		return map.get(command);
+	public Expression get(String arg) {
+		return map.get(arg);
 	}
 }

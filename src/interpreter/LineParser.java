@@ -1,8 +1,10 @@
 package interpreter;
 
 import java.util.HashMap;
-import commands.Command;
+
+import algorithms.ShuntingYard;
 import commands.CommandMap;
+import expression.Expression;
 
 public class LineParser implements Parser {
 
@@ -16,16 +18,10 @@ public class LineParser implements Parser {
 	
 	@Override
 	public void parse(String[] strArr) throws Exception {
-		int index = 0;
-		int length = strArr.length;
-		while (index < length) {
-			Command cmd = map.get(strArr[index]);
-			if (cmd == null) {
-				throw new Exception("no command");
-			}
-
-		}
-
+		
+		Expression resultExp=new ShuntingYard().execute(strArr);
+		resultExp.calculate();
+		
 	}
 
 }
