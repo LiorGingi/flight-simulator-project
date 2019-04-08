@@ -3,7 +3,7 @@ package interpreter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class LineLexer implements Lexer<String> {
+public class ConsoleLexer implements Lexer<String> {
 	Scanner sc;
 
 	@Override

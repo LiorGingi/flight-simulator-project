@@ -8,4 +8,16 @@ public class ConnectCommand implements Command {
 		return 0;
 	}
 
+	@Override
+	public int getNumOfParameters() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setParameters(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

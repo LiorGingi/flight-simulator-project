@@ -14,4 +14,9 @@ public class CommandExpression implements Expression {
 		return c.execute();
 	}
 
+	public Command getC() {
+		return c;
+	}
+	
+
 }
