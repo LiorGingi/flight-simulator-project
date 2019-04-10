@@ -1,6 +1,14 @@
 package commands;
 
+import interpreter.SymbolTable;
+import java.util.HashMap;
+
 public class VarCommand implements Command {
+	HashMap<String, Double> symbolTable;
+	
+	public VarCommand() {
+		symbolTable=SymbolTable.getInstance();
+	}
 
 	@Override
 	public int execute() {
@@ -10,8 +18,7 @@ public class VarCommand implements Command {
 
 	@Override
 	public int getNumOfParameters() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 	@Override

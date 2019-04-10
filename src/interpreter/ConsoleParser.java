@@ -10,25 +10,28 @@ import expression.Expression;
 
 public class ConsoleParser implements Parser {
 
-	CommandMap map;
-	HashMap<String, Double> symbolTable;//Holds the variables values.
+	CommandMap map;//holds CommandExpressions
+	HashMap<String, Double> symbolTable;//holds variables.
 	
 	public ConsoleParser() {
 		map = new CommandMap();
-		symbolTable = new HashMap<>();
+		symbolTable = SymbolTable.getInstance();
 	}
 	
 	@Override
 	public void parse(String[] strArr) throws Exception {
 		int index=0;
-		while(index<strArr.length){
+		while(index<strArr.length){//main loop
+			
 			Expression resultExp= map.get(strArr[index]);
+			
 			if(resultExp!=null) {
 				CommandExpression ce=(CommandExpression)resultExp;//resultExp contains CommandExpression
-				int numOfArgs=ce.getC().getNumOfParameters();
-				ce.getC().setParameters(Arrays.copyOfRange(strArr, index, index+numOfArgs));//send parameters including command name.
+				index++;
+				ce.getC().setParameters(Arrays.copyOfRange(strArr, index, index+ce.getC().getNumOfParameters()-1));//send parameters not including command name.
 				index+=resultExp.calculate();
 			}
+			
 		}
 	}
 
