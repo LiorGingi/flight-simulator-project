@@ -1,10 +1,10 @@
 package commands;
 
 import interpreter.SymbolTable;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class VarCommand implements Command {
-	HashMap<String, Double> symbolTable;
+	ConcurrentHashMap<String, Double> symbolTable;
 	
 	public VarCommand() {
 		symbolTable=SymbolTable.getInstance();
@@ -23,7 +23,6 @@ public class VarCommand implements Command {
 
 	@Override
 	public void setParameters(String[] args) {
-		// TODO Auto-generated method stub
 		
 	}
 

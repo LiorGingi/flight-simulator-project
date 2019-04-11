@@ -1,7 +1,7 @@
 package interpreter;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import algorithms.ShuntingYard;
 import commands.CommandMap;
@@ -11,7 +11,7 @@ import expression.Expression;
 public class ConsoleParser implements Parser {
 
 	CommandMap map;//holds CommandExpressions
-	HashMap<String, Double> symbolTable;//holds variables.
+	ConcurrentHashMap<String, Double> symbolTable;//holds variables.
 	
 	public ConsoleParser() {
 		map = new CommandMap();
