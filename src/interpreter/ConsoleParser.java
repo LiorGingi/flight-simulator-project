@@ -27,9 +27,7 @@ public class ConsoleParser implements Parser {
 			
 			if(resultExp!=null) {
 				CommandExpression ce=(CommandExpression)resultExp;//resultExp contains CommandExpression
-				index++;
-				ce.getC().setParameters(Arrays.copyOfRange(strArr, index, index+ce.getC().getNumOfParameters()-1));//send parameters not including command name.
-				index+=resultExp.calculate();
+				index+=ce.getC().execute(strArr, index +1) +1;
 			}
 			
 		}

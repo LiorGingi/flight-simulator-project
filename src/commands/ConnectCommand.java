@@ -3,21 +3,9 @@ package commands;
 public class ConnectCommand implements Command {
 
 	@Override
-	public int execute() {
+	public int execute(String[] args, int index) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public int getNumOfParameters() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setParameters(String[] args) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

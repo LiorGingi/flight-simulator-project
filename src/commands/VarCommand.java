@@ -11,19 +11,9 @@ public class VarCommand implements Command {
 	}
 
 	@Override
-	public int execute() {
+	public int execute(String[] args, int index) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public int getNumOfParameters() {
-		return 1;
-	}
-
-	@Override
-	public void setParameters(String[] args) {
-		
 	}
 
 }

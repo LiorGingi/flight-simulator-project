@@ -11,21 +11,11 @@ public class OpenServerCommand implements Command {
 	}
 
 	@Override
-	public int execute() {
-		//implements command
-		
-		return this.getNumOfParameters();
+	public int execute(String[] args, int index) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-	@Override
-	public int getNumOfParameters() {
-		return 2;
-	}
 
-	@Override
-	public void setParameters(String[] args) {//need to add syntax check for parameters.
-		this.port=Integer.parseInt(args[0]);
-		this.frequency=Integer.parseInt(args[1]);
-	}
 
 }
