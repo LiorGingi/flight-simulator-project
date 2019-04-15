@@ -1,17 +1,14 @@
 package commands;
 
+public class WhileCommand extends ConditionCommand {
 
-public class IfCommand extends ConditionCommand {
-
-	
-	public IfCommand() {
-	}
-	
 	@Override
 	public int execute(String[] args, int index) throws Exception {
-		int currentIndex=index;
-		if(this.checkCondition(args, index)) {
+		int currentIndex = 0;
+		while(this.checkCondition(args, index)) {
+			currentIndex=index;
 			//implement after we decide the container in ConditionCommand.
+			
 		}
 		return currentIndex-index;
 	}

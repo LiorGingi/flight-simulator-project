@@ -1,19 +1,14 @@
 package commands;
 
-import interpreter.SymbolTable;
-import java.util.concurrent.ConcurrentHashMap;
+import interpreter.SymbolTableStack;
 
 public class VarCommand implements Command {
-	ConcurrentHashMap<String, Double> symbolTable;
 	
-	public VarCommand() {
-		symbolTable=SymbolTable.getInstance();
-	}
 
 	@Override
-	public int execute(String[] args, int index) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int execute(String[] args, int index) throws Exception {
+		SymbolTableStack.addVar(args[index], new Double(0));
+		return 1;
 	}
 
 }

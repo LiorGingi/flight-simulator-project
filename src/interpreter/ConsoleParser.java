@@ -15,7 +15,7 @@ public class ConsoleParser implements Parser {
 	
 	public ConsoleParser() {
 		map = new CommandMap();
-		symbolTable = SymbolTable.getInstance();
+		symbolTable = SymbolTableStack.getInstance();
 	}
 	
 	@Override

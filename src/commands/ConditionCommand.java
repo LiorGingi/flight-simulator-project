@@ -1,19 +1,12 @@
 package commands;
 
-import java.util.concurrent.ConcurrentHashMap;
-import interpreter.SymbolTable;
+import interpreter.SymbolTableStack;
 
-public class ConditionCommand implements Command {
-
-	boolean answer;
-	ConcurrentHashMap<String, Double> symbolTable;
+public abstract class ConditionCommand implements Command {
+	//add container for commands
 	
-	public ConditionCommand() {
-		symbolTable = SymbolTable.getInstance();
-	}
-	
-	@Override
-	public int execute(String[] args, int index) throws Exception {
+	protected boolean checkCondition(String[] args, int index) throws Exception{
+		boolean answer;
 		double rightArg = checkValue(args[index]);
 		double leftArg = checkValue(args[index+2]);
 		
@@ -39,18 +32,11 @@ public class ConditionCommand implements Command {
 		default:
 			throw new Exception("No condition");
 		}
-		return 3;
-	}
-	
-	private double checkValue(String argToCheck) {
-		if (symbolTable.containsKey(argToCheck))
-			return symbolTable.get(argToCheck);
-		
-		return Double.parseDouble(argToCheck);
-	}
-	
-	public boolean getAnswer() {
 		return answer;
+	}
+	
+	private double checkValue(String argToCheck) throws Exception {
+		return SymbolTableStack.getVarValue(argToCheck);
 	}
 
 }
