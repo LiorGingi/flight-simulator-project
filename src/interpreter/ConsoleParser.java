@@ -1,35 +1,38 @@
 package interpreter;
 
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
-import algorithms.ShuntingYard;
 import commands.CommandMap;
+import commands.ShuntingYard;
 import expression.CommandExpression;
 import expression.Expression;
+import javafx.scene.shape.Line;
 
 public class ConsoleParser implements Parser {
 
-	CommandMap map;//holds CommandExpressions
-	ConcurrentHashMap<String, Double> symbolTable;//holds variables.
-	
+	CommandMap map;// holds CommandExpressions
+	ConcurrentHashMap<String, Double> symbolTable;// holds variables.
+
 	public ConsoleParser() {
 		map = new CommandMap();
-		symbolTable = SymbolTableStack.getInstance();
+		symbolTable = SymbolTableStack.getTopScope();
 	}
-	
+
 	@Override
-	public void parse(String[] strArr) throws Exception {
-		int index=0;
-		while(index<strArr.length){//main loop
-			
-			Expression resultExp= map.get(strArr[index]);
-			
-			if(resultExp!=null) {
-				CommandExpression ce=(CommandExpression)resultExp;//resultExp contains CommandExpression
-				index+=ce.getC().execute(strArr, index +1) +1;
+	public void parse(String[][] script) throws Exception {
+		int index;
+		for (String[] line : script) {
+			index = 0;
+			while (index < line.length) {// main loop
+
+				Expression resultExp = map.get(line[index]);
+
+				if (resultExp != null) {
+					CommandExpression ce = (CommandExpression) resultExp;// resultExp contains CommandExpression
+					index += ce.getC().execute(line, index + 1) + 1;
+				}
+
 			}
-			
 		}
 	}
 

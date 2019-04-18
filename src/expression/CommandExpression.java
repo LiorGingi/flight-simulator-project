@@ -9,14 +9,13 @@ public class CommandExpression implements Expression {
 		this.c = c;
 	}
 
-
 	public Command getC() {
 		return c;
 	}
 
 	@Override
-	public int calculate(String[] args, int index) throws Exception {
-		return c.execute(args, index);
+	public double calculate(String[] args, int index) throws Exception {
+		return (double)c.execute(args, index);
 	}
 	
 

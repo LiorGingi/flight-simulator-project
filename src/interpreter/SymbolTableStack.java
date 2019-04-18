@@ -1,71 +1,66 @@
 package interpreter;
 
-import java.util.HashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class SymbolTableStack {
-	
-	private static volatile CopyOnWriteArrayList<HashMap<String, Double>> scopes;
-	private static Object lock=new Object();
-	
-	public static CopyOnWriteArrayList<HashMap<String, Double>> getInstance() {
-		CopyOnWriteArrayList<HashMap<String, Double>> result=scopes;
-		if(result==null) {
+	private static volatile LinkedBlockingDeque<ConcurrentHashMap<String, Double>> scopes;
+	private static Object lock = new Object();
+
+	public static LinkedBlockingDeque<ConcurrentHashMap<String, Double>> getInstance() {
+		LinkedBlockingDeque<ConcurrentHashMap<String, Double>> result = scopes;
+		if (result == null) {
 			synchronized (lock) {
-				result=scopes;
-				if(result==null) {
-					scopes = result = new CopyOnWriteArrayList<>();
-					scopes.add(new HashMap<>());
+				result = scopes;
+				if (result == null) {
+					scopes = result = new LinkedBlockingDeque<>();
 				}
 			}
 		}
 		return scopes;
 	}
-	
-	public static void addScope() { //adds the new scope to the end of the list
-		getInstance().add(new HashMap<String, Double>());
-	}
-	
-	public static HashMap<String, Double> getTopScope() {
-		return getInstance().get(getInstance().size()-1);
-	}
-	
-	public static boolean varExistence(String var) {
-		int scopeSize = getInstance().size();
 
-		for (int i=scopeSize-1; i>=0; i--) {
-			if(getInstance().get(i).get(var) != null) { //get from ArrayList -> get from HashMap
+	public static void addScope() {
+		getInstance().addLast(new ConcurrentHashMap<String, Double>());
+	}
+
+	public static ConcurrentHashMap<String, Double> getTopScope() {
+		return getInstance().peekLast();
+	}
+
+	public static boolean isVarExist(String var) {
+		for (ConcurrentHashMap<String, Double> scope : getInstance())
+			if (scope.containsKey(var))
 				return true;
-			}
-		}
-
 		return false;
 	}
-	
-	public static void addVar(String var, Double val) throws Exception {
-		if(!varExistence(var)) {
-			getTopScope().put(var, val);
-		} else {
-			throw new Exception("var already exists in scope");
-		}
-	}
-	
-	public static void exitScope() { //deletes top scope in scopes ArrayList
-		getInstance().remove(getInstance().size()-1);
-	}
-	
-	public static Double getVarValue(String var) throws Exception {
-		int scopeSize = getInstance().size();
 
-		if(varExistence(var)) {
-			for (int i=scopeSize-1; i>=0; i--) {
-				if(getInstance().get(i).get(var) != null) { //get from ArrayList -> get from HashMap
-					return getInstance().get(i).get(var);
-				}
+	public static void addVar(String var, Double val) throws Exception {
+		if (isVarExist(var))
+			throw new Exception("var " + var + " already exists in scope");
+		else
+			getTopScope().put(var, val);
+	}
+
+	public static void exitScope() {
+		getInstance().removeLast();
+	}
+
+	public static Double getVarValue(String var) throws Exception {
+		for (ConcurrentHashMap<String, Double> scope : getInstance())
+			if (scope.containsKey(var))
+				return scope.get(var);
+		throw new Exception("var doesn't exist");
+	}
+	
+	public static void setVarValue(String var, Double newVal) throws Exception {
+		boolean exist=false;
+		for(ConcurrentHashMap<String, Double> scope: getInstance())
+			if(scope.containsKey(var)) {
+				exist=true;
+				scope.put(var, newVal);
 			}
-		} else {
+		if(!exist)
 			throw new Exception("var doesn't exist");
-		}		
-		return null;
 	}
 }
