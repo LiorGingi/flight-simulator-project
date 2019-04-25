@@ -1,12 +1,11 @@
 package interpreter;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 import commands.CommandMap;
-import commands.ShuntingYard;
 import expression.CommandExpression;
 import expression.Expression;
-import javafx.scene.shape.Line;
 
 public class ConsoleParser implements Parser {
 
@@ -20,20 +19,35 @@ public class ConsoleParser implements Parser {
 
 	@Override
 	public void parse(String[][] script) throws Exception {
+		// create main stack
+		SymbolTableStack.getInstance();
+		SymbolTableStack.addScope();
 		int index;
-		for (String[] line : script) {
+		for (String[] line : script) {// main loop
 			index = 0;
-			while (index < line.length) {// main loop
+			String[] fixedLine=getParameters(line);
+			
+			while (index < fixedLine.length) {
 
-				Expression resultExp = map.get(line[index]);
+				Expression resultExp = map.get(fixedLine[index]);
 
 				if (resultExp != null) {
 					CommandExpression ce = (CommandExpression) resultExp;// resultExp contains CommandExpression
-					index += ce.getC().execute(line, index + 1) + 1;
+
+					ce.initialize(fixedLine, index + 1);
+					index += ce.calculate();
 				}
+//				else {
+//
+//				}
 
 			}
 		}
+	}
+
+	private String[] getParameters(String[] arr) throws Exception {
+		ExpressionSeparator separator = new ExpressionSeparator(arr);
+		return new ExpressionCalculator(separator.separate()).calculateExpressions();
 	}
 
 }

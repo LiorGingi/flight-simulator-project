@@ -1,4 +1,4 @@
-package commands;
+package algorithms;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -12,33 +12,29 @@ import expression.Plus;
 import interpreter.SymbolTableStack;
 import expression.Number;
 
-public class ShuntingYard implements Expression{
-	
-	@Override
-	public double calculate(String[] args, int index) throws Exception {
-			StringBuilder builder=new StringBuilder();
-			int i=index;
-			while(i<args.length) {
-				if(SymbolTableStack.isVarExist(args[i]))
-					builder.append(SymbolTableStack.getVarValue(args[i]).toString());
-				else
-				{
-					//check if it +-/* or number
-					builder.append(args[i]);
-				}
-				i++;
-			}
-		return useAlg(builder.toString());
+public class ShuntingYard {
+	private String exp;
+
+	public ShuntingYard(String exp) {
+		this.exp = exp;
 	}
-	public static double useAlg(String exp) {
+
+	public double calc() throws Exception {
+		return useAlg(this.exp);
+	}
+
+	private double useAlg(String expression) throws Exception {
 		Queue<String> queue = new LinkedList<String>();
 		Stack<String> stack = new Stack<String>();
 		Stack<Expression> stackExp = new Stack<Expression>();
 
-		String[] split = exp.split("(?<=[-+*/()])|(?=[-+*/()])");
+		String[] split = expression.split("(?<=[-+*/()])|(?=[-+*/()])");
 		for (String s : split) {
 			if (isDouble(s)) {
 				queue.add(s);
+			}
+			if (SymbolTableStack.isVarExist(s)) {// replace variable with its value
+				queue.add(SymbolTableStack.getVarValue(s).toString());
 			} else {
 				switch (s) {
 				case "/":
@@ -89,11 +85,10 @@ public class ShuntingYard implements Expression{
 				}
 			}
 		}
-
 		return Math.floor((stackExp.pop().calculate() * 1000)) / 1000;
 	}
 
-	private static boolean isDouble(String val) {
+	private boolean isDouble(String val) {
 		try {
 			Double.parseDouble(val);
 			return true;
@@ -101,7 +96,4 @@ public class ShuntingYard implements Expression{
 			return false;
 		}
 	}
-	
-
-
 }
