@@ -9,7 +9,7 @@ public class ExpressionCalculator {
 		this.expressions = expressions;
 	}
 
-//	gets String array and calculates mathematic expressions in it
+//	gets String array and calculates mathematical expressions in it
 	public String[] calculateExpressions() throws Exception {
 		StringBuilder builder = new StringBuilder();
 		for (String exp : expressions) {

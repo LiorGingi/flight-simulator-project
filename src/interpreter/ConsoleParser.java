@@ -11,17 +11,14 @@ import expression.Expression;
 public class ConsoleParser implements Parser {
 
 	CommandMap map;// holds CommandExpressions
-	ConcurrentHashMap<String, Double> symbolTable;// holds variables.
 
 	public ConsoleParser() {
 		map = new CommandMap();
-		symbolTable = SymbolTableStack.getTopScope();
 	}
 
 	@Override
 	public void parse(String[][] script) throws Exception {
 		// create main stack
-		SymbolTableStack.getInstance();
 		SymbolTableStack.addScope();
 		int index;
 		for (int line = 0; line < script.length; line++) {// main loop
