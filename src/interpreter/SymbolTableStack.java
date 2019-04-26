@@ -59,6 +59,7 @@ public class SymbolTableStack {
 			if(scope.containsKey(var)) {
 				exist=true;
 				scope.put(var, newVal);
+				BindingTable.updateVarValue(var, newVal);
 			}
 		if(!exist)
 			throw new Exception("var doesn't exist");

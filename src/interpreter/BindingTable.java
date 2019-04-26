@@ -39,17 +39,19 @@ public class BindingTable {
 	}
 	
 	public static void updateVarValue(String var, Double newVal) {
-		getInstance().get(var).forEach((str) -> {
-			if (str.startsWith("sim")) {
-				//send to the simulator server "set sim_ newVal"
-			} else {
-				try {
-					SymbolTableStack.setVarValue(var, newVal);
-				} catch (Exception e) {
-					e.printStackTrace();
+		if (getInstance().containsKey(var)) {
+			getInstance().get(var).forEach((str) -> {
+				if (str.startsWith("sim")) {
+					//send to the simulator server "set sim_ newVal"
+				} else {
+					try {
+						SymbolTableStack.setVarValue(var, newVal);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 	
 	public static boolean checkIfBind(String var) {

@@ -44,9 +44,7 @@ public class SimulatorClientHandler implements ClientHandler {
 						simVarValues.put(var, newVal);
 					}
 					
-					if(BindingTable.checkIfBind(var)) {
-						BindingTable.updateVarValue(var, newVal);
-					}
+					BindingTable.updateVarValue(var, newVal);
 				}
 			} else {
 				clientIsConnected = false;
