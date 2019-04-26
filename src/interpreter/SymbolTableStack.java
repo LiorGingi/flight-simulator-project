@@ -58,8 +58,10 @@ public class SymbolTableStack {
 		for(ConcurrentHashMap<String, Double> scope: getInstance())
 			if(scope.containsKey(var)) {
 				exist=true;
-				scope.put(var, newVal);
-				BindingTable.updateVarValue(var, newVal);
+				if (scope.get(var) != newVal) {
+					scope.put(var, newVal);
+					BindingTable.updateVarValue(var, newVal);
+				}
 			}
 		if(!exist)
 			throw new Exception("var doesn't exist");

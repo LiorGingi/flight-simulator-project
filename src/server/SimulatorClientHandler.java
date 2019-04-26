@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.HashMap;
 
 import interpreter.BindingTable;
@@ -21,7 +20,6 @@ public class SimulatorClientHandler implements ClientHandler {
 	@Override
 	public void handleClient(InputStream in, OutputStream out) throws IOException {
 		BufferedReader clientInputBuffer = new BufferedReader(new InputStreamReader(in));
-		PrintWriter responseToClient = new PrintWriter(out);
 		
 		String inputFromClient;
 		String[] simValuesInput;
@@ -39,12 +37,12 @@ public class SimulatorClientHandler implements ClientHandler {
 					if (simVarValues.containsKey(var)) {
 						if (simVarValues.get(var) != newVal) {
 							simVarValues.put(var, newVal);
+							BindingTable.updateVarValue(var, newVal);
 						}
 					} else {
 						simVarValues.put(var, newVal);
-					}
-					
-					BindingTable.updateVarValue(var, newVal);
+						BindingTable.updateVarValue(var, newVal);
+					}	
 				}
 			} else {
 				clientIsConnected = false;

@@ -1,11 +1,13 @@
 package interpreter;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BindingTable {
 	private static volatile ConcurrentHashMap<String, ArrayList<String>> bindTable;
 	private static Object lock = new Object();
+	private static PrintWriter outToServer;
 	
 	public static ConcurrentHashMap<String, ArrayList<String>> getInstance(){
 		ConcurrentHashMap<String, ArrayList<String>> result = bindTable;
@@ -42,7 +44,11 @@ public class BindingTable {
 		if (getInstance().containsKey(var)) {
 			getInstance().get(var).forEach((str) -> {
 				if (str.startsWith("sim")) {
-					//send to the simulator server "set sim_ newVal"
+					if (outToServer != null) {
+						outToServer.println("set "+var+" "+newVal);
+						outToServer.flush();
+					}
+					
 				} else {
 					try {
 						SymbolTableStack.setVarValue(var, newVal);
@@ -56,6 +62,10 @@ public class BindingTable {
 	
 	public static boolean checkIfBind(String var) {
 		return getInstance().containsKey(var);
+	}
+	
+	public static void setServerOutStream(PrintWriter out) {
+		outToServer = out;
 	}
 	
 	
