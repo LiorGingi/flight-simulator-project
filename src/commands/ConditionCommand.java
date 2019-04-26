@@ -1,16 +1,31 @@
 package commands;
 
+import java.util.Iterator;
+import java.util.concurrent.LinkedBlockingDeque;
+
+import interpreter.ConsoleParser;
+import interpreter.Parser;
 import interpreter.SymbolTableStack;
 
 public abstract class ConditionCommand implements Command {
-	//add container for commands
-	
-	protected boolean checkCondition(String[] args, int index) throws Exception{
+	private volatile LinkedBlockingDeque<String[]> scopeLines;
+	private Parser parser;
+
+	public ConditionCommand() {
+		scopeLines = new LinkedBlockingDeque<>();
+		parser=new ConsoleParser();
+	}
+
+	public void addToEndOfScope(String[] line) {
+		scopeLines.addLast(line);
+	}
+
+	protected boolean checkCondition(String[] args) throws Exception {
 		boolean answer;
-		double rightArg = checkValue(args[index]);
-		double leftArg = checkValue(args[index+2]);
-		
-		switch(args[index + 1]) {
+		double rightArg = checkValue(args[0]);
+		double leftArg = checkValue(args[2]);
+
+		switch (args[1]) {
 		case "<":
 			answer = (rightArg < leftArg);
 			break;
@@ -34,9 +49,37 @@ public abstract class ConditionCommand implements Command {
 		}
 		return answer;
 	}
+
+	protected void parseScope() {
+		String[][] scope=new String[scopeLines.size()][];
+		Iterator<String[]> it=scopeLines.iterator();
+		for(int i=0;i<scopeLines.size();i++)
+			scope[i]=it.next();
+		try {
+			parser.parse(scope);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected String[] getCondition(String[] args) {
+		StringBuilder builder=new StringBuilder();
+		for(String str: args)
+			if(!(str.equals("(")||str.equals(")")||str.equals("}")))
+				builder.append(str+",");
+		return builder.toString().split(",");
+	}
 	
 	private double checkValue(String argToCheck) throws Exception {
-		return SymbolTableStack.getVarValue(argToCheck);
+		if (SymbolTableStack.isVarExist(argToCheck))
+			return SymbolTableStack.getVarValue(argToCheck);
+		else {
+			try {
+				return Double.parseDouble(argToCheck);
+			} catch (NumberFormatException e) {
+				throw new Exception("Invalid argument");
+			}
+		}
 	}
 
 }

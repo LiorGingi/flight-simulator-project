@@ -7,8 +7,8 @@ public class Minus extends BinaryExpression {
 	}
 
 	@Override
-	public double calculate(String[] args, int index) throws Exception {
-		return left.calculate(args, index-1)-right.calculate(args,index+1);
+	public double calculate() throws Exception {
+		return left.calculate() - right.calculate();
 	}
 
 }

@@ -1,19 +1,20 @@
 package commands;
 
+import interpreter.SymbolTableStack;
 
 public class IfCommand extends ConditionCommand {
 
-	
 	public IfCommand() {
+		super();
 	}
-	
+
 	@Override
 	public int execute(String[] args, int index) throws Exception {
-		int currentIndex=index;
-		if(this.checkCondition(args, index)) {
-			//implement after we decide the container in ConditionCommand.
+		if (this.checkCondition(getCondition(args))) {
+			parseScope();
+			SymbolTableStack.exitScope();					
 		}
-		return currentIndex-index;
+		return args.length - index;
 	}
 
 }

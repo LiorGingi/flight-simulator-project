@@ -1,16 +1,20 @@
 package commands;
 
+import interpreter.SymbolTableStack;
+
 public class WhileCommand extends ConditionCommand {
+
+	public WhileCommand() {
+		super();
+	}
 
 	@Override
 	public int execute(String[] args, int index) throws Exception {
-		int currentIndex = 0;
-		while(this.checkCondition(args, index)) {
-			currentIndex=index;
-			//implement after we decide the container in ConditionCommand.
-			
+		while (this.checkCondition(args)) {
+			parseScope();
+			SymbolTableStack.exitScope();
 		}
-		return currentIndex-index;
+		return args.length - index;
 	}
 
 }
