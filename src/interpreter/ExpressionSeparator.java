@@ -22,7 +22,7 @@ public class ExpressionSeparator {
 				if (!isValid(token) && !SymbolTableStack.isVarExist(token))
 					builder.append(",");
 				previousIsNumber = isNumber(token);
-				prevCloseParenthesis = token.equals(")");
+				prevCloseParenthesis = token.endsWith(")");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

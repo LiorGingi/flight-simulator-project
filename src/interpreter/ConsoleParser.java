@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 import commands.CommandMap;
+import commands.ConditionCommand;
 import expression.CommandExpression;
 import expression.Expression;
 
@@ -23,24 +24,27 @@ public class ConsoleParser implements Parser {
 		SymbolTableStack.getInstance();
 		SymbolTableStack.addScope();
 		int index;
-		for (String[] line : script) {// main loop
+		for (int line = 0; line < script.length; line++) {// main loop
 			index = 0;
-			String[] fixedLine=getParameters(line);
-			
+			String[] fixedLine = getParameters(script[line]);
+//			System.out.println(Arrays.toString(fixedLine));
 			while (index < fixedLine.length) {
 
-				Expression resultExp = map.get(fixedLine[index]);
+				Expression resultExp = map.getCommand(fixedLine[index]);
 
 				if (resultExp != null) {
+					index++;// set the index to the first parameter
 					CommandExpression ce = (CommandExpression) resultExp;// resultExp contains CommandExpression
-
-					ce.initialize(fixedLine, index + 1);
+					// check if it is a new scope
+					boolean isScopeCommand = map.isScopeCommand(fixedLine[index]);
+					if (isScopeCommand)
+						line += loadCommandsToScope(script, line, (ConditionCommand) resultExp)+1;
+					ce.initialize(fixedLine, index);
 					index += ce.calculate();
 				}
 //				else {
-//
+//					
 //				}
-
 			}
 		}
 	}
@@ -50,4 +54,12 @@ public class ConsoleParser implements Parser {
 		return new ExpressionCalculator(separator.separate()).calculateExpressions();
 	}
 
+	private int loadCommandsToScope(String[][] script, int line, ConditionCommand cc) throws Exception {
+		int scopeLines = 0;
+		while (!script[line + scopeLines][0].equals("}")) {
+			cc.addToEndOfScope(script[line + scopeLines]);
+			scopeLines++;
+		}
+		return scopeLines;
+	}
 }

@@ -32,8 +32,7 @@ public class ShuntingYard {
 		for (String s : split) {
 			if (isDouble(s)) {
 				queue.add(s);
-			}
-			if (SymbolTableStack.isVarExist(s)) {// replace variable with its value
+			} else if (SymbolTableStack.isVarExist(s)) {// replace variable with its value
 				queue.add(SymbolTableStack.getVarValue(s).toString());
 			} else {
 				switch (s) {
