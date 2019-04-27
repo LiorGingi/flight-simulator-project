@@ -1,8 +1,5 @@
 package interpreter;
 
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
-
 import commands.CommandMap;
 import commands.ConditionCommand;
 import expression.CommandExpression;
@@ -11,17 +8,14 @@ import expression.Expression;
 public class ConsoleParser implements Parser {
 
 	CommandMap map;// holds CommandExpressions
-	ConcurrentHashMap<String, Double> symbolTable;// holds variables.
 
 	public ConsoleParser() {
 		map = new CommandMap();
-		symbolTable = SymbolTableStack.getTopScope();
 	}
 
 	@Override
 	public void parse(String[][] script) throws Exception {
 		// create main stack
-		SymbolTableStack.getInstance();
 		SymbolTableStack.addScope();
 		int index;
 		for (int line = 0; line < script.length; line++) {// main loop
@@ -33,12 +27,12 @@ public class ConsoleParser implements Parser {
 				Expression resultExp = map.getCommand(fixedLine[index]);
 
 				if (resultExp != null) {
-					index++;// set the index to the first parameter
 					CommandExpression ce = (CommandExpression) resultExp;// resultExp contains CommandExpression
 					// check if it is a new scope
 					boolean isScopeCommand = map.isScopeCommand(fixedLine[index]);
 					if (isScopeCommand)
 						line += loadCommandsToScope(script, line, (ConditionCommand) resultExp)+1;
+					index++;// set the index to the first parameter
 					ce.initialize(fixedLine, index);
 					index += ce.calculate();
 				}

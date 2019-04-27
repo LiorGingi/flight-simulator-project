@@ -17,7 +17,7 @@ public class CommandMap {
 	}
 
 	private void loadCommands() {
-		commands.put("openDataServer", new CommandExpression(new OpenServerCommand()));
+		commands.put("openDataServer", new CommandExpression(new OpenDataServerCommand()));
 		commands.put("connect", new CommandExpression(new ConnectCommand()));
 		commands.put("var", new CommandExpression(new VarCommand()));
 		commands.put("=", new CommandExpression(new PlacementCommand()));
