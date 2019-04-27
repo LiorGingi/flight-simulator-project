@@ -27,12 +27,12 @@ public class ConsoleParser implements Parser {
 				Expression resultExp = map.getCommand(fixedLine[index]);
 
 				if (resultExp != null) {
-					index++;// set the index to the first parameter
 					CommandExpression ce = (CommandExpression) resultExp;// resultExp contains CommandExpression
 					// check if it is a new scope
 					boolean isScopeCommand = map.isScopeCommand(fixedLine[index]);
 					if (isScopeCommand)
 						line += loadCommandsToScope(script, line, (ConditionCommand) resultExp)+1;
+					index++;// set the index to the first parameter
 					ce.initialize(fixedLine, index);
 					index += ce.calculate();
 				}

@@ -11,7 +11,7 @@ import interpreter.BindingTable;
 
 public class SimulatorClientHandler implements ClientHandler {
 
-	int frequency; //not sure what should be done with the frequency
+	int frequency; //TODO: Written by Lior: need to figure out what should be done with the frequency
 	
 	public SimulatorClientHandler(int frequency) {
 		this.frequency = frequency;
