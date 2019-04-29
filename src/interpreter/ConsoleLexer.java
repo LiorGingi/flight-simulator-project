@@ -8,8 +8,7 @@ public class ConsoleLexer implements Lexer<String> {
 	Scanner sc;
 
 	@Override
-	public String[][] tokenize(String input) {
-		String[] lines = input.split("\n");
+	public String[][] tokenize(String[] lines) {
 		String[][] script = new String[lines.length][];
 		int row = 0;
 		for (String line : lines) {

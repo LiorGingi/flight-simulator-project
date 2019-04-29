@@ -18,6 +18,6 @@ public class OpenDataServerCommand implements Command {
 		MySerialServer server = new MySerialServer();
 		server.start(Integer.parseInt(args[index]), new SimulatorClientHandler(Integer.parseInt(args[index+1])));
 		
-		return index + 2;
+		return 2;
 	}
 }
