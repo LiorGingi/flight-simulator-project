@@ -9,7 +9,10 @@ public class CommandMap {
 	HashMap<String, Expression> commands;
 	HashMap<String, Expression> scopeCommands;
 
+	private DisconnectCommand diconnect;
+	
 	public CommandMap() {
+		this.diconnect=new DisconnectCommand();
 		commands = new HashMap<>();
 		loadCommands();
 		scopeCommands = new HashMap<>();
@@ -18,11 +21,11 @@ public class CommandMap {
 
 	private void loadCommands() {
 		commands.put("openDataServer", new CommandExpression(new OpenDataServerCommand()));
-		commands.put("connect", new CommandExpression(new ConnectCommand()));
+		commands.put("connect", new CommandExpression(new ConnectCommand(this.diconnect)));
 		commands.put("var", new CommandExpression(new VarCommand()));
 		commands.put("=", new CommandExpression(new PlacementCommand()));
 		commands.put("bind", new CommandExpression(new BindCommand()));
-		commands.put("disconnect", new CommandExpression(new DisconnectCommand()));
+		commands.put("disconnect", new CommandExpression(this.diconnect));
 	}
 
 	private void loadScopeCommands() {
