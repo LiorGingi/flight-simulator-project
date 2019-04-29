@@ -14,33 +14,40 @@ public class ConsoleParser implements Parser {
 	}
 
 	@Override
-	public void parse(String[][] script) throws Exception {
+	public int parse(String[][] script) throws Exception {
 		// create main stack
 		SymbolTableStack.addScope();
 		int index;
-		for (int line = 0; line < script.length; line++) {// main loop
+		int line;
+		int retVal = 0;
+		for (line = 0; line < script.length; line++) {// main loop
 			index = 0;
 			String[] fixedLine = getParameters(script[line]);
-//			System.out.println(Arrays.toString(fixedLine));
+
 			while (index < fixedLine.length) {
 
 				Expression resultExp = map.getCommand(fixedLine[index]);
 
 				if (resultExp != null) {
+					if (map.isEndOfScript(fixedLine[index])) {
+						// return command
+						Expression exp = map.getCommand(fixedLine[0]);
+						retVal = (int) exp.calculate();
+					}
 					CommandExpression ce = (CommandExpression) resultExp;// resultExp contains CommandExpression
 					// check if it is a new scope
 					boolean isScopeCommand = map.isScopeCommand(fixedLine[index]);
 					if (isScopeCommand)
-						line += loadCommandsToScope(script, line, (ConditionCommand) resultExp)+1;
+						line += loadCommandsToScope(script, line, (ConditionCommand) resultExp) + 1;
 					index++;// set the index to the first parameter
 					ce.initialize(fixedLine, index);
 					index += ce.calculate();
+				} else if (SymbolTableStack.isVarExist(fixedLine[index])) {
+					index++;
 				}
-//				else {
-//					
-//				}
 			}
 		}
+		return retVal;
 	}
 
 	private String[] getParameters(String[] arr) throws Exception {

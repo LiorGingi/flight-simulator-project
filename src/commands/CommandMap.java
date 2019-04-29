@@ -2,6 +2,8 @@ package commands;
 
 import java.util.HashMap;
 
+import javax.print.DocFlavor.STRING;
+
 import expression.CommandExpression;
 import expression.Expression;
 
@@ -26,6 +28,7 @@ public class CommandMap {
 		commands.put("=", new CommandExpression(new PlacementCommand()));
 		commands.put("bind", new CommandExpression(new BindCommand()));
 		commands.put("disconnect", new CommandExpression(this.diconnect));
+		commands.put("return", new CommandExpression(new ReturnCommand()));
 	}
 
 	private void loadScopeCommands() {
@@ -43,5 +46,8 @@ public class CommandMap {
 	}
 	public boolean isScopeCommand(String arg){
 		return scopeCommands.containsKey(arg);
+	}
+	public boolean isEndOfScript(String arg) {
+		return arg.equals("return");
 	}
 }
