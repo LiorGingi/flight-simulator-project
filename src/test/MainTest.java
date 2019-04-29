@@ -9,9 +9,11 @@ public class MainTest {
 	public static void main(String[] args) {
 		Lexer<String> l=new ConsoleLexer();
 		Parser p=new ConsoleParser();
-		String[] line= {"return 5 +(8+ 22 )*12 4 + 5-(9+0)"};
+		String[] line= {
+				"return 5 * 5 - (8+2)"	
+		};
 		try {
-			p.parse(l.tokenize(line));
+			System.out.println(p.parse(l.tokenize(line)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

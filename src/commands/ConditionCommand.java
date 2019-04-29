@@ -9,11 +9,10 @@ import interpreter.SymbolTableStack;
 
 public abstract class ConditionCommand implements Command {
 	private volatile LinkedBlockingDeque<String[]> scopeLines;
-	private Parser parser;
+	protected Parser parser;
 
 	public ConditionCommand() {
 		scopeLines = new LinkedBlockingDeque<>();
-		parser=new ConsoleParser();
 	}
 
 	public void addToEndOfScope(String[] line) {

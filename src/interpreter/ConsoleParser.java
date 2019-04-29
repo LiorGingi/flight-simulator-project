@@ -29,11 +29,6 @@ public class ConsoleParser implements Parser {
 				Expression resultExp = map.getCommand(fixedLine[index]);
 
 				if (resultExp != null) {
-					if (map.isEndOfScript(fixedLine[index])) {
-						// return command
-						Expression exp = map.getCommand(fixedLine[0]);
-						retVal = (int) exp.calculate();
-					}
 					CommandExpression ce = (CommandExpression) resultExp;// resultExp contains CommandExpression
 					// check if it is a new scope
 					boolean isScopeCommand = map.isScopeCommand(fixedLine[index]);
@@ -41,7 +36,12 @@ public class ConsoleParser implements Parser {
 						line += loadCommandsToScope(script, line, (ConditionCommand) resultExp) + 1;
 					index++;// set the index to the first parameter
 					ce.initialize(fixedLine, index);
-					index += ce.calculate();
+					if (map.isEndOfScript(fixedLine[0])) {
+						// return command
+//						Expression exp = map.getCommand(fixedLine[0]);
+						retVal = (int) ce.calculate();
+					} else
+						index += ce.calculate();
 				} else if (SymbolTableStack.isVarExist(fixedLine[index])) {
 					index++;
 				}
