@@ -17,7 +17,7 @@ public class ConsoleLexer implements Lexer<String> {
 			ArrayList<String> wordsList = new ArrayList<>();
 
 			while (sc.hasNext()) {
-				String[] arr = sc.next().split("(?<=[-+*/()=])|(?=[-+*/()=])");
+				String[] arr = sc.next().split("(?<=[-+*/()=}])|(?=[-+*/()=}])");
 
 				for (String s : arr) {
 					wordsList.add(s);
