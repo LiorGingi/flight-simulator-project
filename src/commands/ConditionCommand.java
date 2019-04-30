@@ -3,7 +3,6 @@ package commands;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import interpreter.ConsoleParser;
 import interpreter.Parser;
 import interpreter.SymbolTableStack;
 
@@ -50,10 +49,10 @@ public abstract class ConditionCommand implements Command {
 	}
 
 	protected void parseScope() {
-		String[][] scope=new String[scopeLines.size()][];
-		Iterator<String[]> it=scopeLines.iterator();
-		for(int i=0;i<scopeLines.size();i++)
-			scope[i]=it.next();
+		String[][] scope = new String[scopeLines.size()][];
+		Iterator<String[]> it = scopeLines.iterator();
+		for (int i = 0; i < scopeLines.size(); i++)
+			scope[i] = it.next();
 		try {
 			parser.parse(scope);
 		} catch (Exception e) {
@@ -62,13 +61,13 @@ public abstract class ConditionCommand implements Command {
 	}
 
 	protected String[] getCondition(String[] args) {
-		StringBuilder builder=new StringBuilder();
-		for(String str: args)
-			if(!(str.equals("(")||str.equals(")")||str.equals("}")))
-				builder.append(str+",");
+		StringBuilder builder = new StringBuilder();
+		for (String str : args)
+			if (!(str.equals("(") || str.equals(")") || str.equals("}")))
+				builder.append(str + ",");
 		return builder.toString().split(",");
 	}
-	
+
 	private double checkValue(String argToCheck) throws Exception {
 		if (SymbolTableStack.isVarExist(argToCheck))
 			return SymbolTableStack.getVarValue(argToCheck);

@@ -1,8 +1,6 @@
 package expression;
 
 import commands.Command;
-import interpreter.ExpressionCalculator;
-import interpreter.ExpressionSeparator;
 
 public class CommandExpression implements Expression {
 	private Command c;

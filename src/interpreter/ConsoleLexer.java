@@ -1,7 +1,6 @@
 package interpreter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class ConsoleLexer implements Lexer<String> {

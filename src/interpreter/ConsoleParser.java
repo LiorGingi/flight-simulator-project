@@ -38,15 +38,16 @@ public class ConsoleParser implements Parser {
 					ce.initialize(fixedLine, index);
 					if (map.isEndOfScript(fixedLine[0])) {
 						// return command
-//						Expression exp = map.getCommand(fixedLine[0]);
 						retVal = (int) ce.calculate();
+						index += fixedLine.length;
 					} else
 						index += ce.calculate();
-				} else if (SymbolTableStack.isVarExist(fixedLine[index])) {
+				} else {
 					index++;
 				}
 			}
 		}
+		SymbolTableStack.exitScope();
 		return retVal;
 	}
 

@@ -2,8 +2,6 @@ package commands;
 
 import java.util.HashMap;
 
-import javax.print.DocFlavor.STRING;
-
 import expression.CommandExpression;
 import expression.Expression;
 
@@ -12,9 +10,9 @@ public class CommandMap {
 	HashMap<String, Expression> scopeCommands;
 
 	private DisconnectCommand diconnect;
-	
+
 	public CommandMap() {
-		this.diconnect=new DisconnectCommand();
+		this.diconnect = new DisconnectCommand();
 		commands = new HashMap<>();
 		loadCommands();
 		scopeCommands = new HashMap<>();
@@ -35,19 +33,24 @@ public class CommandMap {
 		scopeCommands.put("while", new CommandExpression(new WhileCommand()));
 		scopeCommands.put("if", new CommandExpression(new IfCommand()));
 	}
-	
+
 	public Expression getCommand(String arg) throws Exception {
 		if (commands.containsKey(arg))
 			return commands.get(arg);
-		else if(scopeCommands.containsKey(arg))
+		else if (scopeCommands.containsKey(arg))
 			return scopeCommands.get(arg);
-		else
-			throw new Exception("Command doesn't exists");
+		return null;
 	}
-	public boolean isScopeCommand(String arg){
+
+	public boolean isScopeCommand(String arg) {
 		return scopeCommands.containsKey(arg);
 	}
+
 	public boolean isEndOfScript(String arg) {
 		return arg.equals("return");
+	}
+
+	public boolean isCommand(String arg) {
+		return commands.containsKey(arg) || scopeCommands.containsKey(arg);
 	}
 }

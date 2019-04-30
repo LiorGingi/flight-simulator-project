@@ -1,21 +1,25 @@
 package commands;
 
+import interpreter.SymbolTableStack;
+
 public class ReturnCommand implements Command {
 
 	@Override
 	public int execute(String[] args, int index) throws Exception {
-		if (!isNumber(args[index]) || args.length != 2)
-			throw new Exception("Invalid return value");
+		if (args.length == 2)
+			return (int) getReturnValue(args[index]);
 		else
-			return (int) Double.parseDouble(args[index]);
+			throw new Exception("Invalid return value");
 	}
 
-	private boolean isNumber(String arg) {
-		try {
-			Double.parseDouble(arg);
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
-		}
+	private double getReturnValue(String val) throws Exception {
+		if (SymbolTableStack.isVarExist(val))
+			return SymbolTableStack.getVarValue(val).doubleValue();
+		else
+			try {
+				return Double.parseDouble(val);
+			} catch (NumberFormatException e) {
+				throw new Exception("Invalid return value");
+			}
 	}
 }

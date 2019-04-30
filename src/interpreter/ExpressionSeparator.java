@@ -9,25 +9,31 @@ public class ExpressionSeparator {
 
 //	Converts this String array to an array of commands and numbered expressions
 	public String[] separate() {
-		boolean previousIsNumber = false;
-		boolean prevCloseParenthesis = false; // is previous token ends with )
 		StringBuilder builder = new StringBuilder();
+		builder.append(expressions[0]);
 		try {
-			for (String token : expressions) {
-				// check if it is the end of an expression
-				if (isNumber(token) && (prevCloseParenthesis || previousIsNumber))
+			for (int i = 1; i < expressions.length; i++) {
+				String token = expressions[i];
+				String prev = expressions[i - 1];
+				// check if it is the beggining of an expression
+				if (!isValid(prev) || !isValid(token) || isBeggingOfExp(token, prev)) {
 					builder.append(",");
+				}
 				builder.append(token);
-				// the token is not part of an expression
-				if (!isValid(token) && !SymbolTableStack.isVarExist(token))
-					builder.append(",");
-				previousIsNumber = isNumber(token);
-				prevCloseParenthesis = token.endsWith(")");
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return builder.toString().split(",");
+	}
+
+	private boolean isBeggingOfExp(String token, String prev) {
+		if (isNumber(token) || SymbolTableStack.isVarExist(token) || token.startsWith("("))
+			if (prev.endsWith(")") || isNumber(prev) || SymbolTableStack.isVarExist(prev))
+				return true;
+		return false;
+
 	}
 
 	private boolean isNumber(String val) {
@@ -44,6 +50,7 @@ public class ExpressionSeparator {
 	}
 
 	private boolean isValid(String str) {
-		return (isNumber(str) || isArithmeticFunc(str) || str.equals(")") || str.equals("("));
+		return (isNumber(str) || SymbolTableStack.isVarExist(str) || isArithmeticFunc(str) || str.equals(")")
+				|| str.equals("("));
 	}
 }
