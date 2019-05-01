@@ -8,8 +8,7 @@ public class PlacementCommand implements Command {
 	public int execute(String[] args, int index) throws Exception {
 		if (args[index].equals("bind")) {
 			index++;
-			index += new BindCommand().execute(args, index);
-			return index;
+			return new BindCommand().execute(args, index) + 1;
 		}
 		if (args.length >= 3 && index > 0 && args.length - index == 1) {
 			if (!SymbolTableStack.isVarExist(args[index])) {
