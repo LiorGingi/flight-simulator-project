@@ -45,13 +45,13 @@ public class BindingTable {
 			getInstance().get(var).forEach((str) -> {
 				if (str.startsWith("sim")) {
 					if (outToServer != null) {
-						outToServer.println("set " + var + " " + newVal);
+						outToServer.println("set " + str + " " + newVal);
 						outToServer.flush();
 					}
 
 				} else {
 					try {
-						SymbolTableStack.setVarValue(var, newVal);
+						SymbolTableStack.setVarValue(str, newVal);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

@@ -14,6 +14,7 @@ public class ExpressionCalculator {
 		StringBuilder builder = new StringBuilder();
 		for (String exp : expressions) {
 			if (isExpression(exp)) {
+				Thread.sleep(100);
 				Double value=new ShuntingYard(exp).calc();
 				builder.append(value.toString());
 			}

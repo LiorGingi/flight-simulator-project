@@ -37,7 +37,7 @@ public class Simulator {
 				out.close();
 				interpreter.close();
 			} catch (IOException e) {
-				try {Thread.sleep(1000);} catch (InterruptedException e1) {}
+				try {Thread.sleep(100);} catch (InterruptedException e1) {}
 			}
 		}
 	}
