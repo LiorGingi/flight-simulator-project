@@ -44,6 +44,16 @@ public class BindingTable {
 		if (getInstance().containsKey(var)) {
 			getInstance().get(var).forEach((str) -> {
 				if (str.startsWith("sim")) {
+					getInstance().get(str).forEach((simBind)->{
+						if(simBind != var) {
+							try {
+								SymbolTableStack.setVarValue(simBind, newVal);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					});
+					
 					if (outToServer != null) {
 						outToServer.println("set " + str + " " + newVal);
 						outToServer.flush();
@@ -58,6 +68,7 @@ public class BindingTable {
 				}
 			});
 		}
+		
 	}
 
 	public static boolean checkIfBind(String var) {
