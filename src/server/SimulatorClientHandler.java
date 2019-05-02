@@ -12,50 +12,43 @@ import interpreter.BindingTable;
 public class SimulatorClientHandler implements ClientHandler {
 
 	int frequency;
-	
+
 	public SimulatorClientHandler(int frequency) {
 		this.frequency = frequency;
 	}
-	
+
 	@Override
 	public void handleClient(InputStream in, OutputStream out) throws IOException {
 		BufferedReader clientInputBuffer = new BufferedReader(new InputStreamReader(in));
-		
+
 		String inputFromClient;
 		String[] simValuesInput;
-		HashMap <String, Double> simVarValues = new HashMap<>();
-		boolean clientIsConnected = true;
-		
-		while(clientIsConnected) {
-			inputFromClient = clientInputBuffer.readLine().toString();
-			if(inputFromClient != "-1") {
-				simValuesInput = inputFromClient.split(","); 
-				
-				for (int i=0; i<3; i++) {
-					String var = convertIndexToVar(i);
-					double newVal = Double.parseDouble(simValuesInput[i]);
-					if (simVarValues.containsKey(var)) {
-						if (simVarValues.get(var) != newVal) {
-							simVarValues.put(var, newVal);
-							BindingTable.updateVarValue(var, newVal);
-						}
-					} else {
+		HashMap<String, Double> simVarValues = new HashMap<>();
+
+		while ((inputFromClient = clientInputBuffer.readLine()) != null) {
+			simValuesInput = inputFromClient.split(",");
+
+			for (int i = 0; i < 3; i++) {
+				String var = convertIndexToVar(i);
+				double newVal = Double.parseDouble(simValuesInput[i]);
+				if (simVarValues.containsKey(var)) {
+					if (simVarValues.get(var) != newVal) {
 						simVarValues.put(var, newVal);
 						BindingTable.updateVarValue(var, newVal);
-					}	
+					}
+				} else {
+					simVarValues.put(var, newVal);
+					BindingTable.updateVarValue(var, newVal);
 				}
-			} else {
-				clientIsConnected = false;
 			}
 			try {
-				Thread.sleep(1000/frequency);
+				Thread.sleep(1000 / frequency);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
-	
+
 	private String convertIndexToVar(int index) {
 		switch (index) {
 		case 0:
