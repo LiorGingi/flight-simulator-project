@@ -30,14 +30,21 @@ public class ConsoleParser implements Parser {
 
 				if (resultExp != null) {
 					CommandExpression ce = (CommandExpression) resultExp;// resultExp contains CommandExpression
-					// check if it is a new scope
-					boolean isScopeCommand = map.isScopeCommand(fixedLine[index]);
-					if (isScopeCommand)
-						line += loadCommandsToScope(script, line, (ConditionCommand) resultExp) + 1;
 					index++;// set the index to the first parameter
 					ce.initialize(fixedLine, index);
+					// check if it is a new scope
+					if (map.isScopeCommand(fixedLine[index - 1])) {
+						line += ce.calculate();
+						//fill the scope
+						while (!script[line][0].equals("}")) {
+							ce.initialize(script[line], index);
+							line += ce.calculate();
+						}
+						ce.initialize(script[line], index);
+						ce.calculate();
+					}
+					// return command
 					if (map.isEndOfScript(fixedLine[0])) {
-						// return command
 						retVal = (int) ce.calculate();
 						index += fixedLine.length;
 					} else
@@ -54,14 +61,5 @@ public class ConsoleParser implements Parser {
 	private String[] getParameters(String[] arr) throws Exception {
 		ExpressionSeparator separator = new ExpressionSeparator(arr);
 		return new ExpressionCalculator(separator.separate()).calculateExpressions();
-	}
-
-	private int loadCommandsToScope(String[][] script, int line, ConditionCommand cc) throws Exception {
-		int scopeLines = 0;
-		while (!script[line + scopeLines][0].equals("}")) {
-			cc.addToEndOfScope(script[line + scopeLines]);
-			scopeLines++;
-		}
-		return scopeLines;
 	}
 }

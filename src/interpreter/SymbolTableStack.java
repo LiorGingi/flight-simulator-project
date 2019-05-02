@@ -43,6 +43,7 @@ public class SymbolTableStack {
 	}
 
 	public static void exitScope() {
+		//need to remove all binds with variables in this scope
 		getInstance().removeLast();
 	}
 

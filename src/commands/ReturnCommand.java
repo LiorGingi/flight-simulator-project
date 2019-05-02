@@ -7,7 +7,6 @@ public class ReturnCommand implements Command {
 	@Override
 	public int execute(String[] args, int index) throws Exception {
 		if (args.length == 2) {
-			Thread.sleep(200);
 			return (int) getReturnValue(args[index]);
 		}
 		else

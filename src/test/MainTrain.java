@@ -29,6 +29,7 @@ public class MainTrain {
 			System.out.println("failed test2 (-20)");
 
 		String[] test3={
+				"openDataServer "+ (port+1)+" 10",
 				"connect 127.0.0.1 "+port,
 				"var x",
 				"x = bind simX",
@@ -42,7 +43,6 @@ public class MainTrain {
 			System.out.println("failed test3 (-20)");
 
 		String[] test4={
-				"openDataServer "+ (port+1)+" 10",
 				"connect 127.0.0.1 "+port,
 				"var x = bind simX",
 				"var y = bind simY",	
