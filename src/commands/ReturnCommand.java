@@ -14,8 +14,9 @@ public class ReturnCommand implements Command {
 	}
 
 	private double getReturnValue(String val) throws Exception {
-		if (SymbolTableStack.isVarExist(val))
+		if (SymbolTableStack.isVarExist(val)) {
 			return SymbolTableStack.getVarValue(val).doubleValue();
+		}
 		else
 			try {
 				return Double.parseDouble(val);

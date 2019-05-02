@@ -52,8 +52,11 @@ public class ConsoleParser implements Parser {
 				} else {
 					index++;
 				}
+				BindingTable.getInstance();
+				SymbolTableStack.getInstance();
 			}
 		}
+		
 		SymbolTableStack.exitScope();
 		return retVal;
 	}

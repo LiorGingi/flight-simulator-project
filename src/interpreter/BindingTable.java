@@ -67,5 +67,22 @@ public class BindingTable {
 	public static void setServerOutStream(PrintWriter out) {
 		outToServer = out;
 	}
+	
+	public static void unsetBind(String var) {
+		if (getInstance().containsKey(var)) {
+			getInstance().get(var).forEach((str)-> {
+				getInstance().get(str).remove(var);
+			});
+			getInstance().remove(var);
+		}
+	}
+	
+	public static void clearTable() {
+		if(bindTable != null) {
+			getInstance().keySet().forEach((key)->{
+				getInstance().remove(key);
+			});
+		}
+	}
 
 }

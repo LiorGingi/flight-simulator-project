@@ -2,6 +2,9 @@ package test;
 
 import java.util.Random;
 
+import interpreter.BindingTable;
+import interpreter.SymbolTableStack;
+
 public class MainTrain {
 
 	public static void main(String[] args) {
@@ -39,10 +42,15 @@ public class MainTrain {
 				"return y"	
 		};
 		
-		if(MyInterpreter.interpret(test3)!=rand*2)
+		System.out.println("starting test 3");
+		double testRes = MyInterpreter.interpret(test3);
+		System.out.println("test 3 "+testRes);
+		System.out.println("expected 3 "+(rand*2));
+		if(testRes!=rand*2)
 			System.out.println("failed test3 (-20)");
 
 		String[] test4={
+				"openDataServer "+ (port+1)+" 10",
 				"connect 127.0.0.1 "+port,
 				"var x = bind simX",
 				"var y = bind simY",	
@@ -54,6 +62,7 @@ public class MainTrain {
 		
 		if(MyInterpreter.interpret(test4)!=sim.simX+sim.simY*sim.simZ)
 			System.out.println("failed test4 (-20)");
+
 				
 		String[] test5={
 				"var x = 0",
@@ -65,6 +74,7 @@ public class MainTrain {
 				"return y"	
 		};
 		
+
 		if(MyInterpreter.interpret(test5)!=rand+2*5)
 			System.out.println("failed test5 (-20)");
 		
