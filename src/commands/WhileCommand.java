@@ -1,6 +1,6 @@
 package commands;
 
-import interpreter.SymbolTableStack;
+import interpreter.ConsoleParser;
 
 public class WhileCommand extends ConditionCommand {
 
@@ -10,11 +10,15 @@ public class WhileCommand extends ConditionCommand {
 
 	@Override
 	public int execute(String[] args, int index) throws Exception {
-		while (this.checkCondition(args)) {
-			parseScope();
-			SymbolTableStack.exitScope();
-		}
+		
+		if (!scopeLoaded) {
+			loadLineToScope(args);
+			return 1;
+		} else
+			while (this.checkCondition(getCondition(getConditionLine()))) {
+				parser = new ConsoleParser();
+				parseScope();
+			}
 		return args.length - index;
 	}
-
 }

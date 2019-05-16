@@ -3,20 +3,18 @@ package commands;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
 import interpreter.BindingTable;
 
 public class ConnectCommand implements Command, Observer {
-	private DisconnectCommand c;
+//	private DisconnectCommand c;
 	private PrintWriter out;
 	private Socket server;
 
 	public ConnectCommand(DisconnectCommand c) {
-		this.c = c;
+//		this.c = c;
 		c.addObserver(this);
 	}
 

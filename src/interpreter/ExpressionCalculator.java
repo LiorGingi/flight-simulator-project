@@ -14,6 +14,7 @@ public class ExpressionCalculator {
 		StringBuilder builder = new StringBuilder();
 		for (String exp : expressions) {
 			if (isExpression(exp)) {
+				Thread.sleep(100);
 				Double value=new ShuntingYard(exp).calc();
 				builder.append(value.toString());
 			}
@@ -25,18 +26,9 @@ public class ExpressionCalculator {
 	}
 
 	private boolean isExpression(String val) {
-		if (val.matches(".*[+-[\\*]/()].*") || SymbolTableStack.isVarExist(val) || isNumber(val))
+		if (val.matches(".*[+-[\\*]/()].*"))
 			return true;
 		return false;
-	}
-
-	private boolean isNumber(String val) {
-		try {
-			Double.parseDouble(val);
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
-		}
 	}
 
 }

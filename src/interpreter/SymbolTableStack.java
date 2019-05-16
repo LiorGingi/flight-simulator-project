@@ -43,7 +43,7 @@ public class SymbolTableStack {
 	}
 
 	public static void exitScope() {
-		getInstance().removeLast();
+		getInstance().pollLast().forEach((key, value)->BindingTable.unsetBind(key));
 	}
 
 	public static Double getVarValue(String var) throws Exception {

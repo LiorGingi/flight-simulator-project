@@ -1,7 +1,9 @@
 package test;
 
+import interpreter.BindingTable;
 import interpreter.ConsoleLexer;
 import interpreter.ConsoleParser;
+import interpreter.SymbolTableStack;
 
 public class MyInterpreter {
 
@@ -10,8 +12,9 @@ public class MyInterpreter {
 		ConsoleParser parser = new ConsoleParser();
 		int solution = 0;
 		try {
-			solution = parser.parse(lexer.tokenize(lines));
-
+			String[][] console = lexer.tokenize(lines);
+			solution = parser.parse(console);
+			BindingTable.clearTable();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

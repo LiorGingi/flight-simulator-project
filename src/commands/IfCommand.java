@@ -1,6 +1,6 @@
 package commands;
 
-import interpreter.SymbolTableStack;
+import interpreter.ConsoleParser;
 
 public class IfCommand extends ConditionCommand {
 
@@ -10,9 +10,13 @@ public class IfCommand extends ConditionCommand {
 
 	@Override
 	public int execute(String[] args, int index) throws Exception {
-		if (this.checkCondition(getCondition(args))) {
+		
+		if (!scopeLoaded) {
+			loadLineToScope(args);
+			return 1;
+		} else if (this.checkCondition(getCondition(getConditionLine()))) {
+			parser = new ConsoleParser();
 			parseScope();
-			SymbolTableStack.exitScope();					
 		}
 		return args.length - index;
 	}

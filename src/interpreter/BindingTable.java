@@ -44,20 +44,31 @@ public class BindingTable {
 		if (getInstance().containsKey(var)) {
 			getInstance().get(var).forEach((str) -> {
 				if (str.startsWith("sim")) {
+					getInstance().get(str).forEach((simBind)->{
+						if(simBind != var) {
+							try {
+								SymbolTableStack.setVarValue(simBind, newVal);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					});
+					
 					if (outToServer != null) {
-						outToServer.println("set " + var + " " + newVal);
+						outToServer.println("set " + str + " " + newVal);
 						outToServer.flush();
 					}
 
 				} else {
 					try {
-						SymbolTableStack.setVarValue(var, newVal);
+						SymbolTableStack.setVarValue(str, newVal);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			});
 		}
+		
 	}
 
 	public static boolean checkIfBind(String var) {
@@ -66,6 +77,23 @@ public class BindingTable {
 
 	public static void setServerOutStream(PrintWriter out) {
 		outToServer = out;
+	}
+	
+	public static void unsetBind(String var) {
+		if (getInstance().containsKey(var)) {
+			getInstance().get(var).forEach((str)-> {
+				getInstance().get(str).remove(var);
+			});
+			getInstance().remove(var);
+		}
+	}
+	
+	public static void clearTable() {
+		if(bindTable != null) {
+			getInstance().keySet().forEach((key)->{
+				getInstance().remove(key);
+			});
+		}
 	}
 
 }

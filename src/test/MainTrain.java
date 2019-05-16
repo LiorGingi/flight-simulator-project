@@ -2,6 +2,9 @@ package test;
 
 import java.util.Random;
 
+import interpreter.BindingTable;
+import interpreter.SymbolTableStack;
+
 public class MainTrain {
 
 	public static void main(String[] args) {
@@ -38,6 +41,7 @@ public class MainTrain {
 				"return y"	
 		};
 		
+
 		if(MyInterpreter.interpret(test3)!=rand*2)
 			System.out.println("failed test3 (-20)");
 
@@ -54,6 +58,7 @@ public class MainTrain {
 		
 		if(MyInterpreter.interpret(test4)!=sim.simX+sim.simY*sim.simZ)
 			System.out.println("failed test4 (-20)");
+
 				
 		String[] test5={
 				"var x = 0",
@@ -65,6 +70,7 @@ public class MainTrain {
 				"return y"	
 		};
 		
+
 		if(MyInterpreter.interpret(test5)!=rand+2*5)
 			System.out.println("failed test5 (-20)");
 		

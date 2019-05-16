@@ -15,8 +15,6 @@ public class MySerialServer implements Server {
 		this.stop = false;
 	}
 
-
-
 	@Override
 	public void start(int port, ClientHandler c) {
 		this.port = port;
@@ -30,13 +28,12 @@ public class MySerialServer implements Server {
 		stop = true;
 	}
 
-
 	private void runServer() {
 		ServerSocket server = null;
 		try {
 			server = new ServerSocket(port);
 			server.setSoTimeout(1000);
-			Socket aClient=null;
+			Socket aClient = null;
 			while (!stop) {
 				try {
 					aClient = server.accept();// awaits for client.
@@ -47,14 +44,16 @@ public class MySerialServer implements Server {
 						e.printStackTrace();
 					}
 				} catch (SocketTimeoutException e) {
+					if (server != null)
+						server.close();
 					this.runServer();
-				}finally {
-					if(aClient!=null)
+				} finally {
+					if (aClient != null)
 						aClient.close();
 					TimeUnit.MILLISECONDS.sleep(100);
 				}
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {// closing the server
