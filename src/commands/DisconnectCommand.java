@@ -1,16 +1,17 @@
 package commands;
 
-import java.util.Observable;
+import java.util.ListIterator;
 
-public class DisconnectCommand extends Observable implements Command {
+public class DisconnectCommand implements Command {
 
 	@Override
-	public int execute(String[] args, int index) throws Exception {
-		if (args.length != 1)
-			throw new Exception("too many arguments");
-		else {
-			notifyObservers();
-			return 1;
-		}
+	public void execute() throws Exception {
+		ConnectCommand.disconnectFromSimulator();
+		OpenServerCommand.closeServer();
 	}
+
+	@Override
+	public void setParameters(ListIterator<String> it) throws Exception {
+	}
+
 }

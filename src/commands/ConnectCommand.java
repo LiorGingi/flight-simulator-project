@@ -3,56 +3,62 @@ package commands;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.ListIterator;
 
-import interpreter.BindingTable;
+import algorithms.ShuntingYard;
+import interpreter.ActiveUpdater;
+import interpreter.MyUpdater;
+import interpreter.Property;
 
-public class ConnectCommand implements Command, Observer {
-//	private DisconnectCommand c;
-	private PrintWriter out;
-	private Socket server;
+public class ConnectCommand implements Command {
+	private static Socket simulator = null;
+	private static PrintWriter out = null;
+	private static ActiveUpdater updater = null;
+	private String ip;
+	private int port;
 
-	public ConnectCommand(DisconnectCommand c) {
-//		this.c = c;
-		c.addObserver(this);
+	@Override
+	public void execute() throws Exception {
+		try {
+			simulator = new Socket(ip, port);
+			out=new PrintWriter(simulator.getOutputStream());
+			updater = new ActiveUpdater(new MyUpdater());
+			//initialize
+			updater.update(out, "/controls/switches/master-bat", new Property(1.0));
+			updater.update(out, "/controls/gear/brake-parking", new Property(1.0));
+			updater.update(out, "/controls/engines/engine/starter", new Property(1.0));
+			updater.update(out, "/controls/engines/engine/mixture", new Property(1.0));
+			updater.update(out, "/controls/switches/magnetos", new Property(3.0));
+		} catch (Exception e) {
+			System.out.println("waiting to simulator");
+			Thread.sleep(3000);
+			execute();
+		}
 	}
 
 	@Override
-	public int execute(String[] args, int index) throws Exception {
-		// TODO ***Written by Lior: When connecting to a server, set an outputStream
-		// PrintWriter to BindingTable.***
-		if (args.length != 3)
-			throw new Exception("wrong amount of arguments");
-		else {
-			String address = args[index];
-			int port = Integer.parseInt(args[index + 1]);
+	public void setParameters(ListIterator<String> it) throws Exception {
+		ip = it.next();
+		port = (int) Double.parseDouble(ShuntingYard.calc(it.next()).calculate());
+	}
+
+	public static void updateSimulator(String name, Property p) throws Exception {
+		updater.update(out, name, p);
+	}
+
+	public static void disconnectFromSimulator() {
+		if (updater != null) {
+			updater.stop();
+			updater = null;
+		}
+		if (simulator != null)
 			try {
-				server = new Socket(address, port);
-				this.out = new PrintWriter(server.getOutputStream());
-				BindingTable.setServerOutStream(out);
+				out.close();
+				simulator.close();
+				simulator = null;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return 2;
-		}
 	}
 
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		diconnectFromServer();
-	}
-
-	private void diconnectFromServer() {
-		BindingTable.setServerOutStream(null);
-		if (out != null) {
-			out.write("bye");
-			out.close();
-		}
-		try {
-			server.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }

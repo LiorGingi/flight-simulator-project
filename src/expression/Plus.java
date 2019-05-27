@@ -7,8 +7,8 @@ public class Plus extends BinaryExpression {
 	}
 
 	@Override
-	public double calculate() throws Exception {
-		return left.calculate() + right.calculate();
+	public String calculate() throws Exception {
+		return "" + (Double.parseDouble(left.calculate()) + Double.parseDouble(right.calculate()));
 	}
 
 }

@@ -1,5 +1,7 @@
 package interpreter;
 
+import java.util.List;
+
 public interface Parser {
-	public int parse(String[][] strArr) throws Exception;
+	public void parse(List<String> tokens);
 }

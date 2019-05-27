@@ -1,14 +1,20 @@
 package commands;
 
-import interpreter.SymbolTableStack;
+import java.util.ListIterator;
+
+import interpreter.MyInterpreter;
 
 public class VarCommand implements Command {
-	
+	private String varName;
 
 	@Override
-	public int execute(String[] args, int index) throws Exception {
-		SymbolTableStack.addVar(args[index], new Double(0));
-		return 1;
+	public void execute() throws Exception {
+		MyInterpreter.getSymbolTable().addNewVar(varName);
+	}
+
+	@Override
+	public void setParameters(ListIterator<String> it) throws Exception {
+		varName = it.next();
 	}
 
 }

@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MySerialServer implements Server {
 	private volatile boolean stop;
 	private ClientHandler ch;
 	private int port;
+	private ExecutorService es;
 
 	public MySerialServer() {
 		this.stop = false;
+		es = Executors.newFixedThreadPool(5);
 	}
 
 	@Override
@@ -20,7 +23,7 @@ public class MySerialServer implements Server {
 		this.port = port;
 		this.ch = c;
 
-		new Thread(() -> runServer()).start();
+		es.execute(() -> runServer());
 	}
 
 	@Override
@@ -39,7 +42,6 @@ public class MySerialServer implements Server {
 					aClient = server.accept();// awaits for client.
 					try {
 						ch.handleClient(aClient.getInputStream(), aClient.getOutputStream());
-
 					} catch (IOException e) {// handles exception thrown from handleClient
 						e.printStackTrace();
 					}
@@ -50,7 +52,7 @@ public class MySerialServer implements Server {
 				} finally {
 					if (aClient != null)
 						aClient.close();
-					TimeUnit.MILLISECONDS.sleep(100);
+//					TimeUnit.MILLISECONDS.sleep(100);
 				}
 			}
 
@@ -58,7 +60,8 @@ public class MySerialServer implements Server {
 			e.printStackTrace();
 		} finally {// closing the server
 			try {
-				if (server != null) {///
+				es.shutdown();
+				if (server != null) {
 					server.close();
 				}
 			} catch (IOException e) {

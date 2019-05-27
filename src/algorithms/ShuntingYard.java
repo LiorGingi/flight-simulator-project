@@ -8,32 +8,37 @@ import expression.Div;
 import expression.Expression;
 import expression.Minus;
 import expression.Mul;
-import expression.Plus;
-import interpreter.SymbolTableStack;
 import expression.Number;
+import expression.Plus;
+import expression.StringExpression;
+import expression.VariableExpression;
+import interpreter.MyInterpreter;
+import interpreter.Property;
 
-public class ShuntingYard {
-	private String exp;
+public class ShuntingYard { // update the algorithm to work with commands
+//	private String exp;
 
-	public ShuntingYard(String exp) {
-		this.exp = exp;
+//	public ShuntingYard(String exp) {
+//		this.exp = exp;
+//	}
+
+	public static Expression calc(String exp) throws Exception {
+		if (exp.startsWith("-"))
+			return useAlg("0" + exp);
+		return useAlg(exp);
 	}
 
-	public double calc() throws Exception {
-		return useAlg(this.exp);
-	}
-
-	private double useAlg(String expression) throws Exception {
+	private static Expression useAlg(String expression) throws Exception {// think about alg return value
 		Queue<String> queue = new LinkedList<String>();
 		Stack<String> stack = new Stack<String>();
 		Stack<Expression> stackExp = new Stack<Expression>();
+//		ExpressionCommand c = null;
+//		ExpressionCommandFactory cf = new ExpressionCommandFactory();
 
 		String[] split = expression.split("(?<=[-+*/()])|(?=[-+*/()])");
 		for (String s : split) {
-			if (isDouble(s)) {
+			if (isDouble(s) || isVariable(s)) {
 				queue.add(s);
-			} else if (SymbolTableStack.isVarExist(s)) {// replace variable with its value
-				queue.add(SymbolTableStack.getVarValue(s).toString());
 			} else {
 				switch (s) {
 				case "/":
@@ -54,6 +59,9 @@ public class ShuntingYard {
 					}
 					stack.pop();
 					break;
+				default:
+//					if((c=cf.createCommand(s))!=null)
+//						stack.push(s);
 				}
 			}
 		}
@@ -62,8 +70,11 @@ public class ShuntingYard {
 		}
 
 		for (String str : queue) {
+			Property p = null;
 			if (isDouble(str)) {
 				stackExp.push(new Number(Double.parseDouble(str)));
+			} else if ((p = getVariable(str)) != null) {
+				stackExp.push(new VariableExpression(p));
 			} else {
 				Expression right = stackExp.pop();
 				Expression left = stackExp.pop();
@@ -81,13 +92,37 @@ public class ShuntingYard {
 				case "-":
 					stackExp.push(new Minus(left, right));
 					break;
+				default:
+//					if ((c=cf.createCommand(str))!=null) {
+//						stackExp.push(c);
+//					}
+//					else{//string parameter
+					stackExp.push(left);
+					stackExp.push(right);
+					stackExp.push(new StringExpression(str));
+//					}
 				}
 			}
 		}
-		return Math.floor((stackExp.pop().calculate() * 1000)) / 1000;
+		return stackExp.pop();
 	}
 
-	private boolean isDouble(String val) {
+	private static Property getVariable(String str) {
+		if (MyInterpreter.getSymbolTable().isExist(str))
+			try {
+				return MyInterpreter.getSymbolTable().getVariable(str);
+			} catch (Exception e) {
+			}
+		if (MyInterpreter.getBindingTable().isBind(str))
+			return MyInterpreter.getBindingTable().getBindedVar(str);
+		return null;
+	}
+
+	private static boolean isVariable(String str) {
+		return MyInterpreter.getSymbolTable().isExist(str) || MyInterpreter.getBindingTable().isBind(str);
+	}
+
+	private static boolean isDouble(String val) {
 		try {
 			Double.parseDouble(val);
 			return true;
