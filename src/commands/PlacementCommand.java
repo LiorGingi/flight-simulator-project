@@ -1,26 +1,38 @@
 package commands;
 
-import interpreter.SymbolTableStack;
+import java.util.ListIterator;
+
+import algorithms.ShuntingYard;
+import interpreter.MyInterpreter;
 
 public class PlacementCommand implements Command {
+	private String dstName;
+	private String srcName;
+	private boolean isBind = false;
 
 	@Override
-	public int execute(String[] args, int index) throws Exception {
-		if (args[index].equals("bind")) {
-			index++;
-			return new BindCommand().execute(args, index) + 1;
+	public void execute() throws Exception {
+		if (dstName != null && !isBind) {
+			double newVal = getValue(srcName);
+			MyInterpreter.getSymbolTable().getVariable(dstName).setValue(newVal);
 		}
-		if (args.length >= 3 && index > 0 && args.length - index == 1) {
-			if (!SymbolTableStack.isVarExist(args[index])) {
-				try {
-					SymbolTableStack.setVarValue(args[index - 2], Double.parseDouble(args[index]));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else
-				throw new Exception("incorrect variable name");
-			return 1;
-		} else
-			throw new Exception("not enougth arguments");
 	}
+
+	private double getValue(String var) throws Exception {
+		return Double.parseDouble(ShuntingYard.calc(var).calculate());
+	}
+
+	@Override
+	public void setParameters(ListIterator<String> it) throws Exception {
+		it.previous();
+		it.previous();
+		dstName = it.next();
+		it.next();
+		srcName = it.next();
+		if (srcName.equals("bind")) {
+			isBind = true;
+			it.previous();
+		}
+	}
+
 }

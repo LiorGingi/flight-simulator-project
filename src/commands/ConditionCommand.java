@@ -1,100 +1,51 @@
 package commands;
 
-import java.util.Iterator;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.ListIterator;
 
-import interpreter.Parser;
-import interpreter.SymbolTableStack;
+import algorithms.ShuntingYard;
 
-public abstract class ConditionCommand implements Command {
-	private volatile LinkedBlockingDeque<String[]> scopeLines;
-	private String[] conditionLine;
-	protected Parser parser;
-	protected boolean scopeLoaded;
+public abstract class ConditionCommand extends ScopeCommand {
+	protected String conditionLine;
 
-	public ConditionCommand() {
-		scopeLines = new LinkedBlockingDeque<>();
-		scopeLoaded = false;
-		conditionLine = null;
+	protected void setConditionLine(ListIterator<String> it) {
+		conditionLine = it.next();
+		it.next();// pass {
 	}
 
-	protected void loadLineToScope(String[] line) {
-		if (this.getConditionLine() == null)
-			setConditionLine(line);
-		else if (line[0].equals("}"))
-			scopeLoaded = true;
-		else
-			scopeLines.addLast(line);
-	}
-
-	protected String[] getConditionLine() {
-		return conditionLine;
-	}
-
-	protected void setConditionLine(String[] conditionLine) {
-		this.conditionLine = conditionLine;
-	}
-
-	protected boolean checkCondition(String[] args) throws Exception {
-		boolean answer;
-		double rightArg = checkValue(args[1]);
-		double leftArg = checkValue(args[3]);
-
-		switch (args[2]) {
+	protected boolean checkCondition() throws Exception {// only one condition is handled, fix to handle multiple
+															// conditions
+		if (conditionLine == null)
+			throw new Exception("no condition");
+		String[] args = conditionLine.split("(?<=(!=)|(==)|(<=)|(>=)|[<>])|(?=(!=)|(==)|(<=)|(>=)|[<>])");
+		String operator = args[1];
+		Double rightArg = getargValue(args[0]);
+		Double leftArg = getargValue(args[2]);
+		switch (operator) {
 		case "<":
-			answer = (rightArg < leftArg);
-			break;
+			return (rightArg < leftArg);
 		case "<=":
-			answer = (rightArg <= leftArg);
-			break;
+			return (rightArg <= leftArg);
 		case ">":
-			answer = (rightArg > leftArg);
-			break;
+			return (rightArg > leftArg);
 		case ">=":
-			answer = (rightArg >= leftArg);
-			break;
+			return (rightArg >= leftArg);
 		case "==":
-			answer = (rightArg == leftArg);
-			break;
+			return (rightArg == leftArg);
 		case "!=":
-			answer = (rightArg != leftArg);
-			break;
+			return (rightArg != leftArg);
 		default:
 			throw new Exception("No condition");
 		}
-		return answer;
 	}
 
-	protected void parseScope() {
-		String[][] scope = new String[scopeLines.size()][];
-		Iterator<String[]> it = scopeLines.iterator();
-		for (int i = 0; i < scopeLines.size(); i++)
-			scope[i] = it.next();
-		try {
-			parser.parse(scope);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void setParameters(ListIterator<String> it) throws Exception {
+		this.setConditionLine(it);
+		this.loadScope(it);
 	}
 
-	protected String[] getCondition(String[] args) {
-		StringBuilder builder = new StringBuilder();
-		for (String str : args)
-			if (!(str.equals("(") || str.equals(")") || str.equals("{")))
-				builder.append(str + ",");
-		return builder.toString().split(",");
-	}
-
-	private double checkValue(String argToCheck) throws Exception {
-		if (SymbolTableStack.isVarExist(argToCheck))
-			return SymbolTableStack.getVarValue(argToCheck);
-		else {
-			try {
-				return Double.parseDouble(argToCheck);
-			} catch (NumberFormatException e) {
-				throw new Exception("Invalid argument");
-			}
-		}
+	private Double getargValue(String arg) throws NumberFormatException, Exception {
+		return Double.parseDouble(ShuntingYard.calc(arg).calculate());
 	}
 
 }

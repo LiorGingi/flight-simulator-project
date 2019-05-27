@@ -1,20 +1,35 @@
 package test;
 
-import interpreter.ConsoleLexer;
-import interpreter.ConsoleParser;
-import interpreter.Lexer;
-import interpreter.Parser;
+import interpreter.Interpreter;
+import interpreter.MyInterpreter;
 
 public class MainTest {
 	public static void main(String[] args) {
-		Lexer<String> l = new ConsoleLexer();
-		Parser p = new ConsoleParser();
-		String[] line = { "var x", "x=5", "var y=x + 3", "return y*x +   5" };
-		try {
-			System.out.println(p.parse(l.tokenize(line)));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Interpreter inter=new MyInterpreter();
+		String script= 
+				"openDataServer 5400 10"+System.lineSeparator() +
+				"connect 127.0.0.1 5402"+System.lineSeparator() +
+				"var brakes = bind /controls/flight/speedbrake"+System.lineSeparator() +
+				"var throttle = bind /controls/engines/engine/throttle"+System.lineSeparator() +
+				"var heading = bind /instrumentation/heading-indicator/offset-deg"+System.lineSeparator() +
+				"var airspeed = bind /instrumentation/airspeed-indicator/indicated-speed-kt"+System.lineSeparator() +
+				"var roll = bind /instrumentation/attitude-indicator/indicated-roll-deg"+System.lineSeparator() +
+				"var pitch = bind /instrumentation/attitude-indicator/internal-pitch-deg"+System.lineSeparator() +
+				"var rudder = bind /controls/flight/rudder"+System.lineSeparator() +
+				"var aileron = bind /controls/flight/aileron"+System.lineSeparator() +
+				"var elevator = bind /controls/flight/elevator"+System.lineSeparator() +
+				"var alt = bind /instrumentation/altimeter/indicated-altitude-ft"+System.lineSeparator() +
+				"brakes = 0"+System.lineSeparator() +
+				"throttle = 1"+System.lineSeparator() +
+				"var h0 = heading"+System.lineSeparator() +
+				"while alt < 1000 {"+System.lineSeparator() +
+				"rudder = (h0 - heading)/20"+System.lineSeparator() +
+				"aileron =- roll / 70"+System.lineSeparator() +
+				"elevator = pitch / 50"+System.lineSeparator() +
+				"}"+System.lineSeparator() +
+				"disconnect";
+		inter.interpret(script);
+		System.out.println("done");
+		
 	}
-
 }

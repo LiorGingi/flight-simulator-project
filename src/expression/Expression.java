@@ -1,5 +1,5 @@
 package expression;
 
 public interface Expression {
-	public double calculate() throws Exception;
+	public String calculate() throws Exception;
 }

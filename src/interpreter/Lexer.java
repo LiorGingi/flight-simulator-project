@@ -1,5 +1,7 @@
 package interpreter;
 
-public interface Lexer<Input> {
-	public String[][] tokenize(Input[] lines);
+import java.util.List;
+
+public interface Lexer {
+	public List<String> tokenize(String line);
 }

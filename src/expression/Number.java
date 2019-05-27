@@ -9,8 +9,8 @@ public class Number implements Expression {
 	}
 
 	@Override
-	public double calculate() throws Exception {
-		return this.value;
+	public String calculate() throws Exception {
+		return "" + this.value;
 	}
 
 }
