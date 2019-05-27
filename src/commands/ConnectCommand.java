@@ -30,7 +30,7 @@ public class ConnectCommand implements Command {
 			updater.update(out, "/controls/engines/engine/mixture", new Property(1.0));
 			updater.update(out, "/controls/switches/magnetos", new Property(3.0));
 		} catch (Exception e) {
-			System.out.println("waiting to simulator");
+			System.out.println("waiting for simulator");
 			Thread.sleep(3000);
 			execute();
 		}
