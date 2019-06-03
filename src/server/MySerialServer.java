@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,7 +16,7 @@ public class MySerialServer implements Server {
 	private ExecutorService es;
 
 	public MySerialServer() {
-		this.stop.set(false);
+		stop=new AtomicBoolean();
 		es = Executors.newFixedThreadPool(5);
 	}
 
@@ -53,17 +54,17 @@ public class MySerialServer implements Server {
 				} finally {
 					if (aClient != null)
 						aClient.close();
-//					TimeUnit.MILLISECONDS.sleep(100);
 				}
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {// closing the server
+			es.shutdown();
 			try {
-				es.shutdown();
 				if (server != null) {
 					server.close();
+					server=null;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

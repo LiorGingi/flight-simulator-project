@@ -14,6 +14,7 @@ public abstract class ConditionCommand extends ScopeCommand {
 
 	protected boolean checkCondition() throws Exception {// only one condition is handled, fix to handle multiple
 															// conditions
+														//need to handle parenthesis
 		if (conditionLine == null)
 			throw new Exception("no condition");
 		String[] args = conditionLine.split("(?<=(!=)|(==)|(<=)|(>=)|[<>])|(?=(!=)|(==)|(<=)|(>=)|[<>])");

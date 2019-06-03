@@ -6,8 +6,10 @@ public class DisconnectCommand implements Command {
 
 	@Override
 	public void execute() throws Exception {
+		System.out.println("disconnecting");
 		ConnectCommand.disconnectFromSimulator();
 		OpenServerCommand.closeServer();
+		System.out.println("disconnected");
 	}
 
 	@Override

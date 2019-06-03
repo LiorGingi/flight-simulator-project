@@ -20,6 +20,8 @@ public class ExpressionCommandFactory {
 		creators.put("bind", () -> new ExpressionCommand(new BindCommand()));
 		creators.put("while", () -> new ExpressionCommand(new WhileCommand()));
 		creators.put("if", () -> new ExpressionCommand(new IfCommand()));
+		creators.put("sleep", () -> new ExpressionCommand(new SleepCommand()));
+		creators.put("print", () -> new ExpressionCommand(new PrintCommand()));
 		creators.put("disconnect", () -> new ExpressionCommand(new DisconnectCommand()));
 	}
 
