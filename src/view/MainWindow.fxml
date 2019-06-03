@@ -1,7 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
-	
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
-	<!-- TODO Add Nodes -->
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
+   <left>
+      <VBox prefHeight="500.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+         <children>
+            <ButtonBar prefHeight="40.0" prefWidth="200.0">
+              <buttons>
+                <Button fx:id="openConnectWindow" mnemonicParsing="false" onAction="#handleConnectWindow" text="Connect" />
+                  <Button mnemonicParsing="false" text="Load Data" />
+                  <Button mnemonicParsing="false" text="Calculate Path" />
+              </buttons>
+            </ButtonBar>
+            <Canvas height="300.0" width="350.0">
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" top="100.0" />
+               </VBox.margin>
+            </Canvas>
+         </children>
+      </VBox>
+   </left>
+   <right>
+      <VBox prefHeight="500.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+         <children>
+            <RadioButton mnemonicParsing="false" prefHeight="30.0" text="Manual" />
+         </children>
+      </VBox>
+   </right>
+   <center>
+      <VBox prefHeight="500.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+         <children>
+            <RadioButton mnemonicParsing="false" prefHeight="30.0" prefWidth="101.0" text="Autopilot">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </RadioButton>
+            <TextArea prefHeight="350.0" prefWidth="250.0">
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" top="100.0" />
+               </VBox.margin>
+            </TextArea>
+         </children>
+      </VBox>
+   </center>
 </BorderPane>
