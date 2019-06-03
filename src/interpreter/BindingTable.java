@@ -32,7 +32,7 @@ public class BindingTable {
 					bindTable.put("/instrumentation/gps/indicated-altitude-ft", new Property(0.0));
 					bindTable.put("/instrumentation/gps/indicated-ground-speed-kt", new Property(0.0));
 					bindTable.put("/instrumentation/gps/indicated-vertical-speed", new Property(0.0));
-					bindTable.put("/instrumentation/heading-indicator/offset-deg", new Property(0.0));
+					bindTable.put("/instrumentation/heading-indicator/indicated-heading-deg", new Property(0.0));
 					bindTable.put("/instrumentation/magnetic-compass/indicated-heading-deg", new Property(0.0));
 					bindTable.put("/instrumentation/slip-skid-ball/indicated-slip-skid", new Property(0.0));
 					bindTable.put("/instrumentation/turn-indicator/indicated-turn-rate", new Property(0.0));

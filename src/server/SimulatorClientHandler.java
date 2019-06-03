@@ -49,7 +49,7 @@ public class SimulatorClientHandler implements ClientHandler {
 							.setValue(Double.parseDouble(str[10]));
 					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/gps/indicated-vertical-speed")
 							.setValue(Double.parseDouble(str[11]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/heading-indicator/offset-deg")
+					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/heading-indicator/indicated-heading-deg")
 							.setValue(Double.parseDouble(str[12]));
 					MyInterpreter.getBindingTable()
 							.getBindedVar("/instrumentation/magnetic-compass/indicated-heading-deg")
