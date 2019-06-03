@@ -2,19 +2,16 @@ package commands;
 
 import java.util.ListIterator;
 
-import interpreter.MyInterpreter;
-
-public class VarCommand implements Command {
-	private String varName;
-
+public class SleepCommand implements Command {
+	private int sleepDuration;
 	@Override
 	public void execute() throws Exception {
-		MyInterpreter.getSymbolTable().addNewVar(varName);
+		Thread.sleep(sleepDuration);
 	}
 
 	@Override
 	public void setParameters(ListIterator<String> it) throws Exception {
-		varName = it.next();
+		sleepDuration=Integer.parseInt(it.next());
 	}
 
 }

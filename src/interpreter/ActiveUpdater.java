@@ -21,8 +21,7 @@ public class ActiveUpdater implements SimulatorUpdater {
 				} catch (InterruptedException e) {
 				}
 			}
-		},"simulator_client");
-		updateThread.start();
+		}, "simulator_client");
 	}
 
 	@Override
@@ -30,6 +29,10 @@ public class ActiveUpdater implements SimulatorUpdater {
 		queue.add(() -> {
 			su.update(out, name, p);
 		});
+	}
+
+	public void start() {
+		updateThread.start();
 	}
 
 	public void stop() {

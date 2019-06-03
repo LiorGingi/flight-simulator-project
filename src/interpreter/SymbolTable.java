@@ -1,50 +1,99 @@
 package interpreter;
 
+import java.util.NoSuchElementException;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class SymbolTable {
-	private volatile ConcurrentHashMap<String, Property> symbolTable;// varName+ '-' + scopeName -> property
+	private volatile LinkedBlockingDeque<ConcurrentHashMap<String, Property>> symbolTableStack;
 	private Object lock = new Object();
-	private int scopeNum = 0;
 
-	private ConcurrentHashMap<String, Property> getTable() {
-		ConcurrentHashMap<String, Property> result = symbolTable;
+	public SymbolTable() {
+		getTableStack();
+		addScope();
+	}
+
+	private LinkedBlockingDeque<ConcurrentHashMap<String, Property>> getTableStack() {
+		LinkedBlockingDeque<ConcurrentHashMap<String, Property>> result = symbolTableStack;
 		if (result == null) {
 			synchronized (lock) {
-				result = symbolTable;
+				result = symbolTableStack;
 				if (result == null) {
-					symbolTable = result = new ConcurrentHashMap<>();
+					symbolTableStack = result = new LinkedBlockingDeque<ConcurrentHashMap<String, Property>>();
 				}
 			}
 		}
-		return symbolTable;
+		return symbolTableStack;
+	}
+
+	private boolean isInCurrentScope(String name) throws Exception {
+		try {
+			return getTableStack().peekLast().containsKey(name);
+		} catch (NullPointerException e) {
+			throw new Exception("table not initialized");
+		}
 	}
 
 	public void addNewVar(String name) throws Exception {
-		if (!isExist(name))
-			getTable().put(setVarName(name, scopeNum), new Property(0.0));
+		if (!isInCurrentScope(name))
+			getTableStack().peekLast().put(name, new Property(0.0));
 		else
 			throw new Exception("Variable exists");
 	}
 
-	public boolean isExist(String varName) {
-		for (int i = scopeNum; i >= 0; i--) {
-			if (getTable().containsKey(setVarName(varName, i)))
-				return true;
+	public synchronized boolean isExist(String varName) {
+		Stack<ConcurrentHashMap<String, Property>> stack = new Stack<>();
+		boolean answer = false;
+		while ((!getTableStack().isEmpty()) && !answer) {
+			stack.push(getTableStack().pollLast());
+			if (stack.peek().containsKey(varName))
+				answer = true;
 		}
-		return false;
+		while (!stack.empty())
+			try {
+				getTableStack().putLast(stack.pop());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		return answer;
 	}
 
-	public Property getVariable(String nameInScript) throws Exception {
+	public synchronized Property getVariable(String varName) throws Exception {
+		Stack<ConcurrentHashMap<String, Property>> stack = new Stack<>();
 		Property retVal = null;
-		for (int i = scopeNum; i >= 0; i++) {
-			if ((retVal = getTable().get(setVarName(nameInScript, i))) != null)
-				return retVal;
+
+		while ((!getTableStack().isEmpty()) && retVal == null) {
+			stack.push(getTableStack().pollLast());
+			if (stack.peek().containsKey(varName))
+				retVal = stack.peek().get(varName);
 		}
-		throw new Exception("var " + nameInScript + " doesn't exists");
+		while (!stack.empty())
+			try {
+				getTableStack().putLast(stack.pop());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		if (retVal == null)
+			throw new Exception("var " + varName + " doesn't exists");
+		return retVal;
 	}
 
-	private String setVarName(String name, int scope) {
-		return name + "-" + scope;
+	public void addScope() {
+		try {
+			getTableStack().putLast(new ConcurrentHashMap<>());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void removeScope() {
+		try {
+			getTableStack().removeLast();
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+		}
 	}
 }

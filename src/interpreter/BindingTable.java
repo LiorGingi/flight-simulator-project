@@ -1,16 +1,18 @@
 package interpreter;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BindingTable {
 	private volatile ConcurrentHashMap<String, Property> bindTable;// simulator name-> value
 	private Object lock = new Object();
 
+	public BindingTable() {
+		getTable();
+	}
 	private ConcurrentHashMap<String, Property> getTable() {
 		ConcurrentHashMap<String, Property> result = bindTable;
 		if (result == null) {
@@ -30,7 +32,7 @@ public class BindingTable {
 					bindTable.put("/instrumentation/gps/indicated-altitude-ft", new Property(0.0));
 					bindTable.put("/instrumentation/gps/indicated-ground-speed-kt", new Property(0.0));
 					bindTable.put("/instrumentation/gps/indicated-vertical-speed", new Property(0.0));
-					bindTable.put("/instrumentation/heading-indicator/indicated-heading-deg", new Property(0.0));
+					bindTable.put("/instrumentation/heading-indicator/offset-deg", new Property(0.0));
 					bindTable.put("/instrumentation/magnetic-compass/indicated-heading-deg", new Property(0.0));
 					bindTable.put("/instrumentation/slip-skid-ball/indicated-slip-skid", new Property(0.0));
 					bindTable.put("/instrumentation/turn-indicator/indicated-turn-rate", new Property(0.0));
@@ -39,15 +41,9 @@ public class BindingTable {
 					bindTable.put("/controls/flight/elevator", new Property(0.0));
 					bindTable.put("/controls/flight/rudder", new Property(0.0));
 					bindTable.put("/controls/flight/flaps", new Property(0.0));
-					bindTable.put("/controls/engines/engine/throttle", new Property(1.0));
+					bindTable.put("/controls/engines/current-engine/throttle", new Property(0.0));
 					bindTable.put("/engines/engine/rpm", new Property(0.0));
 
-					//
-					bindTable.put("/controls/switches/master-bat", new Property(1.0));
-					bindTable.put("/controls/gear/brake-parking" , new Property(1.0));
-					bindTable.put("/controls/engines/engine/starter" , new Property(1.0));
-					bindTable.put("/controls/engines/engine/mixture" , new Property(1.0));
-					bindTable.put("/controls/switches/magnetos" , new Property(3.0));
 				}
 			}
 		}
@@ -58,26 +54,26 @@ public class BindingTable {
 		return getTable().containsKey(varName);
 	}
 
-	public void setVar(String name, Double value) {
-		getTable().get(name).setValue(value);
-	}
+//	public void setVar(String name, Double value) {
+//		getTable().get(name).setValue(value);
+//	}
 
-	public boolean isBind(Property var) {
-		return getTable().containsValue(var);
-	}
+//	public boolean isBind(Property var) {
+//		return getTable().containsValue(var);
+//	}
 
 	public Property getBindedVar(String varName) {
 		return getTable().get(varName);
 	}
 
-	public Collection<Property> getBindedVars() {
-		return getTable().values();
-
-	}
-
-	public Set<Entry<String, Property>> getBindVarSet() {
-		return getTable().entrySet();
-	}
+//	public Collection<Property> getBindedVars() {
+//		return getTable().values();
+//
+//	}
+//
+//	public Set<Entry<String, Property>> getBindVarSet() {
+//		return getTable().entrySet();
+//	}
 
 	public String getVarName(Property var) {
 		Set<Map.Entry<String, Property>> set = getTable().entrySet();

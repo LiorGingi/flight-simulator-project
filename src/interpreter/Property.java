@@ -6,7 +6,7 @@ import java.util.Observer;
 import commands.ConnectCommand;
 
 public class Property extends Observable implements Observer {
-	Double value;
+	private Double value;
 
 	public Property(Double value) {
 		this.value = value;
@@ -16,25 +16,31 @@ public class Property extends Observable implements Observer {
 		return value;
 	}
 
-	public void setValue(Double value) {
-		this.value = value;
-		setChanged();
-		notifyObservers();
-		if (MyInterpreter.getBindingTable().isBind(this)) {
-			String name = MyInterpreter.getBindingTable().getVarName(this);
+	public synchronized void setValue(Double value) {
+		if (this.value.doubleValue() != value.doubleValue()) {
+			this.value = value;
+			setChanged();
+			notifyObservers();
+			setInSimulator();
+		}
+	}
+
+	private void setInSimulator() {
+		String name = MyInterpreter.getBindingTable().getVarName(this);
+		if (name != null)
 			try {
 				ConnectCommand.updateSimulator(name, this);
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		}
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
 		Property prop = (Property) o;
-		if (value == null || !value.equals(prop.getValue()))
+		if (value == null || value.doubleValue() != prop.value.doubleValue()) {
 			this.setValue(prop.getValue());
+
+		}
 	}
 
 	public void bind(Property prop) {

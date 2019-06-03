@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.ListIterator;
 
 import expression.ExpressionCommand;
+import interpreter.MyInterpreter;
 
 public abstract class ScopeCommand implements Command {
 	protected List<ExpressionCommand> commands;
-	public static int numOfScopes = 0;
 
 	public ScopeCommand() {
 		this.commands = Collections.synchronizedList(new ArrayList<ExpressionCommand>());
@@ -19,7 +19,6 @@ public abstract class ScopeCommand implements Command {
 		ExpressionCommandFactory cf = new ExpressionCommandFactory();
 		ExpressionCommand c = null;
 		String str;
-		numOfScopes++;
 		while (it.hasNext() && !(str = it.next()).equals("}")) {
 			c = cf.createCommand(str);
 			if (c != null) {
@@ -30,13 +29,14 @@ public abstract class ScopeCommand implements Command {
 	}
 
 	protected void executeCommands() {
+		MyInterpreter.getSymbolTable().addScope();
 		try {
 			ListIterator<ExpressionCommand> it = commands.listIterator();
 			while (it.hasNext())
 				it.next().calculate();
-			numOfScopes--;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		MyInterpreter.getSymbolTable().removeScope();
 	}
 }
