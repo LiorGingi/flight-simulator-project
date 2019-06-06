@@ -20,59 +20,29 @@ public class SimulatorClientHandler implements ClientHandler {
 			if (inputFromClient != null) {
 				try {
 					String[] str = inputFromClient.split(",");
-					MyInterpreter.getBindingTable()
-							.getBindedVar("/instrumentation/airspeed-indicator/indicated-speed-kt")
-							.setValue(Double.parseDouble(str[0]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/altimeter/indicated-altitude-ft")
-							.setValue(Double.parseDouble(str[1]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/altimeter/pressure-alt-ft")
-							.setValue(Double.parseDouble(str[2]));
-					MyInterpreter.getBindingTable()
-							.getBindedVar("/instrumentation/attitude-indicator/indicated-pitch-deg")
-							.setValue(Double.parseDouble(str[3]));
-					MyInterpreter.getBindingTable()
-							.getBindedVar("/instrumentation/attitude-indicator/indicated-roll-deg")
-							.setValue(Double.parseDouble(str[4]));
-					MyInterpreter.getBindingTable()
-							.getBindedVar("/instrumentation/attitude-indicator/internal-pitch-deg")
-							.setValue(Double.parseDouble(str[5]));
-					MyInterpreter.getBindingTable()
-							.getBindedVar("/instrumentation/attitude-indicator/internal-roll-deg")
-							.setValue(Double.parseDouble(str[6]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/encoder/indicated-altitude-ft")
-							.setValue(Double.parseDouble(str[7]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/encoder/pressure-alt-ft")
-							.setValue(Double.parseDouble(str[8]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/gps/indicated-altitude-ft")
-							.setValue(Double.parseDouble(str[9]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/gps/indicated-ground-speed-kt")
-							.setValue(Double.parseDouble(str[10]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/gps/indicated-vertical-speed")
-							.setValue(Double.parseDouble(str[11]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/heading-indicator/indicated-heading-deg")
-							.setValue(Double.parseDouble(str[12]));
-					MyInterpreter.getBindingTable()
-							.getBindedVar("/instrumentation/magnetic-compass/indicated-heading-deg")
-							.setValue(Double.parseDouble(str[13]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/slip-skid-ball/indicated-slip-skid")
-							.setValue(Double.parseDouble(str[14]));
-					MyInterpreter.getBindingTable().getBindedVar("/instrumentation/turn-indicator/indicated-turn-rate")
-							.setValue(Double.parseDouble(str[15]));
-					MyInterpreter.getBindingTable()
-							.getBindedVar("/instrumentation/vertical-speed-indicator/indicated-speed-fpm")
-							.setValue(Double.parseDouble(str[16]));
-					MyInterpreter.getBindingTable().getBindedVar("/controls/flight/aileron")
-							.setValue(Double.parseDouble(str[17]));
-					MyInterpreter.getBindingTable().getBindedVar("/controls/flight/elevator")
-							.setValue(Double.parseDouble(str[18]));
-					MyInterpreter.getBindingTable().getBindedVar("/controls/flight/rudder")
-							.setValue(Double.parseDouble(str[19]));
-					MyInterpreter.getBindingTable().getBindedVar("/controls/flight/flaps")
-							.setValue(Double.parseDouble(str[20]));
-//					MyInterpreter.getBindingTable().getBindedVar("/controls/engines/current-engine/throttle")
-//							.setValue(Double.parseDouble(str[21]));
-					MyInterpreter.getBindingTable().getBindedVar("/engines/engine/rpm")
-							.setValue(Double.parseDouble(str[22]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/airspeed-indicator/indicated-speed-kt",Double.parseDouble(str[0]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/altimeter/indicated-altitude-ft",Double.parseDouble(str[1]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/altimeter/pressure-alt-ft",Double.parseDouble(str[2]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/attitude-indicator/indicated-pitch-deg",Double.parseDouble(str[3]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/attitude-indicator/indicated-roll-deg",Double.parseDouble(str[4]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/attitude-indicator/internal-pitch-deg",Double.parseDouble(str[5]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/attitude-indicator/internal-roll-deg",Double.parseDouble(str[6]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/encoder/indicated-altitude-ft",Double.parseDouble(str[7]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/encoder/pressure-alt-ft",Double.parseDouble(str[8]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/gps/indicated-altitude-ft",Double.parseDouble(str[9]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/gps/indicated-ground-speed-kt",Double.parseDouble(str[10]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/gps/indicated-vertical-speed",Double.parseDouble(str[11]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/heading-indicator/indicated-heading-deg", Double.parseDouble(str[12]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/magnetic-compass/indicated-heading-deg",Double.parseDouble(str[13]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/slip-skid-ball/indicated-slip-skid",Double.parseDouble(str[14]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/turn-indicator/indicated-turn-rate",Double.parseDouble(str[15]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/instrumentation/vertical-speed-indicator/indicated-speed-fpm",Double.parseDouble(str[16]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/controls/flight/aileron", Double.parseDouble(str[17]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/controls/flight/elevator", Double.parseDouble(str[18]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/controls/flight/rudder", Double.parseDouble(str[19]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/controls/flight/flaps", Double.parseDouble(str[20]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/controls/engines/current-engine/throttle",Double.parseDouble(str[21]));
+					MyInterpreter.getSymbolTable().updateFromSimulator("/engines/engine/rpm", Double.parseDouble(str[22]));
 				} catch (NullPointerException e) {
 				} catch (NumberFormatException e) {
 				}

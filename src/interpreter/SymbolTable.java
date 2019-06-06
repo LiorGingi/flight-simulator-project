@@ -6,25 +6,86 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class SymbolTable {
-	private volatile LinkedBlockingDeque<ConcurrentHashMap<String, Property>> symbolTableStack;
+	private volatile LinkedBlockingDeque<ConcurrentHashMap<String, Double>> symbolTableStack;
 	private Object lock = new Object();
 
 	public SymbolTable() {
 		getTableStack();
 		addScope();
+		try {
+			addNewVar("/instrumentation/airspeed-indicator/indicated-speed-kt");
+			addNewVar("/instrumentation/altimeter/indicated-altitude-ft");
+			addNewVar("/instrumentation/altimeter/pressure-alt-ft");
+			addNewVar("/instrumentation/attitude-indicator/indicated-pitch-deg");
+			addNewVar("/instrumentation/attitude-indicator/indicated-roll-deg");
+			addNewVar("/instrumentation/attitude-indicator/internal-pitch-deg");
+			addNewVar("/instrumentation/attitude-indicator/internal-roll-deg");
+			addNewVar("/instrumentation/encoder/indicated-altitude-ft");
+			addNewVar("/instrumentation/encoder/pressure-alt-ft");
+			addNewVar("/instrumentation/gps/indicated-altitude-ft");
+			addNewVar("/instrumentation/gps/indicated-ground-speed-kt");
+			addNewVar("/instrumentation/gps/indicated-vertical-speed");
+			addNewVar("/instrumentation/heading-indicator/indicated-heading-deg");
+			addNewVar("/instrumentation/magnetic-compass/indicated-heading-deg");
+			addNewVar("/instrumentation/slip-skid-ball/indicated-slip-skid");
+			addNewVar("/instrumentation/turn-indicator/indicated-turn-rate");
+			addNewVar("/instrumentation/vertical-speed-indicator/indicated-speed-fpm");
+			addNewVar("/controls/flight/aileron");
+			addNewVar("/controls/flight/elevator");
+			addNewVar("/controls/flight/rudder");
+			addNewVar("/controls/flight/flaps");
+			addNewVar("/controls/engines/current-engine/throttle");
+			addNewVar("/engines/engine/rpm");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	private LinkedBlockingDeque<ConcurrentHashMap<String, Property>> getTableStack() {
-		LinkedBlockingDeque<ConcurrentHashMap<String, Property>> result = symbolTableStack;
+	private LinkedBlockingDeque<ConcurrentHashMap<String, Double>> getTableStack() {
+		LinkedBlockingDeque<ConcurrentHashMap<String, Double>> result = symbolTableStack;
 		if (result == null) {
 			synchronized (lock) {
 				result = symbolTableStack;
 				if (result == null) {
-					symbolTableStack = result = new LinkedBlockingDeque<ConcurrentHashMap<String, Property>>();
+					symbolTableStack = result = new LinkedBlockingDeque<ConcurrentHashMap<String, Double>>();
 				}
 			}
 		}
 		return symbolTableStack;
+	}
+
+	public void updateFromSimulator(String varName, double newVal) {
+		ConcurrentHashMap<String, Double> mainTable = getTableStack().peekFirst();
+		if (mainTable.containsKey(varName)) {
+			mainTable.put(varName, newVal);
+			if (varName.equals("/instrumentation/heading-indicator/offset-deg"))
+				System.out.println(varName + " updated to " + newVal);
+		}
+	}
+
+	public void setVar(String varName, double newVal) throws Exception {
+		Stack<ConcurrentHashMap<String, Double>> stack = new Stack<>();
+		boolean isFound = false;
+
+		while ((!getTableStack().isEmpty()) && !isFound) {
+			ConcurrentHashMap<String, Double> table = getTableStack().pollLast();
+			stack.push(table);
+			if (table.containsKey(varName)) {
+				isFound = true;
+				if (table.get(varName) != newVal) {
+					table.remove(varName);
+					table.put(varName, newVal);
+				}
+			}
+		}
+		while (!stack.empty())
+			try {
+				getTableStack().putLast(stack.pop());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		if (!isFound)
+			throw new Exception("var " + varName + " doesn't exists");
 	}
 
 	private boolean isInCurrentScope(String name) throws Exception {
@@ -37,13 +98,13 @@ public class SymbolTable {
 
 	public void addNewVar(String name) throws Exception {
 		if (!isInCurrentScope(name))
-			getTableStack().peekLast().put(name, new Property(0.0));
+			getTableStack().peekLast().put(name, new Double(0.0));
 		else
-			throw new Exception("Variable exists");
+			throw new Exception("Variable " + name + " exists");
 	}
 
-	public synchronized boolean isExist(String varName) {
-		Stack<ConcurrentHashMap<String, Property>> stack = new Stack<>();
+	public boolean isExist(String varName) {
+		Stack<ConcurrentHashMap<String, Double>> stack = new Stack<>();
 		boolean answer = false;
 		while ((!getTableStack().isEmpty()) && !answer) {
 			stack.push(getTableStack().pollLast());
@@ -60,9 +121,9 @@ public class SymbolTable {
 		return answer;
 	}
 
-	public synchronized Property getVariable(String varName) throws Exception {
-		Stack<ConcurrentHashMap<String, Property>> stack = new Stack<>();
-		Property retVal = null;
+	public Double getVar(String varName) throws Exception {
+		Stack<ConcurrentHashMap<String, Double>> stack = new Stack<>();
+		Double retVal = null;
 
 		while ((!getTableStack().isEmpty()) && retVal == null) {
 			stack.push(getTableStack().pollLast());

@@ -12,7 +12,7 @@ public class MainTest {
 				"print continue"+System.lineSeparator() +
 				"var brakes = bind /controls/flight/speedbrake"+System.lineSeparator() +
 				"var throttle = bind /controls/engines/current-engine/throttle"+System.lineSeparator() +
-				"var heading = bind /instrumentation/heading-indicator/offset-deg"+System.lineSeparator() +
+				"var heading = bind /instrumentation/heading-indicator/indicated-heading-deg"+System.lineSeparator() +
 				"var airspeed = bind /instrumentation/airspeed-indicator/indicated-speed-kt"+System.lineSeparator() +
 				"var roll = bind /instrumentation/attitude-indicator/indicated-roll-deg"+System.lineSeparator() +
 				"var pitch = bind /instrumentation/attitude-indicator/internal-pitch-deg"+System.lineSeparator() +
@@ -23,12 +23,12 @@ public class MainTest {
 				"brakes = 0"+System.lineSeparator() +
 				"throttle = 1"+System.lineSeparator() +
 				"var h0 = heading"+System.lineSeparator() +
-				"while alt < (200*2+100)  {"+System.lineSeparator() +
+				"while alt < (200*2+100)*2  {"+System.lineSeparator() +
 				"rudder = (h0 - heading)/20"+System.lineSeparator() +
 				"aileron = - roll / 70"+System.lineSeparator() +
 				"elevator = pitch / 50"+System.lineSeparator() +
 				"print alt"+System.lineSeparator() +
-				"sleep 250"+System.lineSeparator() +
+				"sleep 50"+System.lineSeparator() +
 				"}"+System.lineSeparator() +
 				"print done"+System.lineSeparator() +
 				"disconnect";
