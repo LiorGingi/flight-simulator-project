@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
+<?import view.GroundConditionDisplayer?>
 
 <BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
    <left>
@@ -16,15 +17,15 @@
             <ButtonBar prefHeight="40.0" prefWidth="200.0">
               <buttons>
                 <Button fx:id="openConnectWindow" mnemonicParsing="false" onAction="#handleConnectWindow" text="Connect" />
-                  <Button mnemonicParsing="false" text="Load Data" />
+                  <Button mnemonicParsing="false" onAction="#loadData" text="Load Data" />
                   <Button mnemonicParsing="false" text="Calculate Path" />
               </buttons>
             </ButtonBar>
-            <Canvas height="300.0" width="350.0">
+            <GroundConditionDisplayer fx:id="groundConditionDisplayer" height="300.0" width="350.0">
                <VBox.margin>
                   <Insets left="25.0" right="25.0" top="100.0" />
                </VBox.margin>
-            </Canvas>
+            </GroundConditionDisplayer>
          </children>
       </VBox>
    </left>
