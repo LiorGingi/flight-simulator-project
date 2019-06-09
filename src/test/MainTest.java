@@ -10,8 +10,8 @@ public class MainTest {
 				"openDataServer (540* 10) 1 +  9"+System.lineSeparator() +
 				"connect 127.0.0.1 5402"+System.lineSeparator() +
 				"print continue"+System.lineSeparator() +
-				"var brakes = bind /controls/flight/speedbrake"+System.lineSeparator() +
-				"var throttle = bind /controls/engines/current-engine/throttle"+System.lineSeparator() +
+				"var breaks = bind \"/controls/flight/speedbrake\""+System.lineSeparator() +
+				"var throttle = bind \"/controls/engines/current-engine/throttle\""+System.lineSeparator() +
 				"var heading = bind /instrumentation/heading-indicator/indicated-heading-deg"+System.lineSeparator() +
 				"var airspeed = bind /instrumentation/airspeed-indicator/indicated-speed-kt"+System.lineSeparator() +
 				"var roll = bind /instrumentation/attitude-indicator/indicated-roll-deg"+System.lineSeparator() +
@@ -20,7 +20,7 @@ public class MainTest {
 				"var aileron = bind /controls/flight/aileron"+System.lineSeparator() +
 				"var elevator = bind /controls/flight/elevator"+System.lineSeparator() +
 				"var alt = bind /instrumentation/altimeter/indicated-altitude-ft"+System.lineSeparator() +
-				"brakes = 0"+System.lineSeparator() +
+				"breaks = 0"+System.lineSeparator() +
 				"throttle = 1"+System.lineSeparator() +
 				"var h0 = heading"+System.lineSeparator() +
 				"while alt < (200*2+100)*2  {"+System.lineSeparator() +
