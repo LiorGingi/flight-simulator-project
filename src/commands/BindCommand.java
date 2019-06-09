@@ -23,6 +23,14 @@ public class BindCommand implements Command {
 		}
 		it.next();
 		it.next();
-		simVarName = it.next();
+		simVarName = fixSimVarName(it.next());
+	}
+	private static String fixSimVarName(String name) {
+		if (name != null) {
+			String[] str = name.split("\"");
+			if (str.length > 1)
+				return str[1];
+		}
+		return name;
 	}
 }
