@@ -11,9 +11,7 @@ import expression.Mul;
 import expression.Number;
 import expression.Plus;
 import expression.StringExpression;
-import expression.VariableExpression;
 import interpreter.MyInterpreter;
-import interpreter.Property;
 
 public class ShuntingYard { // update the algorithm to work with commands
 //	private String exp;
@@ -70,11 +68,11 @@ public class ShuntingYard { // update the algorithm to work with commands
 		}
 
 		for (String str : queue) {
-			Property p = null;
+			Double p = null;
 			if (isDouble(str)) {
 				stackExp.push(new Number(Double.parseDouble(str)));
 			} else if ((p = getVariable(str)) != null) {
-				stackExp.push(new VariableExpression(p));
+				stackExp.push(new Number(p));
 			} else {
 				Expression right = stackExp.pop();
 				Expression left = stackExp.pop();
@@ -107,19 +105,26 @@ public class ShuntingYard { // update the algorithm to work with commands
 		return stackExp.pop();
 	}
 
-	private static Property getVariable(String str) {
-		if (MyInterpreter.getSymbolTable().isExist(str))
+	private static Double getVariable(String str) {
+		String name=null;
+		if(MyInterpreter.getBindingTable().isBindToSimulator(str)) {
+			name=MyInterpreter.getBindingTable().getNameInSimulator(str);
 			try {
-				return MyInterpreter.getSymbolTable().getVariable(str);
+				return MyInterpreter.getSymbolTable().getVar(name);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else if (MyInterpreter.getSymbolTable().isExist(str))
+			try {
+				return MyInterpreter.getSymbolTable().getVar(str);
 			} catch (Exception e) {
 			}
-		if (MyInterpreter.getBindingTable().isBind(str))
-			return MyInterpreter.getBindingTable().getBindedVar(str);
 		return null;
 	}
 
 	private static boolean isVariable(String str) {
-		return MyInterpreter.getSymbolTable().isExist(str) || MyInterpreter.getBindingTable().isBind(str);
+		return  MyInterpreter.getBindingTable().isBindToSimulator(str)|| MyInterpreter.getSymbolTable().isExist(str);
 	}
 
 	private static boolean isDouble(String val) {

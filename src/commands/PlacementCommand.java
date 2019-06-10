@@ -14,7 +14,12 @@ public class PlacementCommand implements Command {
 	public void execute() throws Exception {
 		if (dstName != null && !isBind) {
 			double newVal = getValue(srcName);
-			MyInterpreter.getSymbolTable().getVariable(dstName).setValue(newVal);
+			if (MyInterpreter.getBindingTable().isBindToSimulator(dstName)) {
+				String simulatorName = MyInterpreter.getBindingTable().getNameInSimulator(dstName);
+				ConnectCommand.updateSimulator(simulatorName, newVal);
+			} else {
+				MyInterpreter.getSymbolTable().setVar(dstName, newVal);
+			}
 		}
 	}
 

@@ -3,28 +3,34 @@ package commands;
 import java.util.ListIterator;
 
 import interpreter.MyInterpreter;
-import interpreter.Property;
 
 public class BindCommand implements Command {
-	private Property localVar;
+	private  String localVarName;
 	private String simVarName;
 
 	@Override
 	public void execute() throws Exception {
-		MyInterpreter.getBindingTable().addBinding(simVarName, localVar);
+		MyInterpreter.getBindingTable().addBinding(localVarName, simVarName);
 	}
 
 	@Override
 	public void setParameters(ListIterator<String> it) throws Exception {
 		it.previous();
-		String localVarName = it.previous();
+		localVarName = it.previous();
 		if (localVarName.equals("=")) {
 			localVarName = it.previous();
 			it.next();
 		}
-		localVar = MyInterpreter.getSymbolTable().getVariable(localVarName);
 		it.next();
 		it.next();
-		simVarName = it.next();
+		simVarName = fixSimVarName(it.next());
+	}
+	private static String fixSimVarName(String name) {
+		if (name != null) {
+			String[] str = name.split("\"");
+			if (str.length > 1)
+				return str[1];
+		}
+		return name;
 	}
 }

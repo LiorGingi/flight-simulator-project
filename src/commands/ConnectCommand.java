@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ListIterator;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import algorithms.ShuntingYard;
 import interpreter.ActiveUpdater;
 import interpreter.MyUpdater;
-import interpreter.Property;
 
 public class ConnectCommand implements Command {
 	private static Socket simulator = null;
@@ -38,8 +36,8 @@ public class ConnectCommand implements Command {
 		port = (int) Double.parseDouble(ShuntingYard.calc(it.next()).calculate());
 	}
 
-	public static void updateSimulator(String name, Property p) throws Exception {
-		activeUpdater.update(out, name, p);
+	public static void updateSimulator(String name, double value) throws Exception {
+		activeUpdater.update(out, name, value);
 	}
 
 	public static void startCommunicationWithSimulator() {

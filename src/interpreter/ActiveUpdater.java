@@ -25,9 +25,9 @@ public class ActiveUpdater implements SimulatorUpdater {
 	}
 
 	@Override
-	public void update(PrintWriter out, String name, Property p) {
+	public void update(PrintWriter out, String nameInSimulator, double value) {
 		queue.add(() -> {
-			su.update(out, name, p);
+			su.update(out, nameInSimulator, value);
 		});
 	}
 

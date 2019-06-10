@@ -31,8 +31,8 @@ public class MyLexer implements Lexer {
 	}
 
 	private boolean isEndOfExpression(String str1, String str2) {
-		Pattern end = Pattern.compile(".*[\\w)]");
-		Pattern start = Pattern.compile("[\\w(].*");
+		Pattern end = Pattern.compile(".*[\\w)\"]");
+		Pattern start = Pattern.compile("[\\w(\"].*");
 		return (end.matcher(str1).matches() && start.matcher(str2).matches());
 	}
 
