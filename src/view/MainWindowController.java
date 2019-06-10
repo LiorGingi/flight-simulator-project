@@ -107,48 +107,46 @@ public class MainWindowController {
 	}
 
 	@FXML
-	private void joystickPressed(MouseEvent t) {
-//		EventHandler<MouseEvent> joystickPressedHandler = (MouseEvent t) -> {
-		orgSceneX = t.getSceneX();
-		orgSceneY = t.getSceneY();
-		orgTranslateX = ((Circle) (t.getSource())).getTranslateX();
-		orgTranslateY = ((Circle) (t.getSource())).getTranslateY();
-//	};
+	private void joystickPressed(MouseEvent me) {
+		orgSceneX = me.getSceneX();
+		orgSceneY = me.getSceneY();
+		orgTranslateX = ((Circle) (me.getSource())).getTranslateX();
+		orgTranslateY = ((Circle) (me.getSource())).getTranslateY();
 	}
 
 	@FXML
-	private void joystickDragged(MouseEvent t) {
-		double offsetX = t.getSceneX() - orgSceneX;
-		double offsetY = t.getSceneY() - orgSceneY;
+	private void joystickDragged(MouseEvent me) {
+		double offsetX = me.getSceneX() - orgSceneX;
+		double offsetY = me.getSceneY() - orgSceneY;
 		double newTranslateX = orgTranslateX + offsetX;
 		double newTranslateY = orgTranslateY + offsetY;
 		double joystickCenterX = frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius();
 		double joystickCenterY = frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius();
 		double frameRadius = frameCircle.getRadius();
 
-		double slant = Math.sqrt(Math.pow(newTranslateX-joystickCenterX, 2) + Math.pow(newTranslateY-joystickCenterY, 2));
-		
-		if(slant > frameRadius) {
-			double alpha=Math.atan((newTranslateY-joystickCenterY)/(newTranslateX-joystickCenterX));
-			if((newTranslateX-joystickCenterX)<0) {
-				alpha=alpha+Math.PI;
-			}	
-			double newX=Math.cos(alpha)*frameRadius + orgTranslateX;
-			double newY=Math.sin(alpha)*frameRadius + orgTranslateY;
-			((Circle) (t.getSource())).setTranslateX(newX);
-			((Circle) (t.getSource())).setTranslateY(newY);
-			System.out.println("x: "+ newX+ "  y: "+ newY);
-		} else {
-			((Circle) (t.getSource())).setTranslateX(newTranslateX);
-			((Circle) (t.getSource())).setTranslateY(newTranslateY);
-		}
-		
+		double slant = Math
+				.sqrt(Math.pow(newTranslateX - joystickCenterX, 2) + Math.pow(newTranslateY - joystickCenterY, 2));
 
+		if (slant > frameRadius) {
+			double alpha = Math.atan((newTranslateY - joystickCenterY) / (newTranslateX - joystickCenterX));
+			if ((newTranslateX - joystickCenterX) < 0) {
+				alpha = alpha + Math.PI;
+			}
+			double newX = Math.cos(alpha) * frameRadius + orgTranslateX;
+			double newY = Math.sin(alpha) * frameRadius + orgTranslateY;
+			((Circle) (me.getSource())).setTranslateX(newX);
+			((Circle) (me.getSource())).setTranslateY(newY);
+		} else {
+			((Circle) (me.getSource())).setTranslateX(newTranslateX);
+			((Circle) (me.getSource())).setTranslateY(newTranslateY);
+		}
 	}
-	
+
 	@FXML
-	private void joystickReleased(MouseEvent t) {
-		((Circle) (t.getSource())).setTranslateX(frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius());
-		((Circle) (t.getSource())).setTranslateY(frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius());
+	private void joystickReleased(MouseEvent me) {
+		((Circle) (me.getSource()))
+				.setTranslateX(frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius());
+		((Circle) (me.getSource()))
+				.setTranslateY(frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius());
 	}
 }
