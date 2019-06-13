@@ -26,10 +26,10 @@
               <buttons>
                 <Button fx:id="openConnectWindow" mnemonicParsing="false" onAction="#openConnectWindow" text="Connect" />
                   <Button mnemonicParsing="false" onAction="#loadData" text="Load Data" />
-                  <Button mnemonicParsing="false" text="Calculate Path" />
+                  <Button fx:id="calculatePathBtn" mnemonicParsing="false" onAction="#openConnectWindow" text="Calculate Path" />
               </buttons>
             </ButtonBar>
-            <!-- <GroundConditionDisplayer fx:id="groundConditionDisplayer" height="300.0" width="350.0">
+			<!--             <GroundConditionDisplayer fx:id="groundConditionDisplayer" height="300.0" width="350.0">
                <VBox.margin>
                   <Insets left="25.0" right="25.0" top="100.0" />
                </VBox.margin>

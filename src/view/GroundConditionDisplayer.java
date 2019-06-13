@@ -28,7 +28,6 @@ public class GroundConditionDisplayer extends Canvas {
 			int normVal;
 		
 			GraphicsContext gc = getGraphicsContext2D();
-			GraphicsContext gcText = getGraphicsContext2D();
 			
 			for(int i=0; i<groundField.length; i++) {
 				for(int j=0; j<groundField[i].length; j++) {
@@ -36,10 +35,6 @@ public class GroundConditionDisplayer extends Canvas {
 					
 					gc.setFill(Color.rgb(255-normVal, 0+normVal, 0));
 					gc.fillRect(j*cellW, i*cellH, cellW, cellH);
-					
-					gcText.setFill(Color.BLACK);
-					gcText.setFont(Font.font ("Verdana", cellW/4));
-					gcText.fillText(""+groundField[i][j], j*cellW + (cellW/4), i*cellH + (cellH/2));
 					
 
 				}

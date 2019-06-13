@@ -16,7 +16,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
@@ -37,6 +39,8 @@ public class MainWindowController implements Observer {
 	@FXML
 	private Button openConnectWindow;
 	@FXML
+	private Button calculatePathBtn;
+	@FXML
 	private GroundConditionDisplayer groundConditionDisplayer;
 	@FXML
 	private PathDisplayer pathDisplayer;
@@ -46,6 +50,14 @@ public class MainWindowController implements Observer {
 	private Circle frameCircle;
 	@FXML
 	private TextArea simScript;
+	@FXML
+	private TextField simServerIp;
+	@FXML
+	private TextField simServerPort;
+	@FXML
+	private Label connectDataErrorMsg;
+	@FXML
+	private Label connectMode;
 
 	public void setViewModel( ViewModel vm) {
 		viewModel=vm;
@@ -60,12 +72,41 @@ public class MainWindowController implements Observer {
 		stage.initOwner(Main.primaryStage);
 		stage.setScene(new Scene(root));
 		stage.show();
+		if(event.getSource() == openConnectWindow) {
+			stage.setTitle("Simulator Server");
+		} else if (event.getSource() == calculatePathBtn) {
+			stage.setTitle("Calculate Path");
+		}
+		
 	}
 	
 	@FXML
 	private void closeConnectWindow(ActionEvent event) throws IOException {
 		Stage stage = (Stage) backToMain.getScene().getWindow();
 		stage.close();
+	}
+	
+	@FXML
+	private void handleConnect(ActionEvent event) throws IOException {
+		String ip = simServerIp.getText();
+		String port = simServerPort.getText();
+		String mode = ((Stage) connectServerBtn.getScene().getWindow()).getTitle();
+
+		if(ip.matches("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$") && port.matches("^(\\d{1,4})")) {
+			
+			if(mode == "Simulator Server") {
+				//handle connection for connecting to the simulator server
+			} else if(mode == "Calculate Path") {
+				//handle connection for calculating path
+			}
+			
+			//need to handle connect to server
+			closeConnectWindow(event);
+		}
+		else {
+			connectDataErrorMsg.setText("Invalid IP address or port, please try again.");
+		}
+		
 	}
 
 	@FXML
@@ -84,9 +125,10 @@ public class MainWindowController implements Observer {
 
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
-//				first 2 lines
-//				line = br.readLine(); 
-//				line = br.readLine();
+				String[] coordinates = br.readLine().split(","); 
+				double startX = Double.parseDouble(coordinates[0]);
+				double startY = Double.parseDouble(coordinates[1]);
+				double space = Double.parseDouble(br.readLine().split(",")[0]);
 				while ((line = br.readLine()) != null) {
 					valuesTable.add(line.split(","));
 				}
