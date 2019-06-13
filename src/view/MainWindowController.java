@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.sun.scenario.effect.impl.prism.PrImage;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.PopupBuilder;
 import javafx.stage.Stage;
 import view_model.ViewModel;
@@ -52,6 +55,8 @@ public class MainWindowController implements Observer {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ConnectPopup.fxml"));
 		Parent root = (Parent) fxmlLoader.load();
 		Stage stage = new Stage();
+		stage.initModality(Modality.WINDOW_MODAL);
+		stage.initOwner(Main.primaryStage);
 		stage.setScene(new Scene(root));
 		stage.show();
 	}
