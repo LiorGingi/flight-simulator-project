@@ -71,6 +71,9 @@ public class MainWindowController {
 
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
+//				first 2 lines
+//				line = br.readLine(); 
+//				line = br.readLine();
 				while ((line = br.readLine()) != null) {
 					valuesTable.add(line.split(","));
 				}
