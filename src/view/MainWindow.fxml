@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<?import view.GroundConditionDisplayer?>
+<!-- <?import view.GroundConditionDisplayer?> -->
 
 <BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.201" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
    <left>
@@ -23,16 +23,16 @@
          <children>
             <ButtonBar prefHeight="40.0" prefWidth="200.0">
               <buttons>
-                <Button fx:id="openConnectWindow" mnemonicParsing="false" onAction="#handleConnectWindow" text="Connect" />
+                <Button fx:id="openConnectWindow" mnemonicParsing="false" onAction="#openConnectWindow" text="Connect" />
                   <Button mnemonicParsing="false" onAction="#loadData" text="Load Data" />
                   <Button mnemonicParsing="false" text="Calculate Path" />
               </buttons>
             </ButtonBar>
-            <GroundConditionDisplayer fx:id="groundConditionDisplayer" height="300.0" width="350.0">
+            <!-- <GroundConditionDisplayer fx:id="groundConditionDisplayer" height="300.0" width="350.0">
                <VBox.margin>
                   <Insets left="25.0" right="25.0" top="100.0" />
                </VBox.margin>
-            </GroundConditionDisplayer>
+            </GroundConditionDisplayer> -->
          </children>
       </VBox>
    </left>

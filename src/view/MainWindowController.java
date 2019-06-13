@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.PopupBuilder;
 import javafx.stage.Stage;
 import view_model.ViewModel;
 
@@ -47,20 +48,18 @@ public class MainWindowController implements Observer {
 	}
 	
 	@FXML
-	private void handleConnectWindow(ActionEvent event) throws IOException {
-		Stage stage;
-		Parent root;
-
-		if (event.getSource() == openConnectWindow) {
-			stage = (Stage) openConnectWindow.getScene().getWindow();
-			root = FXMLLoader.load(getClass().getResource("ConnectPopup.fxml"));
-		} else {
-			stage = (Stage) backToMain.getScene().getWindow();
-			root = FXMLLoader.load(getClass().getResource("MainWindow.fxml"));
-		}
-
+	private void openConnectWindow(ActionEvent event) throws IOException {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ConnectPopup.fxml"));
+		Parent root = (Parent) fxmlLoader.load();
+		Stage stage = new Stage();
 		stage.setScene(new Scene(root));
 		stage.show();
+	}
+	
+	@FXML
+	private void closeConnectWindow(ActionEvent event) throws IOException {
+		Stage stage = (Stage) backToMain.getScene().getWindow();
+		stage.close();
 	}
 
 	@FXML
