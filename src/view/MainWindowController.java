@@ -1,5 +1,6 @@
 package view;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,19 +10,17 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-import com.sun.scenario.effect.impl.prism.PrImage;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
-import javafx.stage.PopupBuilder;
 import javafx.stage.Stage;
 import view_model.ViewModel;
 
@@ -45,6 +44,8 @@ public class MainWindowController implements Observer {
 	private Circle joystick;
 	@FXML
 	private Circle frameCircle;
+	@FXML
+	private TextArea simScript;
 
 	public void setViewModel( ViewModel vm) {
 		viewModel=vm;
@@ -119,6 +120,28 @@ public class MainWindowController implements Observer {
 		}
 
 	}
+	
+	@FXML
+	private void loadScript() {
+		FileChooser fc = new FileChooser();
+		fc.setTitle("Choose CSV file");
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+		fc.getExtensionFilters().add(extFilter);
+		File file = fc.showOpenDialog(null);
+		String script="";
+		String line;
+		if(file != null) {
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				while ((line = br.readLine()) != null) {
+					script=script+line+"\n";
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			simScript.setText(script);
+		}
+	}
 
 	@FXML
 	private void joystickPressed(MouseEvent me) {
@@ -156,16 +179,8 @@ public class MainWindowController implements Observer {
 		((Circle) (me.getSource())).setTranslateX(newTranslateX);
 		((Circle) (me.getSource())).setTranslateY(newTranslateY);
 
-		float normalX = (float) ((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1); // normalize
-																													// to
-																													// range
-																													// of
-																													// [-1,1]
-		float normalY = (float) ((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1); // normalize
-																													// to
-																													// range
-																													// of
-																													// [-1,1]
+		double normalX = Math.round(((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1)*100.00)/100.00; // normalize to range of [-1,1]
+		double normalY = Math.round(((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1)*100.00)/100.00; // normalize to range of [-1,1]
 		System.out.println("" + normalX + " " + normalY);
 	}
 
