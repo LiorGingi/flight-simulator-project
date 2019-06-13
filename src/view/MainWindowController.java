@@ -6,10 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.lang.Math;
+import java.util.Observable;
+import java.util.Observer;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,8 +19,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import view_model.ViewModel;
 
-public class MainWindowController {
+public class MainWindowController implements Observer {
+	ViewModel viewModel;
 	// local variables for joystick position
 	double orgSceneX, orgSceneY;
 	double orgTranslateX, orgTranslateY;
@@ -34,10 +36,16 @@ public class MainWindowController {
 	@FXML
 	private GroundConditionDisplayer groundConditionDisplayer;
 	@FXML
+	private PathDisplayer pathDisplayer;
+	@FXML
 	private Circle joystick;
 	@FXML
 	private Circle frameCircle;
 
+	public void setViewModel( ViewModel vm) {
+		viewModel=vm;
+	}
+	
 	@FXML
 	private void handleConnectWindow(ActionEvent event) throws IOException {
 		Stage stage;
@@ -102,7 +110,6 @@ public class MainWindowController {
 			minMax[0][0] = min;
 			minMax[0][1] = max;
 			retValues.put("table", valuesInDouble);
-			;
 			retValues.put("minMax", minMax);
 			groundConditionDisplayer.setGroundField(retValues);
 		}
@@ -126,6 +133,10 @@ public class MainWindowController {
 		double joystickCenterX = frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius();
 		double joystickCenterY = frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius();
 		double frameRadius = frameCircle.getRadius();
+		double maxX = joystickCenterX + frameRadius;
+		double contractionsCenterX = joystickCenterX - frameRadius;
+		double maxY = joystickCenterY - frameRadius;
+		double contractionsCenterY = joystickCenterY + frameRadius;
 
 		double slant = Math
 				.sqrt(Math.pow(newTranslateX - joystickCenterX, 2) + Math.pow(newTranslateY - joystickCenterY, 2));
@@ -135,14 +146,23 @@ public class MainWindowController {
 			if ((newTranslateX - joystickCenterX) < 0) {
 				alpha = alpha + Math.PI;
 			}
-			double newX = Math.cos(alpha) * frameRadius + orgTranslateX;
-			double newY = Math.sin(alpha) * frameRadius + orgTranslateY;
-			((Circle) (me.getSource())).setTranslateX(newX);
-			((Circle) (me.getSource())).setTranslateY(newY);
-		} else {
-			((Circle) (me.getSource())).setTranslateX(newTranslateX);
-			((Circle) (me.getSource())).setTranslateY(newTranslateY);
+			newTranslateX = Math.cos(alpha) * frameRadius + orgTranslateX;
+			newTranslateY = Math.sin(alpha) * frameRadius + orgTranslateY;
 		}
+		((Circle) (me.getSource())).setTranslateX(newTranslateX);
+		((Circle) (me.getSource())).setTranslateY(newTranslateY);
+
+		float normalX = (float) ((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1); // normalize
+																													// to
+																													// range
+																													// of
+																													// [-1,1]
+		float normalY = (float) ((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1); // normalize
+																													// to
+																													// range
+																													// of
+																													// [-1,1]
+		System.out.println("" + normalX + " " + normalY);
 	}
 
 	@FXML
@@ -152,4 +172,11 @@ public class MainWindowController {
 		((Circle) (me.getSource()))
 				.setTranslateY(frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius());
 	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
