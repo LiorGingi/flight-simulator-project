@@ -43,6 +43,8 @@ public class MainWindowController implements Observer {
 	@FXML
 	private TopographicMapDisplayer topographicMapDisplayer;
 	@FXML
+	private TopographicColorRangeDisplayer topographicColorRangeDisplayer;
+	@FXML
 	private PathDisplayer pathDisplayer;
 	@FXML
 	private Circle joystick;
@@ -58,6 +60,10 @@ public class MainWindowController implements Observer {
 	private Label connectDataErrorMsg;
 	@FXML
 	private Label connectMode;
+	@FXML
+	private Label minHeight;
+	@FXML
+	private Label maxHeight;
 
 	public void setViewModel( ViewModel vm) {
 		viewModel=vm;
@@ -106,7 +112,6 @@ public class MainWindowController implements Observer {
 		else {
 			connectDataErrorMsg.setText("Invalid IP address or port, please try again.");
 		}
-		
 	}
 
 	@FXML
@@ -152,13 +157,10 @@ public class MainWindowController implements Observer {
 				e.printStackTrace();
 			}
 
-			HashMap<String, double[][]> retValues = new HashMap<>();
-			double[][] minMax = new double[1][2];
-			minMax[0][0] = min;
-			minMax[0][1] = max;
-			retValues.put("table", valuesInDouble);
-			retValues.put("minMax", minMax);
-			topographicMapDisplayer.setGroundField(retValues);
+			topographicMapDisplayer.setGroundField(min, max, valuesInDouble);
+			topographicColorRangeDisplayer.setColorRange(min, max);
+			minHeight.setText(""+min);
+			maxHeight.setText(""+max);
 		}
 
 	}
@@ -238,6 +240,11 @@ public class MainWindowController implements Observer {
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@FXML
+	private void mapMouseClick(MouseEvent event) throws IOException {
+		topographicMapDisplayer.setDestination(event);
 	}
 
 }
