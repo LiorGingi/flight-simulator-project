@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<!-- <?import view.GroundConditionDisplayer?> -->
+<?import view.TopographicMapDisplayer?>
 
 <BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
    <left>
@@ -29,11 +29,11 @@
                   <Button fx:id="calculatePathBtn" mnemonicParsing="false" onAction="#openConnectWindow" text="Calculate Path" />
               </buttons>
             </ButtonBar>
-			<!--             <GroundConditionDisplayer fx:id="groundConditionDisplayer" height="300.0" width="350.0">
+			<TopographicMapDisplayer fx:id="topographicMapDisplayer" height="300.0" width="350.0">
                <VBox.margin>
                   <Insets left="25.0" right="25.0" top="100.0" />
                </VBox.margin>
-            </GroundConditionDisplayer> -->
+            </TopographicMapDisplayer>
          </children>
       </VBox>
    </left>

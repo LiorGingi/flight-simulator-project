@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class GroundConditionDisplayer extends Canvas {
+public class TopographicMapDisplayer extends Canvas {
 	private double[][] groundField;
 	private double heightRange;
 	private double minHeight;
@@ -25,15 +25,14 @@ public class GroundConditionDisplayer extends Canvas {
 			double canvasH = getHeight();
 			double cellW = canvasW/groundField[0].length;
 			double cellH = canvasH/groundField.length;
-			int normVal;
+			double normVal;
 		
 			GraphicsContext gc = getGraphicsContext2D();
 			
 			for(int i=0; i<groundField.length; i++) {
 				for(int j=0; j<groundField[i].length; j++) {
-					normVal = (int)(((groundField[i][j]-minHeight)*255)/heightRange);
-					
-					gc.setFill(Color.rgb(255-normVal, 0+normVal, 0));
+					normVal = (((groundField[i][j]-minHeight)*255)/heightRange);
+					gc.setFill(Color.rgb(255-((int)(90*(normVal/255))), 250-((int)(208*(normVal/255))), 250-((int)(208*(normVal/255)))));
 					gc.fillRect(j*cellW, i*cellH, cellW, cellH);
 					
 

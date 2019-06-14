@@ -41,7 +41,7 @@ public class MainWindowController implements Observer {
 	@FXML
 	private Button calculatePathBtn;
 	@FXML
-	private GroundConditionDisplayer groundConditionDisplayer;
+	private TopographicMapDisplayer topographicMapDisplayer;
 	@FXML
 	private PathDisplayer pathDisplayer;
 	@FXML
@@ -158,7 +158,7 @@ public class MainWindowController implements Observer {
 			minMax[0][1] = max;
 			retValues.put("table", valuesInDouble);
 			retValues.put("minMax", minMax);
-			groundConditionDisplayer.setGroundField(retValues);
+			topographicMapDisplayer.setGroundField(retValues);
 		}
 
 	}
