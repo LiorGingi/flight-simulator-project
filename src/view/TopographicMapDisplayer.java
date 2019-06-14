@@ -2,6 +2,7 @@ package view;
 
 
 
+import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -12,9 +13,14 @@ public class TopographicMapDisplayer extends Canvas {
 	private double[][] groundField;
 	private double heightRange;
 	private double minHeight;
-	private static double destX;
-	private static double destY;
-	private GraphicsContext destGc;
+	private double cellW;
+	private double cellH;
+	public static boolean mapLoaded = false;
+	public static int destX;
+	public static int destY;
+	
+	@FXML
+	private Circle circle;
 	
 	public void setGroundField(double min, double max, double[][] table) {
 		this.groundField = table;
@@ -25,14 +31,11 @@ public class TopographicMapDisplayer extends Canvas {
 
 	private void draw() {
 		if (groundField != null) {
-			double canvasW = getWidth();
-			double canvasH = getHeight();
-			double cellW = canvasW/groundField[0].length;
-			double cellH = canvasH/groundField.length;
+			cellW = getWidth()/groundField[0].length;
+			cellH = getHeight()/groundField.length;
 			double normVal;
-		
 			GraphicsContext gc = getGraphicsContext2D();
-			
+			System.out.println(""+groundField.length+" "+groundField[0].length);
 			for(int i=0; i<groundField.length; i++) {
 				for(int j=0; j<groundField[i].length; j++) {
 					normVal = (((groundField[i][j]-minHeight)*255)/heightRange);
@@ -40,15 +43,13 @@ public class TopographicMapDisplayer extends Canvas {
 					gc.fillRect(j*cellW, i*cellH, cellW, cellH);
 				}
 			}
+			mapLoaded = true;
 		}
 	}
 	
-	public void setDestination(MouseEvent event) {
-		if(destGc == null) {
-			destGc = getGraphicsContext2D();
-		}
-		Circle c = new Circle(event.getX(), event.getY(), 5);
-		destGc.strokeOval(event.getX()-10, event.getY()-10, 20, 20);
+	public void calculateCellOnMap(double x, double y) {
+		destX = (int)(x/cellW);
+		destY = (int)(y/cellH);
+		System.out.println(""+destX+" "+destY);
 	}
-	
 }

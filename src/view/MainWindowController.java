@@ -13,6 +13,7 @@ import java.util.Observer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,6 +21,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -31,6 +34,7 @@ public class MainWindowController implements Observer {
 	// local variables for joystick position
 	double orgSceneX, orgSceneY;
 	double orgTranslateX, orgTranslateY;
+	Circle destCircle;
 
 	@FXML
 	private Button backToMain;
@@ -64,6 +68,8 @@ public class MainWindowController implements Observer {
 	private Label minHeight;
 	@FXML
 	private Label maxHeight;
+	@FXML
+	private Group mapGroup;
 
 	public void setViewModel( ViewModel vm) {
 		viewModel=vm;
@@ -244,7 +250,16 @@ public class MainWindowController implements Observer {
 	
 	@FXML
 	private void mapMouseClick(MouseEvent event) throws IOException {
-		topographicMapDisplayer.setDestination(event);
+		if(TopographicMapDisplayer.mapLoaded
+				&& event.getX() >= 5 && event.getX() <= 345 //need to think about a better solution for the boundaries design bug
+				&& event.getY() >= 5 && event.getY() <= 295) {
+			
+			Circle circle = new Circle(5, Color.BLACK);
+			circle.setCenterX(event.getX());
+			circle.setCenterY(event.getY());
+			mapGroup.getChildren().remove(destCircle);
+			mapGroup.getChildren().add(destCircle = circle);
+			topographicMapDisplayer.calculateCellOnMap(event.getX(), event.getY());
+		}
 	}
-
 }
