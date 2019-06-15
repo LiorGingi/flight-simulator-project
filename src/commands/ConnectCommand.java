@@ -13,6 +13,7 @@ public class ConnectCommand implements Command {
 	private static Socket simulator = null;
 	private static PrintWriter out = null;
 	private static ActiveUpdater activeUpdater = null;
+	private static boolean simulatorReady = false;
 	private String ip;
 	private int port;
 
@@ -22,6 +23,7 @@ public class ConnectCommand implements Command {
 			simulator = new Socket(ip, port);
 			out = new PrintWriter(simulator.getOutputStream());
 			activeUpdater = new ActiveUpdater(new MyUpdater());
+			System.out.println("connected to the simulator");
 			startCommunicationWithSimulator();
 		} catch (Exception e) {
 			System.out.println("waiting for simulator");
@@ -42,11 +44,24 @@ public class ConnectCommand implements Command {
 
 	public static void startCommunicationWithSimulator() {
 		try {
-			Thread.sleep(80*1000);
-			activeUpdater.start();
+			if (simulatorReady)
+				activeUpdater.start();
+			else {
+				System.out.println("wait for simulator to be ready");
+				Thread.sleep(35 * 1000);
+				startCommunicationWithSimulator();
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void setSimulatorCondition(boolean status) {
+		simulatorReady = status;
+	}
+
+	public static boolean isSimulatorReady() {
+		return simulatorReady;
 	}
 
 	public static void disconnectFromSimulator() {

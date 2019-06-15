@@ -58,8 +58,6 @@ public class SymbolTable {
 		ConcurrentHashMap<String, Double> mainTable = getTableStack().peekFirst();
 		if (mainTable.containsKey(varName)) {
 			mainTable.put(varName, newVal);
-			if (varName.equals("/instrumentation/heading-indicator/offset-deg"))
-				System.out.println(varName + " updated to " + newVal);
 		}
 	}
 
