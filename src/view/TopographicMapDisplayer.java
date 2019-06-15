@@ -50,6 +50,5 @@ public class TopographicMapDisplayer extends Canvas {
 	public void calculateCellOnMap(double x, double y) {
 		destX = (int)(x/cellW);
 		destY = (int)(y/cellH);
-		System.out.println(""+destX+" "+destY);
 	}
 }
