@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -31,7 +32,6 @@ import view_model.ViewModel;
 
 public class MainWindowController implements Observer {
 	ViewModel viewModel;
-	// local variables for joystick position
 	double orgSceneX, orgSceneY;
 	double orgTranslateX, orgTranslateY;
 	Circle destCircle;
@@ -70,6 +70,10 @@ public class MainWindowController implements Observer {
 	private Label maxHeight;
 	@FXML
 	private Group mapGroup;
+	@FXML
+	private Slider rudderSlider;
+	@FXML
+	private Slider throttleSlider;
 
 	public void setViewModel( ViewModel vm) {
 		viewModel=vm;
@@ -260,6 +264,15 @@ public class MainWindowController implements Observer {
 			mapGroup.getChildren().remove(destCircle);
 			mapGroup.getChildren().add(destCircle = circle);
 			topographicMapDisplayer.calculateCellOnMap(event.getX(), event.getY());
+		}
+	}
+	
+	@FXML
+	private void sliderDrag(MouseEvent me) {
+		if(me.getSource() == rudderSlider) {
+			System.out.println(rudderSlider.getValue()); //need to send command for rudder
+		} else if(me.getSource() == throttleSlider) {
+			System.out.println(throttleSlider.getValue()); //need to send command for throttle
 		}
 	}
 }
