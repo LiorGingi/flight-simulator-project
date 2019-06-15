@@ -23,7 +23,7 @@
 
 <BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
    <left>
-      <VBox prefHeight="500.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+      <VBox maxHeight="-Infinity" prefHeight="450.0" prefWidth="400.0" BorderPane.alignment="TOP_CENTER">
          <children>
             <ButtonBar prefHeight="40.0" prefWidth="400.0">
               <buttons>
@@ -69,26 +69,26 @@
       </VBox>
    </left>
    <right>
-      <VBox prefHeight="500.0" prefWidth="340.0" BorderPane.alignment="CENTER">
+      <VBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="400.0" prefWidth="340.0" BorderPane.alignment="TOP_CENTER">
          <children>
-            <RadioButton mnemonicParsing="false" prefHeight="30.0" text="Manual" translateX="30.0" translateY="10.0">
+            <RadioButton fx:id="manualMode" mnemonicParsing="false" onAction="#radioButtonClicked" prefHeight="30.0" text="Manual" translateX="30.0" translateY="10.0">
                <toggleGroup>
                   <ToggleGroup fx:id="simulatorMode" />
                </toggleGroup>
             </RadioButton>
             <TextFlow prefHeight="200.0" prefWidth="200.0" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="⇦ Aileron ⇨" translateX="127.0" translateY="80.0">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="⇦ Aileron ⇨" translateX="127.0" translateY="60.0">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Text>
-            <Text rotate="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⇦ Elevator ⇨" translateX="245.0" translateY="176.0">
+            <Text rotate="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⇦ Elevator ⇨" translateX="245.0" translateY="156.0">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Text>
-            <Circle fx:id="frameCircle" fill="#797979" radius="100.0" stroke="BLACK" strokeType="INSIDE" translateX="90.0" translateY="60.0" />
-            <Circle fx:id="joystick" onMouseDragged="#joystickDragged" onMousePressed="#joystickPressed" onMouseReleased="#joystickReleased" radius="33.0" stroke="BLACK" strokeType="INSIDE" translateX="157.0" translateY="-73.0">
+            <Circle fx:id="frameCircle" fill="#797979" radius="100.0" stroke="BLACK" strokeType="INSIDE" translateX="90.0" translateY="40.0" />
+            <Circle fx:id="joystick" onMouseDragged="#joystickDragged" onMousePressed="#joystickPressed" onMouseReleased="#joystickReleased" radius="33.0" stroke="BLACK" strokeType="INSIDE" translateX="157.0" translateY="-93.0">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -97,17 +97,17 @@
                      </stops>
                   </LinearGradient>
                </fill></Circle>
-            <Slider fx:id="rudderSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxWidth="-Infinity" min="-1.0" minorTickCount="0" onMouseReleased="#sliderDrag" prefWidth="250.0" showTickLabels="true" showTickMarks="true" translateX="65.0" />
-            <Slider fx:id="throttleSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minorTickCount="0" onMouseReleased="#sliderDrag" orientation="VERTICAL" prefHeight="500.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" translateX="40.0" translateY="-204.0" />
+            <Slider fx:id="rudderSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxWidth="-Infinity" min="-1.0" minorTickCount="0" onMouseReleased="#sliderDrag" prefWidth="250.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" translateX="65.0" translateY="-20.0" />
+            <Slider fx:id="throttleSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minorTickCount="0" onMouseReleased="#sliderDrag" orientation="VERTICAL" prefHeight="120.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" translateX="40.0" translateY="-224.0" />
          </children>
       </VBox>
    </right>
    <center>
-      <VBox maxWidth="-Infinity" prefHeight="500.0" prefWidth="225.0" BorderPane.alignment="CENTER">
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="450.0" prefWidth="225.0" BorderPane.alignment="TOP_CENTER">
          <children>
             <HBox prefHeight="40.0" prefWidth="225.0">
                <children>
-                  <RadioButton mnemonicParsing="false" prefHeight="30.0" prefWidth="101.0" text="Autopilot" toggleGroup="$simulatorMode">
+                  <RadioButton fx:id="autopilotMode" mnemonicParsing="false" onAction="#radioButtonClicked" prefHeight="30.0" prefWidth="101.0" text="Autopilot" toggleGroup="$simulatorMode">
                      <HBox.margin>
                         <Insets left="10.0" top="5.0" />
                      </HBox.margin>
@@ -127,4 +127,77 @@
          </children>
       </VBox>
    </center>
+   <bottom>
+      <HBox fx:id="manualDataPanel" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="340.0" translateY="-50.0" BorderPane.alignment="TOP_RIGHT">
+         <children>
+            <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="200.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Aileron">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aileronValue">
+                           <font>
+                              <Font name="System Bold" size="17.0" />
+                           </font></Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="25.0" prefWidth="200.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Elevator">
+                           <font>
+                              <Font name="System Bold Italic" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="elevatorValue">
+                           <font>
+                              <Font size="17.0" />
+                           </font></Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Rudder">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="rudderValue">
+                           <font>
+                              <Font size="17.0" />
+                           </font></Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Throttle">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="throttleValue">
+                           <font>
+                              <Font size="17.0" />
+                           </font></Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children></HBox>
+   </bottom>
 </BorderPane>

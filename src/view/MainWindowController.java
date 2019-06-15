@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -36,10 +37,7 @@ public class MainWindowController implements Observer {
 	double orgTranslateX, orgTranslateY;
 	Circle destCircle;
 
-	@FXML
-	private Button backToMain;
-	@FXML
-	private Button connectServerBtn;
+
 	@FXML
 	private Button openConnectWindow;
 	@FXML
@@ -51,15 +49,7 @@ public class MainWindowController implements Observer {
 	@FXML
 	private PathDisplayer pathDisplayer;
 	@FXML
-	private Circle joystick;
-	@FXML
-	private Circle frameCircle;
-	@FXML
 	private TextArea simScript;
-	@FXML
-	private TextField simServerIp;
-	@FXML
-	private TextField simServerPort;
 	@FXML
 	private Label connectDataErrorMsg;
 	@FXML
@@ -70,11 +60,40 @@ public class MainWindowController implements Observer {
 	private Label maxHeight;
 	@FXML
 	private Group mapGroup;
+	
+	//Connect to server window
+	@FXML
+	private Button backToMain;
+	@FXML
+	private Button connectServerBtn;
+	@FXML
+	private TextField simServerIp;
+	@FXML
+	private TextField simServerPort;
+	
+	//Manual mode objects (slider + joystick)
 	@FXML
 	private Slider rudderSlider;
 	@FXML
 	private Slider throttleSlider;
+	@FXML
+	private Circle joystick;
+	@FXML
+	private Circle frameCircle;
+	@FXML
+	private RadioButton manualMode;
+	
+	//Objects for manual mode data panel
+	@FXML
+	private Label aileronValue;
+	@FXML
+	private Label elevatorValue;
+	@FXML
+	private Label throttleValue;
+	@FXML
+	private Label rudderValue;
 
+	
 	public void setViewModel( ViewModel vm) {
 		viewModel=vm;
 	}
@@ -236,6 +255,12 @@ public class MainWindowController implements Observer {
 		double normalX = Math.round(((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1)*100.00)/100.00; // normalize to range of [-1,1]
 		double normalY = Math.round(((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1)*100.00)/100.00; // normalize to range of [-1,1]
 		System.out.println("" + normalX + " " + normalY);
+		
+		if(manualMode.isSelected()) {
+			//send command only if manual mode is selected
+			aileronValue.setText(""+normalX);
+			elevatorValue.setText(""+normalY);
+		}
 	}
 
 	@FXML
@@ -244,6 +269,12 @@ public class MainWindowController implements Observer {
 				.setTranslateX(frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius());
 		((Circle) (me.getSource()))
 				.setTranslateY(frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius());
+		
+		if(manualMode.isSelected()) {
+			//send command only if manual mode is selected
+			aileronValue.setText(""+0);
+			elevatorValue.setText(""+0);
+		}
 	}
 
 	@Override
@@ -269,10 +300,29 @@ public class MainWindowController implements Observer {
 	
 	@FXML
 	private void sliderDrag(MouseEvent me) {
-		if(me.getSource() == rudderSlider) {
-			System.out.println(rudderSlider.getValue()); //need to send command for rudder
-		} else if(me.getSource() == throttleSlider) {
-			System.out.println(throttleSlider.getValue()); //need to send command for throttle
+		if(manualMode.isSelected()) {
+			if(me.getSource() == rudderSlider) {
+				//send command for rudder
+				rudderValue.setText(""+(Math.round((rudderSlider.getValue()*10.00)))/10.00); //round to the closest decimal
+			} else if(me.getSource() == throttleSlider) {
+				//send command for throttle
+				throttleValue.setText(""+(Math.round((throttleSlider.getValue()*10.00)))/10.00); //round to the closest decimal
+			}
+		}
+	}
+	
+	@FXML
+	private void radioButtonClicked() {
+		if(manualMode.isSelected()) {
+			rudderValue.setText(""+(Math.round((rudderSlider.getValue()*10.00)))/10.00); //round to the closest decimal
+			throttleValue.setText(""+(Math.round((throttleSlider.getValue()*10.00)))/10.00); //round to the closest decimal
+			aileronValue.setText(""+0);
+			elevatorValue.setText(""+0);
+		} else {
+			rudderValue.setText("");
+			throttleValue.setText("");
+			aileronValue.setText("");
+			elevatorValue.setText("");
 		}
 	}
 }
