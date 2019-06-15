@@ -40,7 +40,7 @@ public class MyClientHandler implements ClientHandler {
 				requestsArr.add(clientRequest.split(","));
 			}
 			String pathSolution;
-			if (cm.isExist(problemName)) {
+			if (cm.isExist(String.valueOf(problemName.hashCode()))) {
 				pathSolution=cm.get(problemName);
 			} else {
 				boardRows = requestsArr.size();
@@ -65,7 +65,7 @@ public class MyClientHandler implements ClientHandler {
 				// BestFS to solve the problem
 				solver = new SolverSearcher<Board, LinkedList<State<Position>>>(new BestFS<>());
 				pathSolution = listToDirections(solver.solve(board));
-				cm.save(problemName, pathSolution);
+				cm.save(String.valueOf(problemName.hashCode()), pathSolution);
 			}
 			responseToClient.println(pathSolution);
 			responseToClient.flush();
