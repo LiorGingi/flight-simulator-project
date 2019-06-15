@@ -11,8 +11,12 @@ import view_model.ViewModel;
 
 
 public class Main extends Application {
+	public static Stage primaryStage;
+	
 	@Override
 	public void start(Stage primaryStage) {
+		this.primaryStage = primaryStage;
+		
 		//create models and view-model
 		PathModel pathModel=new PathModel();
 		SimModel simModel=new SimModel();
