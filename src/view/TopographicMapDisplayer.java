@@ -35,7 +35,6 @@ public class TopographicMapDisplayer extends Canvas {
 			cellH = getHeight()/groundField.length;
 			double normVal;
 			GraphicsContext gc = getGraphicsContext2D();
-			System.out.println(""+groundField.length+" "+groundField[0].length);
 			for(int i=0; i<groundField.length; i++) {
 				for(int j=0; j<groundField[i].length; j++) {
 					normVal = (((groundField[i][j]-minHeight)*255)/heightRange);
