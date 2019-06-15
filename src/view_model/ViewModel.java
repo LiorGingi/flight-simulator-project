@@ -24,8 +24,8 @@ public class ViewModel extends Observable implements Observer {
 	public StringProperty simulatorIP;
 	public StringProperty simulatorPort;
 	// throttle & rudder
-	public StringProperty throttle;
-	public StringProperty rudder;
+	public DoubleProperty throttle;
+	public DoubleProperty rudder;
 	// joystick arguments
 	public StringProperty aileron;
 	public StringProperty elevator;
@@ -54,8 +54,8 @@ public class ViewModel extends Observable implements Observer {
 		this.sm = sm;
 		simulatorIP = new SimpleStringProperty();
 		simulatorPort = new SimpleStringProperty();
-		throttle = new SimpleStringProperty();
-		rudder = new SimpleStringProperty();
+		throttle = new SimpleDoubleProperty();
+		rudder = new SimpleDoubleProperty();
 		aileron = new SimpleStringProperty();
 		elevator = new SimpleStringProperty();
 		script = new SimpleStringProperty();
@@ -76,7 +76,7 @@ public class ViewModel extends Observable implements Observer {
 		directions = new SimpleObjectProperty<>();
 	}
 
-	public void ConnectToSimulator() {
+	public void connectToSimulator() {
 		sm.connectToSimulator(simulatorIP.get(), Integer.parseInt(simulatorPort.get()));
 		sm.dumpPosition(simulatorIP.get(), Integer.parseInt(simulatorPort.get()));
 	}
@@ -86,11 +86,11 @@ public class ViewModel extends Observable implements Observer {
 	}
 
 	public void setThrottle() {
-		sm.setThrottle(Double.parseDouble(throttle.get()));
+		sm.setThrottle(throttle.get());
 	}
 
 	public void setRudder() {
-		sm.setRudder(Double.parseDouble(rudder.get()));
+		sm.setRudder(rudder.get());
 	}
 
 	public void setJoystickChanges() {

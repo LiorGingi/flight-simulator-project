@@ -1,12 +1,10 @@
 package view;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -23,7 +21,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
@@ -36,7 +33,6 @@ public class MainWindowController implements Observer {
 	double orgSceneX, orgSceneY;
 	double orgTranslateX, orgTranslateY;
 	Circle destCircle;
-
 
 	@FXML
 	private Button openConnectWindow;
@@ -60,8 +56,8 @@ public class MainWindowController implements Observer {
 	private Label maxHeight;
 	@FXML
 	private Group mapGroup;
-	
-	//Connect to server window
+
+	// Connect to server window
 	@FXML
 	private Button backToMain;
 	@FXML
@@ -70,8 +66,8 @@ public class MainWindowController implements Observer {
 	private TextField simServerIp;
 	@FXML
 	private TextField simServerPort;
-	
-	//Manual mode objects (slider + joystick)
+
+	// Manual mode objects (slider + joystick)
 	@FXML
 	private Slider rudderSlider;
 	@FXML
@@ -82,8 +78,8 @@ public class MainWindowController implements Observer {
 	private Circle frameCircle;
 	@FXML
 	private RadioButton manualMode;
-	
-	//Objects for manual mode data panel
+
+	// Objects for manual mode data panel
 	@FXML
 	private Label aileronValue;
 	@FXML
@@ -93,11 +89,31 @@ public class MainWindowController implements Observer {
 	@FXML
 	private Label rudderValue;
 
-	
-	public void setViewModel( ViewModel vm) {
-		viewModel=vm;
+	public MainWindowController() {
+		simServerIp = new TextField();
+		simServerPort = new TextField();
+		aileronValue = new Label();
+		elevatorValue = new Label();
 	}
-	
+
+	public void setViewModel(ViewModel vm) {
+		viewModel = vm;
+		// *** sim model***
+		// connection to simulator
+		viewModel.simulatorIP.bind(simServerIp.textProperty());
+		viewModel.simulatorPort.bind(simServerPort.textProperty());
+		// autopilot
+		viewModel.script.bind(simScript.textProperty());
+		// manual
+		viewModel.throttle.bind(throttleSlider.valueProperty());
+		viewModel.rudder.bind(rudderSlider.valueProperty());
+		viewModel.aileron.bind(aileronValue.textProperty());
+		viewModel.elevator.bind(rudderValue.textProperty());
+		// ***path model***
+		// need to add data members according to notes file
+
+	}
+
 	@FXML
 	private void openConnectWindow(ActionEvent event) throws IOException {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ConnectPopup.fxml"));
@@ -107,38 +123,38 @@ public class MainWindowController implements Observer {
 		stage.initOwner(Main.primaryStage);
 		stage.setScene(new Scene(root));
 		stage.show();
-		if(event.getSource() == openConnectWindow) {
+		if (event.getSource() == openConnectWindow) {
 			stage.setTitle("Simulator Server");
 		} else if (event.getSource() == calculatePathBtn) {
 			stage.setTitle("Calculate Path");
 		}
-		
+
 	}
-	
+
 	@FXML
 	private void closeConnectWindow(ActionEvent event) throws IOException {
 		Stage stage = (Stage) backToMain.getScene().getWindow();
 		stage.close();
 	}
-	
+
 	@FXML
 	private void handleConnect(ActionEvent event) throws IOException {
 		String ip = simServerIp.getText();
 		String port = simServerPort.getText();
 		String mode = ((Stage) connectServerBtn.getScene().getWindow()).getTitle();
 
-		if(ip.matches("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$") && port.matches("^(\\d{1,4})")) {
-			
-			if(mode == "Simulator Server") {
-				//handle connection for connecting to the simulator server
-			} else if(mode == "Calculate Path") {
-				//handle connection for calculating path
+		if (ip.matches("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$") && port.matches("^(\\d{1,4})")) {
+
+			if (mode == "Simulator Server") {
+				// handle connection for connecting to the simulator server
+				viewModel.connectToSimulator();
+			} else if (mode == "Calculate Path") {
+				// handle connection for calculating path
 			}
-			
-			//need to handle connect to server
+
+			// need to handle connect to server
 			closeConnectWindow(event);
-		}
-		else {
+		} else {
 			connectDataErrorMsg.setText("Invalid IP address or port, please try again.");
 		}
 	}
@@ -159,7 +175,7 @@ public class MainWindowController implements Observer {
 
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
-				String[] coordinates = br.readLine().split(","); 
+				String[] coordinates = br.readLine().split(",");
 				double startX = Double.parseDouble(coordinates[0]);
 				double startY = Double.parseDouble(coordinates[1]);
 				double space = Double.parseDouble(br.readLine().split(",")[0]);
@@ -188,12 +204,12 @@ public class MainWindowController implements Observer {
 
 			topographicMapDisplayer.setGroundField(min, max, valuesInDouble);
 			topographicColorRangeDisplayer.setColorRange(min, max);
-			minHeight.setText(""+min);
-			maxHeight.setText(""+max);
+			minHeight.setText("" + min);
+			maxHeight.setText("" + max);
 		}
 
 	}
-	
+
 	@FXML
 	private void loadScript() {
 		FileChooser fc = new FileChooser();
@@ -201,13 +217,13 @@ public class MainWindowController implements Observer {
 		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
 		fc.getExtensionFilters().add(extFilter);
 		File file = fc.showOpenDialog(null);
-		String script="";
+		String script = "";
 		String line;
-		if(file != null) {
+		if (file != null) {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				while ((line = br.readLine()) != null) {
-					script=script+line+"\n";
+					script = script + line + "\n";
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -252,15 +268,27 @@ public class MainWindowController implements Observer {
 		((Circle) (me.getSource())).setTranslateX(newTranslateX);
 		((Circle) (me.getSource())).setTranslateY(newTranslateY);
 
-		double normalX = Math.round(((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1)*100.00)/100.00; // normalize to range of [-1,1]
-		double normalY = Math.round(((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1)*100.00)/100.00; // normalize to range of [-1,1]
+		double normalX = Math.round(
+				((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1) * 100.00) / 100.00; // normalize
+																														// to
+																														// range
+																														// of
+																														// [-1,1]
+		double normalY = Math.round(
+				((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1) * 100.00) / 100.00; // normalize
+																														// to
+																														// range
+																														// of
+																														// [-1,1]
 		System.out.println("" + normalX + " " + normalY);
-		
-		if(manualMode.isSelected()) {
-			//send command only if manual mode is selected
-			aileronValue.setText(""+normalX);
-			elevatorValue.setText(""+normalY);
+
+		if (manualMode.isSelected()) {
+			// send command only if manual mode is selected
+			aileronValue.setText("" + normalX);
+			elevatorValue.setText("" + normalY);
 		}
+		// update that the value changed
+		viewModel.setJoystickChanges();
 	}
 
 	@FXML
@@ -269,12 +297,14 @@ public class MainWindowController implements Observer {
 				.setTranslateX(frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius());
 		((Circle) (me.getSource()))
 				.setTranslateY(frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius());
-		
-		if(manualMode.isSelected()) {
-			//send command only if manual mode is selected
-			aileronValue.setText(""+0);
-			elevatorValue.setText(""+0);
+
+		if (manualMode.isSelected()) {
+			// send command only if manual mode is selected
+			aileronValue.setText("" + 0);
+			elevatorValue.setText("" + 0);
 		}
+		// update that the value changed
+		viewModel.setJoystickChanges();
 	}
 
 	@Override
@@ -282,13 +312,14 @@ public class MainWindowController implements Observer {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@FXML
 	private void mapMouseClick(MouseEvent event) throws IOException {
-		if(TopographicMapDisplayer.mapLoaded
-				&& event.getX() >= 5 && event.getX() <= 345 //need to think about a better solution for the boundaries design bug
+		if (TopographicMapDisplayer.mapLoaded && event.getX() >= 5 && event.getX() <= 345 // need to think about a
+																							// better solution for the
+																							// boundaries design bug
 				&& event.getY() >= 5 && event.getY() <= 295) {
-			
+
 			Circle circle = new Circle(5, Color.BLACK);
 			circle.setCenterX(event.getX());
 			circle.setCenterY(event.getY());
@@ -297,27 +328,36 @@ public class MainWindowController implements Observer {
 			topographicMapDisplayer.calculateCellOnMap(event.getX(), event.getY());
 		}
 	}
-	
+
 	@FXML
 	private void sliderDrag(MouseEvent me) {
-		if(manualMode.isSelected()) {
-			if(me.getSource() == rudderSlider) {
-				//send command for rudder
-				rudderValue.setText(""+(Math.round((rudderSlider.getValue()*10.00)))/10.00); //round to the closest decimal
-			} else if(me.getSource() == throttleSlider) {
-				//send command for throttle
-				throttleValue.setText(""+(Math.round((throttleSlider.getValue()*10.00)))/10.00); //round to the closest decimal
+		if (manualMode.isSelected()) {
+			if (me.getSource() == rudderSlider) {
+				// send command for rudder
+				rudderValue.setText("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00); // round to the
+																									// closest decimal
+				// update that the value changed
+				viewModel.setRudder();
+			} else if (me.getSource() == throttleSlider) {
+				// send command for throttle
+				throttleValue.setText("" + (Math.round((throttleSlider.getValue() * 10.00))) / 10.00); // round to the
+																										// closest
+																										// decimal
+				// update that the value changed
+				viewModel.setThrottle();
 			}
 		}
 	}
-	
+
 	@FXML
 	private void radioButtonClicked() {
-		if(manualMode.isSelected()) {
-			rudderValue.setText(""+(Math.round((rudderSlider.getValue()*10.00)))/10.00); //round to the closest decimal
-			throttleValue.setText(""+(Math.round((throttleSlider.getValue()*10.00)))/10.00); //round to the closest decimal
-			aileronValue.setText(""+0);
-			elevatorValue.setText(""+0);
+		if (manualMode.isSelected()) {
+			rudderValue.setText("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00); // round to the closest
+																								// decimal
+			throttleValue.setText("" + (Math.round((throttleSlider.getValue() * 10.00))) / 10.00); // round to the
+																									// closest decimal
+			aileronValue.setText("" + 0);
+			elevatorValue.setText("" + 0);
 		} else {
 			rudderValue.setText("");
 			throttleValue.setText("");
@@ -325,10 +365,10 @@ public class MainWindowController implements Observer {
 			elevatorValue.setText("");
 		}
 	}
-	
+
 	@FXML
 	private void calculatePath() {
-		//need to interact with solver server and get a path string
+		// need to interact with solver server and get a path string
 		String path = "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
 				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
 				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
