@@ -29,7 +29,7 @@
               <buttons>
                 <Button fx:id="openConnectWindow" mnemonicParsing="false" onAction="#openConnectWindow" text="Connect" />
                   <Button mnemonicParsing="false" onAction="#loadData" text="Load Data" />
-                  <Button fx:id="calculatePathBtn" mnemonicParsing="false" onAction="#openConnectWindow" text="Calculate Path" />
+                  <Button fx:id="calculatePathBtn" mnemonicParsing="false" onAction="#calculatePath" text="Calculate Path" />
               </buttons>
             </ButtonBar>
             <Group fx:id="mapGroup" onMouseClicked="#mapMouseClick">

@@ -325,4 +325,25 @@ public class MainWindowController implements Observer {
 			elevatorValue.setText("");
 		}
 	}
+	
+	@FXML
+	private void calculatePath() {
+		//need to interact with solver server and get a path string
+		String path = "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
+				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
+				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
+				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
+				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
+				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
+				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
+				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
+				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,";
+		topographicMapDisplayer.paintPath(path, mapGroup);
+	}
 }

@@ -3,6 +3,7 @@ package view;
 
 
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -16,8 +17,12 @@ public class TopographicMapDisplayer extends Canvas {
 	private double cellW;
 	private double cellH;
 	public static boolean mapLoaded = false;
+	
+	//source and destination cells in the grid
 	public static int destX;
 	public static int destY;
+	public static int sourceX;
+	public static int sourceY;
 	
 	@FXML
 	private Circle circle;
@@ -49,5 +54,35 @@ public class TopographicMapDisplayer extends Canvas {
 	public void calculateCellOnMap(double x, double y) {
 		destX = (int)(x/cellW);
 		destY = (int)(y/cellH);
+		System.out.println(""+destX+" "+destY);
+	}
+	
+	public void paintPath(String path, Group group) {
+		String[] directions = path.split(",");
+		double currentX = sourceX*cellW;
+		double currentY = sourceY*cellH;
+		for(int i=0; i<directions.length; i++) {
+			Circle positionInPath = new Circle();
+			switch(directions[i]) {
+			case "Up":
+				currentY = currentY - cellH;
+				break;
+			case "Down":
+				currentY = currentY + cellH;
+				break;
+			case "Right":
+				currentX = currentX + cellW;
+				break;
+			case "Left":
+				currentX = currentX - cellW;
+				break;
+			}
+			if(i%15 == 0) { //paint the point
+				positionInPath = new Circle(2, Color.BLUE);
+				positionInPath.setCenterX(currentX);
+				positionInPath.setCenterY(currentY);
+				group.getChildren().add(positionInPath);
+			}
+		}
 	}
 }
