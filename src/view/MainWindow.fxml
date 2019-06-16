@@ -29,7 +29,7 @@
               <buttons>
                 <Button fx:id="openConnectWindow" mnemonicParsing="false" onAction="#openConnectWindow" text="Connect" />
                   <Button mnemonicParsing="false" onAction="#loadData" text="Load Data" />
-                  <Button fx:id="calculatePathBtn" mnemonicParsing="false" onAction="#calculatePath" text="Calculate Path" />
+                  <Button fx:id="calculatePathBtn" mnemonicParsing="false" onAction="#openConnectWindow" text="Calculate Path" />
               </buttons>
             </ButtonBar>
            <Group fx:id="mapGroup" onMouseClicked="#mapMouseClick">
@@ -97,8 +97,8 @@
                      </stops>
                   </LinearGradient>
                </fill></Circle>
-            <Slider fx:id="rudderSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxWidth="-Infinity" min="-1.0" minorTickCount="0" onMouseReleased="#sliderDrag" prefWidth="250.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" translateX="65.0" translateY="-20.0" />
-            <Slider fx:id="throttleSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minorTickCount="0" onMouseReleased="#sliderDrag" orientation="VERTICAL" prefHeight="120.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" translateX="40.0" translateY="-224.0" />
+            <Slider fx:id="rudderSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxWidth="-Infinity" min="-1.0" minorTickCount="0" prefWidth="250.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" translateX="65.0" translateY="-20.0" />
+            <Slider fx:id="throttleSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minorTickCount="0" orientation="VERTICAL" prefHeight="120.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" translateX="40.0" translateY="-224.0" />
          </children>
       </VBox>
    </right>

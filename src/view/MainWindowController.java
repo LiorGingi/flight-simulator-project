@@ -11,6 +11,8 @@ import java.util.Observer;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +39,14 @@ public class MainWindowController implements Observer {
 	double orgTranslateX, orgTranslateY;
 	Circle destCircle;
 
+
+	//Autopilot mode
+	@FXML
+	private TextArea simScript;
+	@FXML
+	private RadioButton autopilotMode;
+	
+	//Topographic Map
 	@FXML
 	private Button openConnectWindow;
 	@FXML
@@ -46,33 +56,36 @@ public class MainWindowController implements Observer {
 	@FXML
 	private TopographicColorRangeDisplayer topographicColorRangeDisplayer;
 	@FXML
-	private PathDisplayer pathDisplayer;
-	@FXML
-	private TextArea simScript;
-	@FXML
-	private Label connectDataErrorMsg;
-	@FXML
-	private Label connectMode;
+	private Group mapGroup;
 	@FXML
 	private Label minHeight;
 	@FXML
 	private Label maxHeight;
 	@FXML
-	private Group mapGroup;
-	@FXML
-	private RadioButton autopilotMode;
+	private PathDisplayer pathDisplayer;
 
-	// Connect to server window
+
+	//Connect to server/path solver window
 	@FXML
 	private Button backToMain;
 	@FXML
 	private Button connectServerBtn;
 	@FXML
+	private TextField connectionIp;
+	@FXML
+	private TextField connectionPort;
+	@FXML
 	private TextField simServerIp;
 	@FXML
 	private TextField simServerPort;
+	@FXML
+	private TextField pathServerIp;
+	@FXML
+	private TextField pathServerPort;
+	@FXML
+	private Label connectDataErrorMsg;
 
-	// Manual mode objects (slider + joystick)
+	//Manual mode objects (slider + joystick)
 	@FXML
 	private Slider rudderSlider;
 	@FXML
@@ -87,7 +100,7 @@ public class MainWindowController implements Observer {
 	private StringProperty aileronV;
 	private StringProperty elevatorV;
 
-	// Objects for manual mode data panel
+	//Objects for manual mode data panel
 	@FXML
 	private Label aileronValue;
 	@FXML
@@ -105,7 +118,6 @@ public class MainWindowController implements Observer {
 		pathDisplayer=new PathDisplayer();
 		simScript=new TextArea();
 		connectDataErrorMsg=new Label();
-		connectMode=new Label();
 		minHeight=new Label();
 		maxHeight=new Label();
 		mapGroup=new Group();
@@ -157,7 +169,7 @@ public class MainWindowController implements Observer {
 		if (event.getSource() == openConnectWindow) {
 			stage.setTitle("Simulator Server");
 		} else if (event.getSource() == calculatePathBtn) {
-			stage.setTitle("Calculate Path");
+			stage.setTitle("Path Calculation Server");
 		}
 	}
 
@@ -173,15 +185,22 @@ public class MainWindowController implements Observer {
 		String port = simServerPort.getText();
 		viewModel.simulatorIP.bind(simServerIp.textProperty());
 		viewModel.simulatorPort.bind(simServerPort.textProperty());
+		viewModel.solverIP.bind(pathServerIp.textProperty());
+		viewModel.solverPort.bind(pathServerPort.textProperty());
 		String mode = ((Stage) connectServerBtn.getScene().getWindow()).getTitle();
 
 		if (ip.matches("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$") && port.matches("^(\\d{1,4})")) {
 
 			if (mode == "Simulator Server") {
 				// handle connection for connecting to the simulator server
+				simServerIp.setText(connectionIp.getText());
+				simServerPort.setText(connectionPort.getText());
 				viewModel.connectToSimulator();
-			} else if (mode == "Calculate Path") {
+			} else if (mode == "Path Calculation Server") {
 				// handle connection for calculating path
+				pathServerIp.setText(connectionIp.getText());
+				pathServerPort.setText(connectionPort.getText());
+				viewModel.connectToSolverServer();
 			}
 
 			// need to handle connect to server
@@ -368,23 +387,6 @@ public class MainWindowController implements Observer {
 	}
 
 	@FXML
-	private void sliderDrag(MouseEvent me) {
-		if (manualMode.isSelected()) {
-			if (me.getSource() == rudderSlider) {
-				// send command for rudder
-				rudderValue.setText("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00); // round to the closest decimal
-				// update that the value changed
-				viewModel.setRudder();
-			} else if (me.getSource() == throttleSlider) {
-				// send command for throttle
-				throttleValue.setText("" + (Math.round((throttleSlider.getValue() * 10.00))) / 10.00); // round to the closest decimal
-				// update that the value changed
-				viewModel.setThrottle();
-			}
-		}
-	}
-
-	@FXML
 	private void radioButtonClicked() {
 		if (manualMode.isSelected()) {
 			rudderValue.setText("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00); // round to the closest decimal
@@ -396,6 +398,8 @@ public class MainWindowController implements Observer {
 			throttleValue.setText("");
 			aileronValue.setText("");
 			elevatorValue.setText("");
+			rudderSlider.setValue(0);
+			throttleSlider.setValue(0);
 		}
 	}
 
@@ -419,4 +423,27 @@ public class MainWindowController implements Observer {
 				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,";
 		topographicMapDisplayer.paintPath(path, mapGroup);
 	}
+	
+	public void setSliderOnDragEvent() {
+		rudderSlider.valueProperty().addListener(new ChangeListener<Object>() {
+            @Override
+            public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
+            	if (manualMode.isSelected()) {
+	            	rudderValue.textProperty().setValue(""+(Math.round((rudderSlider.getValue() * 10.00))) / 10.00);
+	            	viewModel.setRudder();
+            	}
+            }
+        });
+		
+		throttleSlider.valueProperty().addListener(new ChangeListener<Object>() {
+            @Override
+            public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
+            	if (manualMode.isSelected()) {
+	            	throttleValue.textProperty().setValue(""+(Math.round((throttleSlider.getValue() * 10.00))) / 10.00);
+	            	viewModel.setThrottle();
+            	}
+            }
+        });
+	}
+	
 }

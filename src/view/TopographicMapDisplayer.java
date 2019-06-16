@@ -77,7 +77,7 @@ public class TopographicMapDisplayer extends Canvas {
 				currentX = currentX - cellW;
 				break;
 			}
-			if(i%15 == 0) { //paint the point
+			if((i%15 == 0) && (currentX>=0 && currentX <= getWidth()) && (currentY >= 0 && currentY <= getHeight())) { //paint the point
 				positionInPath = new Circle(2, Color.BLUE);
 				positionInPath.setCenterX(currentX);
 				positionInPath.setCenterY(currentY);

@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="172.0" prefWidth="402.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
@@ -40,20 +41,24 @@
       </VBox>
    </left>
    <right>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="124.0" prefWidth="288.0" BorderPane.alignment="CENTER">
+      <HBox BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="simServerIp" maxHeight="30.0" prefWidth="250.0">
-               <VBox.margin>
-                  <Insets bottom="10.0" right="20.0" top="20.0" />
-               </VBox.margin>
-            </TextField>
-            <TextField fx:id="simServerPort" maxHeight="30.0" prefWidth="250.0">
-               <VBox.margin>
-                  <Insets right="20.0" />
-               </VBox.margin>
-            </TextField>
-            <Label fx:id="connectDataErrorMsg" prefHeight="17.0" prefWidth="266.0" textFill="RED" translateY="10.0" />
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="124.0" prefWidth="288.0">
+               <children>
+                  <TextField fx:id="connectionIp" maxHeight="30.0" prefWidth="250.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" right="20.0" top="20.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <TextField fx:id="connectionPort" maxHeight="30.0" prefWidth="250.0">
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Label fx:id="connectDataErrorMsg" prefHeight="17.0" prefWidth="266.0" textFill="RED" translateY="10.0" />
+               </children>
+            </VBox>
          </children>
-      </VBox>
+      </HBox>
    </right>
 </BorderPane>
