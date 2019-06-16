@@ -277,40 +277,39 @@ public class MainWindowController implements Observer {
 
 	@FXML
 	private void joystickDragged(MouseEvent me) {
-		double offsetX = me.getSceneX() - orgSceneX;
-		double offsetY = me.getSceneY() - orgSceneY;
-		double newTranslateX = orgTranslateX + offsetX;
-		double newTranslateY = orgTranslateY + offsetY;
-		double joystickCenterX = frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius();
-		double joystickCenterY = frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius();
-		double frameRadius = frameCircle.getRadius();
-		double maxX = joystickCenterX + frameRadius;
-		double contractionsCenterX = joystickCenterX - frameRadius;
-		double maxY = joystickCenterY - frameRadius;
-		double contractionsCenterY = joystickCenterY + frameRadius;
-
-		double slant = Math
-				.sqrt(Math.pow(newTranslateX - joystickCenterX, 2) + Math.pow(newTranslateY - joystickCenterY, 2));
-
-		if (slant > frameRadius) {
-			double alpha = Math.atan((newTranslateY - joystickCenterY) / (newTranslateX - joystickCenterX));
-			if ((newTranslateX - joystickCenterX) < 0) {
-				alpha = alpha + Math.PI;
-			}
-			newTranslateX = Math.cos(alpha) * frameRadius + orgTranslateX;
-			newTranslateY = Math.sin(alpha) * frameRadius + orgTranslateY;
-		}
-		((Circle) (me.getSource())).setTranslateX(newTranslateX);
-		((Circle) (me.getSource())).setTranslateY(newTranslateY);
-		// normalize to range of [-1,1]
-		double normalX = Math.round(
-				((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1) * 100.00) / 100.00; 
-		// normalize to range of [-1,1]
-		double normalY = Math.round(
-				((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1) * 100.00) / 100.00;
-		System.out.println("" + normalX + " " + normalY);
-
 		if (manualMode.isSelected()) {
+			double offsetX = me.getSceneX() - orgSceneX;
+			double offsetY = me.getSceneY() - orgSceneY;
+			double newTranslateX = orgTranslateX + offsetX;
+			double newTranslateY = orgTranslateY + offsetY;
+			double joystickCenterX = frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius();
+			double joystickCenterY = frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius();
+			double frameRadius = frameCircle.getRadius();
+			double maxX = joystickCenterX + frameRadius;
+			double contractionsCenterX = joystickCenterX - frameRadius;
+			double maxY = joystickCenterY - frameRadius;
+			double contractionsCenterY = joystickCenterY + frameRadius;
+
+			double slant = Math
+					.sqrt(Math.pow(newTranslateX - joystickCenterX, 2) + Math.pow(newTranslateY - joystickCenterY, 2));
+
+			if (slant > frameRadius) {
+				double alpha = Math.atan((newTranslateY - joystickCenterY) / (newTranslateX - joystickCenterX));
+				if ((newTranslateX - joystickCenterX) < 0) {
+					alpha = alpha + Math.PI;
+				}
+				newTranslateX = Math.cos(alpha) * frameRadius + orgTranslateX;
+				newTranslateY = Math.sin(alpha) * frameRadius + orgTranslateY;
+			}
+			((Circle) (me.getSource())).setTranslateX(newTranslateX);
+			((Circle) (me.getSource())).setTranslateY(newTranslateY);
+			// normalize to range of [-1,1]
+			double normalX = Math.round(
+					((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1) * 100.00) / 100.00; 
+			// normalize to range of [-1,1]
+			double normalY = Math.round(
+					((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1) * 100.00) / 100.00;
+			System.out.println("" + normalX + " " + normalY);
 			// send command only if manual mode is selected
 			aileronValue.setText("" + normalX);
 			elevatorValue.setText("" + normalY);
