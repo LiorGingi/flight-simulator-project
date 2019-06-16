@@ -59,6 +59,8 @@ public class MainWindowController implements Observer {
 	private Label maxHeight;
 	@FXML
 	private Group mapGroup;
+	@FXML
+	private RadioButton autopilotMode;
 
 	// Connect to server window
 	@FXML
@@ -122,6 +124,7 @@ public class MainWindowController implements Observer {
 		elevatorV=new SimpleStringProperty();
 		throttleValue=new Label();
 		rudderValue=new Label();
+		autopilotMode = new RadioButton();
 	}
 
 	public void setViewModel(ViewModel vm) {
@@ -269,10 +272,12 @@ public class MainWindowController implements Observer {
 	
 	@FXML
 	private void joystickPressed(MouseEvent me) {
-		orgSceneX = me.getSceneX();
-		orgSceneY = me.getSceneY();
-		orgTranslateX = ((Circle) (me.getSource())).getTranslateX();
-		orgTranslateY = ((Circle) (me.getSource())).getTranslateY();
+		if (manualMode.isSelected()) {
+			orgSceneX = me.getSceneX();
+			orgSceneY = me.getSceneY();
+			orgTranslateX = ((Circle) (me.getSource())).getTranslateX();
+			orgTranslateY = ((Circle) (me.getSource())).getTranslateY();
+		}
 	}
 
 	@FXML
@@ -315,28 +320,29 @@ public class MainWindowController implements Observer {
 			elevatorValue.setText("" + normalY);
 			aileronV.set(""+normalX);
 			elevatorV.set(""+normalY);
+			
+			viewModel.setJoystickChanges();
 		}
-		// update that the value changed
 		
-		viewModel.setJoystickChanges();
+		
 	}
 
 	@FXML
 	private void joystickReleased(MouseEvent me) {
-		((Circle) (me.getSource()))
-				.setTranslateX(frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius());
-		((Circle) (me.getSource()))
-				.setTranslateY(frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius());
-
 		if (manualMode.isSelected()) {
-			// send command only if manual mode is selected
+			((Circle) (me.getSource()))
+			.setTranslateX(frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius());
+			((Circle) (me.getSource()))
+			.setTranslateY(frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius());
+			
 			aileronValue.setText("" + 0);
 			elevatorValue.setText("" + 0);
 			aileronV.set("0.0");
 			elevatorV.set("0.0");
+			
+			// update that the value changed
+			viewModel.setJoystickChanges();
 		}
-		// update that the value changed
-		viewModel.setJoystickChanges();
 	}
 
 	@Override
@@ -366,15 +372,12 @@ public class MainWindowController implements Observer {
 		if (manualMode.isSelected()) {
 			if (me.getSource() == rudderSlider) {
 				// send command for rudder
-				rudderValue.setText("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00); // round to the
-																									// closest decimal
+				rudderValue.setText("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00); // round to the closest decimal
 				// update that the value changed
 				viewModel.setRudder();
 			} else if (me.getSource() == throttleSlider) {
 				// send command for throttle
-				throttleValue.setText("" + (Math.round((throttleSlider.getValue() * 10.00))) / 10.00); // round to the
-																										// closest
-																										// decimal
+				throttleValue.setText("" + (Math.round((throttleSlider.getValue() * 10.00))) / 10.00); // round to the closest decimal
 				// update that the value changed
 				viewModel.setThrottle();
 			}
@@ -384,10 +387,8 @@ public class MainWindowController implements Observer {
 	@FXML
 	private void radioButtonClicked() {
 		if (manualMode.isSelected()) {
-			rudderValue.setText("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00); // round to the closest
-																								// decimal
-			throttleValue.setText("" + (Math.round((throttleSlider.getValue() * 10.00))) / 10.00); // round to the
-																									// closest decimal
+			rudderValue.setText("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00); // round to the closest decimal
+			throttleValue.setText("" + (Math.round((throttleSlider.getValue() * 10.00))) / 10.00); // round to the closest decimal
 			aileronValue.setText("" + 0);
 			elevatorValue.setText("" + 0);
 		} else {
