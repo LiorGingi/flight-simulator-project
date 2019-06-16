@@ -23,7 +23,7 @@ public class MainTest {
 				"breaks = 0"+System.lineSeparator() +
 				"throttle = 1"+System.lineSeparator() +
 				"var h0 = heading"+System.lineSeparator() +
-				"while (alt < ((200*2+100)*2)  )  && (alt < (5000/10)  ){"+System.lineSeparator() +
+				"while alt < (200*2+100*3)  && alt <=5000/10 {"+System.lineSeparator() +
 				"rudder = (h0 - heading)/20"+System.lineSeparator() +
 				"aileron = - roll / 70"+System.lineSeparator() +
 				"elevator = pitch / 50"+System.lineSeparator() +

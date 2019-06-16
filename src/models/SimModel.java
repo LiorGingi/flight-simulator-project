@@ -7,16 +7,51 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Observable;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import interpreter.Interpreter;
 import interpreter.MyInterpreter;
 
 public class SimModel extends Observable {
-
-	private Interpreter inter;
+	private class ActiveScriptSender{
+		private BlockingQueue<Runnable> queue;
+		private  AtomicBoolean stop;
+		private Thread scriptThread;
+		private Interpreter inter;
+		
+		public ActiveScriptSender() {
+			inter = new MyInterpreter();
+			queue=new LinkedBlockingQueue<>();
+			stop=new AtomicBoolean();
+			scriptThread=new Thread(()->{
+				while(!stop.get()) {
+					try {
+						queue.take().run();
+					} catch (InterruptedException e) {
+					}
+				}
+			},"script_thread");
+		}
+		public void sendScript(String script) {
+			queue.add(()->{
+				inter.interpret(script);
+			});
+		}
+		
+		public void start() {
+			scriptThread.start();
+		}
+		public void stop() {
+			queue.add(()->stop.set(true));
+		}
+	}
+	
+	private ActiveScriptSender activeSender;
 	private ScheduledExecutorService scheduledDumper;
 	private Socket socketForPosition = null;
 	private PrintWriter out = null;
@@ -24,16 +59,19 @@ public class SimModel extends Observable {
 	double[] posArray;
 
 	public SimModel() {
-		inter = new MyInterpreter();
 		posArray = new double[5];
+		activeSender=new ActiveScriptSender();
+		activeSender.start();
 	}
 
 	public void sendScript(String script) {
-		inter.interpret(script);
+		activeSender.sendScript(script);
 	}
-
+	public void openDataServer(int port, int frequency) {
+		activeSender.sendScript("openDataServer " + port +" "+ frequency);
+	}
 	public void connectToSimulator(String ip, int port) {
-		inter.interpret("connect " + ip + " " + port);
+		activeSender.sendScript("connect " + ip + " " + port);
 	}
 
 	public void dumpPosition(String ip, int port) {
@@ -75,19 +113,19 @@ public class SimModel extends Observable {
 	}
 
 	public void setThrottle(double value) {
-		inter.interpret("VM_Throttle = " + value);
+		activeSender.sendScript("VM_Throttle = " + value);
 	}
 
 	public void setRudder(double value) {
-		inter.interpret("VM_Rudder = " + value);
+		activeSender.sendScript("VM_Rudder = " + value);
 	}
 
 	public void setAileron(double value) {
-		inter.interpret("VM_Aileron = " + value);
+		activeSender.sendScript("VM_Aileron = " + value);
 	}
 
 	public void setElevator(double value) {
-		inter.interpret("VM_Elevator = " + value);
+		activeSender.sendScript("VM_Elevator = " + value);
 	}
 
 	public double[] getPlaneLocation() {

@@ -22,20 +22,20 @@ public class TestServer {
 			in=new BufferedReader(new InputStreamReader(s.getInputStream()));
 			
 			Random r=new Random() ;
-			int[][] matrix=new int[200][200];
+			int[][] matrix=new int[250][350];
 			for(int i=0;i<matrix.length;i++)
 				for(int j=0;j<matrix[i].length;j++)
 					matrix[i][j]=100+r.nextInt(101);
 
 			StringBuilder sol=new StringBuilder();
 			int i=0,j=0;
-			while(i<199 || j<199){
-				if(j<199 && r.nextBoolean()){
+			while(i<249 || j<349){
+				if(j<349 && r.nextBoolean()){
 					sol.append(",Right");
 					j++;
 					matrix[i][j]=r.nextInt(100);
 				}else{
-					if(i<199){
+					if(i<249){
 						sol.append(",Down");
 						i++;
 						matrix[i][j]=r.nextInt(100);						
@@ -54,7 +54,7 @@ public class TestServer {
 			}
 			out.println("end");
 			out.println("0,0");
-			out.println("199,199");
+			out.println("249,349");
 			out.flush();
 			System.out.println("\tend\n\t0,0\n\t199,199");
 			System.out.println("\tproblem sent, waiting for solution...");

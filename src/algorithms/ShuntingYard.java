@@ -46,8 +46,9 @@ public class ShuntingYard {
 		String[] split = expression.split(
 				"(?<=(&&)|(\\|\\|)|(!=)|(==)|(<=)|(>=)|[-+*/()<>])|(?=(&&)|(\\|\\|)|(!=)|(==)|(<=)|(>=)|[-+*/()<>])");
 		StringBuilder builder = new StringBuilder();
-		List<String> compareOps1 = Arrays.asList("||", "&&");
-		List<String> compareOps2 = Arrays.asList("||", "&&", ">", ">=", "<", "<=", "==", "!=");
+		List<String> compareOps1 = Arrays.asList("/", "*");
+		List<String> compareOps2 = Arrays.asList("/", "*", "+", "-");
+		List<String> compareOps3 = Arrays.asList(">", ">=", "<", "<=", "==", "!=", "/", "*", "+", "-");
 		for (int i = 0; i < split.length - 1; i++) {
 			if (Arrays.asList(">", "<").contains(split[i]) && split[i + 1].equals("=")) {
 				builder.append(split[i] + "=,");
@@ -64,9 +65,15 @@ public class ShuntingYard {
 				queue.add(s);
 			} else {
 				switch (s) {
-				case "||":
-				case "&&":
+				case "/":
+				case "*":
 				case "(":
+					stack.push(s);
+					break;
+				case "+":
+				case "-":
+					while (!stack.empty() && compareOps1.contains(stack.peek()))
+						queue.add(stack.pop());
 					stack.push(s);
 					break;
 				case ">":
@@ -75,18 +82,16 @@ public class ShuntingYard {
 				case "<=":
 				case "==":
 				case "!=":
-					while (!stack.empty() && compareOps1.contains(stack.peek()))
-						queue.add(stack.pop());
-					stack.push(s);
-					break;
-				case "/":
-				case "*":
 					while (!stack.empty() && compareOps2.contains(stack.peek()))
 						queue.add(stack.pop());
 					stack.push(s);
 					break;
-				case "+":
-				case "-":
+				case "&&":
+					while (!stack.empty() && compareOps3.contains(stack.peek()))
+						queue.add(stack.pop());
+					stack.push(s);
+					break;
+				case "||":
 					while (!stack.empty() && (!stack.peek().equals("("))) {
 						queue.add(stack.pop());
 					}
@@ -288,7 +293,7 @@ public class ShuntingYard {
 
 	public static void main(String[] args) {
 		try {
-			System.out.println(calcLogic("(1==2)&&(1000<((200*2+100)*2))"));
+			System.out.println(calcLogic("10 < (200*2+100*3)  && 10 <=5000/10"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -44,7 +44,8 @@ public class MySerialServer implements Server {
 					try {
 						ch.handleClient(aClient.getInputStream(), aClient.getOutputStream());
 					} catch (IOException e) {// handles exception thrown from handleClient
-						e.printStackTrace();
+						aClient.close();
+						aClient=null;
 					}
 				} catch (SocketTimeoutException e) {
 					if (server != null)
