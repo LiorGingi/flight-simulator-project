@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -78,6 +81,9 @@ public class MainWindowController implements Observer {
 	private Circle frameCircle;
 	@FXML
 	private RadioButton manualMode;
+	
+	private StringProperty aileronV;
+	private StringProperty elevatorV;
 
 	// Objects for manual mode data panel
 	@FXML
@@ -90,34 +96,56 @@ public class MainWindowController implements Observer {
 	private Label rudderValue;
 
 	public MainWindowController() {
-		simServerIp = new TextField();
-		simServerPort = new TextField();
+		openConnectWindow=new Button();
+		calculatePathBtn=new Button();
+		topographicMapDisplayer=new TopographicMapDisplayer();
+		topographicColorRangeDisplayer=new TopographicColorRangeDisplayer();
+		pathDisplayer=new PathDisplayer();
+		simScript=new TextArea();
+		connectDataErrorMsg=new Label();
+		connectMode=new Label();
+		minHeight=new Label();
+		maxHeight=new Label();
+		mapGroup=new Group();
+		backToMain=new Button();
+		connectServerBtn=new Button();
+//		simServerIp = new TextField();
+//		simServerPort = new TextField();
+		rudderSlider=new Slider();
+		throttleSlider=new Slider();
+		joystick=new Circle();
+		frameCircle=new Circle();
+		manualMode=new RadioButton();
 		aileronValue = new Label();
 		elevatorValue = new Label();
+		aileronV=new SimpleStringProperty();
+		elevatorV=new SimpleStringProperty();
+		throttleValue=new Label();
+		rudderValue=new Label();
 	}
 
 	public void setViewModel(ViewModel vm) {
 		viewModel = vm;
 		// *** sim model***
 		// connection to simulator
-		viewModel.simulatorIP.bind(simServerIp.textProperty());
-		viewModel.simulatorPort.bind(simServerPort.textProperty());
+//		viewModel.simulatorIP.bind(simServerIp.textProperty());
+//		viewModel.simulatorPort.bind(simServerPort.textProperty());
 		// autopilot
 		viewModel.script.bind(simScript.textProperty());
 		// manual
 		viewModel.throttle.bind(throttleSlider.valueProperty());
 		viewModel.rudder.bind(rudderSlider.valueProperty());
-		viewModel.aileron.bind(aileronValue.textProperty());
-		viewModel.elevator.bind(rudderValue.textProperty());
+		viewModel.aileron.bind(aileronV);
+		viewModel.elevator.bind(elevatorV);
 		// ***path model***
 		// need to add data members according to notes file
-
 	}
 
 	@FXML
 	private void openConnectWindow(ActionEvent event) throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ConnectPopup.fxml"));
-		Parent root = (Parent) fxmlLoader.load();
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setController(this);
+		Parent root = (Parent) fxmlLoader.load(getClass().getResource("ConnectPopup.fxml").openStream());
 		Stage stage = new Stage();
 		stage.initModality(Modality.WINDOW_MODAL);
 		stage.initOwner(Main.primaryStage);
@@ -128,7 +156,6 @@ public class MainWindowController implements Observer {
 		} else if (event.getSource() == calculatePathBtn) {
 			stage.setTitle("Calculate Path");
 		}
-
 	}
 
 	@FXML
@@ -141,6 +168,8 @@ public class MainWindowController implements Observer {
 	private void handleConnect(ActionEvent event) throws IOException {
 		String ip = simServerIp.getText();
 		String port = simServerPort.getText();
+		viewModel.simulatorIP.bind(simServerIp.textProperty());
+		viewModel.simulatorPort.bind(simServerPort.textProperty());
 		String mode = ((Stage) connectServerBtn.getScene().getWindow()).getTitle();
 
 		if (ip.matches("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$") && port.matches("^(\\d{1,4})")) {
@@ -231,7 +260,13 @@ public class MainWindowController implements Observer {
 			simScript.setText(script);
 		}
 	}
-
+	@FXML
+	private void runScript() {
+		if(simScript.getText().length()!=0)
+			viewModel.sendScriptToSimulator();
+		simScript.clear();
+	}
+	
 	@FXML
 	private void joystickPressed(MouseEvent me) {
 		orgSceneX = me.getSceneX();
@@ -267,27 +302,23 @@ public class MainWindowController implements Observer {
 		}
 		((Circle) (me.getSource())).setTranslateX(newTranslateX);
 		((Circle) (me.getSource())).setTranslateY(newTranslateY);
-
+		// normalize to range of [-1,1]
 		double normalX = Math.round(
-				((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1) * 100.00) / 100.00; // normalize
-																														// to
-																														// range
-																														// of
-																														// [-1,1]
+				((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1) * 100.00) / 100.00; 
+		// normalize to range of [-1,1]
 		double normalY = Math.round(
-				((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1) * 100.00) / 100.00; // normalize
-																														// to
-																														// range
-																														// of
-																														// [-1,1]
+				((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1) * 100.00) / 100.00;
 		System.out.println("" + normalX + " " + normalY);
 
 		if (manualMode.isSelected()) {
 			// send command only if manual mode is selected
 			aileronValue.setText("" + normalX);
 			elevatorValue.setText("" + normalY);
+			aileronV.set(""+normalX);
+			elevatorV.set(""+normalY);
 		}
 		// update that the value changed
+		
 		viewModel.setJoystickChanges();
 	}
 
@@ -302,6 +333,8 @@ public class MainWindowController implements Observer {
 			// send command only if manual mode is selected
 			aileronValue.setText("" + 0);
 			elevatorValue.setText("" + 0);
+			aileronV.set("0.0");
+			elevatorV.set("0.0");
 		}
 		// update that the value changed
 		viewModel.setJoystickChanges();

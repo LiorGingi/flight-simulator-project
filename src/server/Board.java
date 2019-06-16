@@ -10,7 +10,7 @@ public class Board implements Searchable<Position> {
 	State<Position> source;
 	State<Position> dest;
 	
-	public Board(int cols,int rows) {
+	public Board(int rows,int cols) {
 		this.cols=cols;
 		this.rows=rows;
 		this.board=(State<Position>[][])new State[rows][cols];

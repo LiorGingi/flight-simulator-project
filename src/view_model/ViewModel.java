@@ -74,6 +74,13 @@ public class ViewModel extends Observable implements Observer {
 		srcY = new SimpleIntegerProperty();
 		ground = new SimpleObjectProperty<>();
 		directions = new SimpleObjectProperty<>();
+
+		openServer();
+		System.out.println("openned server");
+	}
+
+	private void openServer() {
+		sm.openDataServer(5400, 10);
 	}
 
 	public void connectToSimulator() {
@@ -94,6 +101,8 @@ public class ViewModel extends Observable implements Observer {
 	}
 
 	public void setJoystickChanges() {
+		System.out.println("aileron: " + aileron.get());
+		System.out.println("elevator: " + elevator.get());
 		sm.setAileron(Double.parseDouble(aileron.get()));
 		sm.setElevator(Double.parseDouble(elevator.get()));
 	}

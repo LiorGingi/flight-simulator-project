@@ -14,28 +14,28 @@ public class Main extends Application {
 	public static Stage primaryStage;
 	
 	@Override
-	public void start(Stage primaryStage) {
-		this.primaryStage = primaryStage;
+	public void start(Stage _primaryStage) {
+		primaryStage = _primaryStage;
 		
 		//***create models and view-model connections***
 		//models
 		PathModel pathModel=new PathModel();
 		SimModel simModel=new SimModel();
 		//view model
-		ViewModel viewModel=new ViewModel(pathModel, simModel);
 		
+		ViewModel viewModel=new ViewModel(pathModel, simModel);
 		pathModel.addObserver(viewModel);
 		simModel.addObserver(viewModel);
 		
 		try {
 			FXMLLoader fxml=new FXMLLoader();
 			BorderPane root = fxml.load(getClass().getResource("MainWindow.fxml").openStream());
-			Scene scene = new Scene(root,1000,500);
 			MainWindowController mainWindowC=fxml.getController();//view
 			mainWindowC.setViewModel(viewModel);
 			viewModel.addObserver(mainWindowC);
-			
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			Scene scene = new Scene(root,1000,500);
+
+//			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
@@ -47,5 +47,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		launch(args);
+		
+		
 	}
 }
