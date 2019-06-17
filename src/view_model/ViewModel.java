@@ -117,8 +117,7 @@ public class ViewModel extends Observable implements Observer {
 
 	private void getPosition() {
 		/*
-		 * array indexes: longitude_deg | latitude_deg | altitude_ft | ground_elev_m |
-		 * ground_elev_ft
+		 * array indexes: longitude_deg x | latitude_deg y | altitude_ft | ground_elev_m | ground_elev_ft
 		 */
 		double[] position = sm.getPlaneLocation();
 		longitude_deg.set(position[0]);
@@ -126,7 +125,8 @@ public class ViewModel extends Observable implements Observer {
 		altitude_ft.set(position[2]);
 		ground_elev_m.set(position[3]);
 		ground_elev_ft.set(position[4]);
-
+		setChanged();
+		notifyObservers();
 	}
 
 	@Override

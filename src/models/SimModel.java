@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
@@ -74,7 +75,7 @@ public class SimModel extends Observable {
 		activeSender.sendScript("connect " + ip + " " + port);
 	}
 
-	public void dumpPosition(String ip, int port) {
+	public void dumpPosition(String ip, int port) {//transfer to active object
 		try {
 			socketForPosition = new Socket(ip, port);
 			out = new PrintWriter(socketForPosition.getOutputStream());
@@ -98,6 +99,11 @@ public class SimModel extends Observable {
 					String[] str = builder.toString().split("[<>]");
 					for (int i = 0, j = 2; i < 5; i++, j += 4)
 						posArray[i] = Double.parseDouble(str[j]);
+					
+					
+					System.out.println(Arrays.toString(posArray));
+					
+					
 					setChanged();
 					notifyObservers();
 				} catch (IOException e) {
