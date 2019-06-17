@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -19,18 +18,30 @@ public class TopographicMapDisplayer extends Canvas {
 	public static boolean mapLoaded = false;
 	
 	//source and destination cells in the grid
-	public static int destX;
+	public static int destX; //the destination point on the grid itself
 	public static int destY;
-	public static int sourceX;
+	public static int sourceX; //the source point of the grid itself
 	public static int sourceY;
+	public static double rangeMapX; //the range of landmarks in map
+	public static double rangeMapY;
+	public double currentXOnMap; //the current location normalized from simulator to map
+	public double currentYOnMap;
+	public double srcMapX; //the starting point on the simulator
+	public double srcMapY;
+	public Circle planeLocation;
 	
 	@FXML
 	private Circle circle;
 	
-	public void setGroundField(double min, double max, double[][] table) {
+	public void setGroundField(double min, double max, double[][] table, double srcMapX, double srcMapY, double scale) {
 		this.groundField = table;
 		this.minHeight = min;
 		this.heightRange=max-min;
+		this.srcMapX = srcMapX;
+		this.srcMapY = srcMapY;
+		rangeMapX = groundField.length*scale;
+		rangeMapY = groundField[0].length*scale;
+		
 		draw();
 	}
 
@@ -54,7 +65,6 @@ public class TopographicMapDisplayer extends Canvas {
 	public void calculateCellOnMap(double x, double y) {
 		destX = (int)(x/cellW);
 		destY = (int)(y/cellH);
-		System.out.println(""+destX+" "+destY);
 	}
 	
 	public void paintPath(String path, Group group) {
@@ -77,12 +87,25 @@ public class TopographicMapDisplayer extends Canvas {
 				currentX = currentX - cellW;
 				break;
 			}
-			if(i%15 == 0) { //paint the point
+			if((i%15 == 0) && (currentX>=0 && currentX <= getWidth()) && (currentY >= 0 && currentY <= getHeight())) { //paint the point
 				positionInPath = new Circle(2, Color.BLUE);
 				positionInPath.setCenterX(currentX);
 				positionInPath.setCenterY(currentY);
 				group.getChildren().add(positionInPath);
 			}
 		}
+	}
+	
+	public void paintPlaneLocation(Group group) {
+		Circle circle = new Circle(10, Color.RED);
+		circle.setCenterX(currentXOnMap);
+		circle.setCenterY(currentYOnMap);
+		group.getChildren().remove(planeLocation);
+		group.getChildren().add(planeLocation = circle);
+	}
+	
+	public void normalizeCurrentLandmarks(double xOnSim, double yOnSim) {
+		currentXOnMap = ((xOnSim - srcMapX)/rangeMapX)*getWidth();
+		currentYOnMap = ((yOnSim - srcMapY)/rangeMapY)*getHeight();
 	}
 }

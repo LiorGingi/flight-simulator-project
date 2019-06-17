@@ -8,9 +8,14 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,11 +37,23 @@ import javafx.stage.Stage;
 import view_model.ViewModel;
 
 public class MainWindowController implements Observer {
-	ViewModel viewModel;
-	double orgSceneX, orgSceneY;
-	double orgTranslateX, orgTranslateY;
-	Circle destCircle;
+	private ViewModel viewModel;
+	private double orgSceneX, orgSceneY;
+	private double orgTranslateX, orgTranslateY;
+	private Circle destCircle;
 
+	// MVVM Variables
+	private IntegerProperty srcX, srcY, destX, destY;
+	private StringProperty aileronV, elevatorV;
+	private DoubleProperty longitude_deg, latitude_deg, altitude_ft, ground_elev_m, ground_elev_ft;
+
+	// Autopilot mode
+	@FXML
+	private TextArea simScript;
+	@FXML
+	private RadioButton autopilotMode;
+
+	// Topographic Map
 	@FXML
 	private Button openConnectWindow;
 	@FXML
@@ -46,29 +63,33 @@ public class MainWindowController implements Observer {
 	@FXML
 	private TopographicColorRangeDisplayer topographicColorRangeDisplayer;
 	@FXML
-	private PathDisplayer pathDisplayer;
-	@FXML
-	private TextArea simScript;
-	@FXML
-	private Label connectDataErrorMsg;
-	@FXML
-	private Label connectMode;
+	private Group mapGroup;
 	@FXML
 	private Label minHeight;
 	@FXML
 	private Label maxHeight;
 	@FXML
-	private Group mapGroup;
+	private PathDisplayer pathDisplayer;
 
-	// Connect to server window
+	// Connect to server/path solver window
 	@FXML
 	private Button backToMain;
 	@FXML
 	private Button connectServerBtn;
 	@FXML
+	private TextField connectionIp;
+	@FXML
+	private TextField connectionPort;
+	@FXML
 	private TextField simServerIp;
 	@FXML
 	private TextField simServerPort;
+	@FXML
+	private TextField pathServerIp;
+	@FXML
+	private TextField pathServerPort;
+	@FXML
+	private Label connectDataErrorMsg;
 
 	// Manual mode objects (slider + joystick)
 	@FXML
@@ -81,9 +102,6 @@ public class MainWindowController implements Observer {
 	private Circle frameCircle;
 	@FXML
 	private RadioButton manualMode;
-	
-	private StringProperty aileronV;
-	private StringProperty elevatorV;
 
 	// Objects for manual mode data panel
 	@FXML
@@ -96,32 +114,43 @@ public class MainWindowController implements Observer {
 	private Label rudderValue;
 
 	public MainWindowController() {
-		openConnectWindow=new Button();
-		calculatePathBtn=new Button();
-		topographicMapDisplayer=new TopographicMapDisplayer();
-		topographicColorRangeDisplayer=new TopographicColorRangeDisplayer();
-		pathDisplayer=new PathDisplayer();
-		simScript=new TextArea();
-		connectDataErrorMsg=new Label();
-		connectMode=new Label();
-		minHeight=new Label();
-		maxHeight=new Label();
-		mapGroup=new Group();
-		backToMain=new Button();
-		connectServerBtn=new Button();
-//		simServerIp = new TextField();
-//		simServerPort = new TextField();
-		rudderSlider=new Slider();
-		throttleSlider=new Slider();
-		joystick=new Circle();
-		frameCircle=new Circle();
-		manualMode=new RadioButton();
+		openConnectWindow = new Button();
+		calculatePathBtn = new Button();
+		topographicMapDisplayer = new TopographicMapDisplayer();
+		topographicColorRangeDisplayer = new TopographicColorRangeDisplayer();
+		pathDisplayer = new PathDisplayer();
+		simScript = new TextArea();
+		connectDataErrorMsg = new Label();
+		minHeight = new Label();
+		maxHeight = new Label();
+		mapGroup = new Group();
+		backToMain = new Button();
+		connectServerBtn = new Button();
+		simServerIp = new TextField();
+		simServerPort = new TextField();
+		pathServerIp = new TextField();
+		pathServerPort = new TextField();
+		rudderSlider = new Slider();
+		throttleSlider = new Slider();
+		joystick = new Circle();
+		frameCircle = new Circle();
+		manualMode = new RadioButton();
 		aileronValue = new Label();
 		elevatorValue = new Label();
-		aileronV=new SimpleStringProperty();
-		elevatorV=new SimpleStringProperty();
-		throttleValue=new Label();
-		rudderValue=new Label();
+		aileronV = new SimpleStringProperty();
+		elevatorV = new SimpleStringProperty();
+		throttleValue = new Label();
+		rudderValue = new Label();
+		autopilotMode = new RadioButton();
+		longitude_deg = new SimpleDoubleProperty();
+		latitude_deg = new SimpleDoubleProperty();
+		altitude_ft = new SimpleDoubleProperty();
+		ground_elev_m = new SimpleDoubleProperty();
+		ground_elev_ft = new SimpleDoubleProperty();
+		srcX = new SimpleIntegerProperty();
+		srcY = new SimpleIntegerProperty();
+		destX = new SimpleIntegerProperty();
+		destY = new SimpleIntegerProperty();
 	}
 
 	public void setViewModel(ViewModel vm) {
@@ -137,6 +166,16 @@ public class MainWindowController implements Observer {
 		viewModel.rudder.bind(rudderSlider.valueProperty());
 		viewModel.aileron.bind(aileronV);
 		viewModel.elevator.bind(elevatorV);
+		viewModel.srcX.bind(srcX);
+		viewModel.srcY.bind(srcY);
+		viewModel.destX.bind(destX);
+		viewModel.destY.bind(destY);
+		// current location of plane.
+		longitude_deg.bind(viewModel.longitude_deg);
+		latitude_deg.bind(viewModel.latitude_deg);
+		altitude_ft.bind(viewModel.altitude_ft);
+		ground_elev_m.bind(viewModel.ground_elev_m);
+		ground_elev_ft.bind(viewModel.ground_elev_ft);
 		// ***path model***
 		// need to add data members according to notes file
 	}
@@ -154,7 +193,7 @@ public class MainWindowController implements Observer {
 		if (event.getSource() == openConnectWindow) {
 			stage.setTitle("Simulator Server");
 		} else if (event.getSource() == calculatePathBtn) {
-			stage.setTitle("Calculate Path");
+			stage.setTitle("Path Calculation Server");
 		}
 	}
 
@@ -166,19 +205,26 @@ public class MainWindowController implements Observer {
 
 	@FXML
 	private void handleConnect(ActionEvent event) throws IOException {
-		String ip = simServerIp.getText();
-		String port = simServerPort.getText();
+		String ip = connectionIp.getText();
+		String port = connectionPort.getText();
 		viewModel.simulatorIP.bind(simServerIp.textProperty());
 		viewModel.simulatorPort.bind(simServerPort.textProperty());
+		viewModel.solverIP.bind(pathServerIp.textProperty());
+		viewModel.solverPort.bind(pathServerPort.textProperty());
 		String mode = ((Stage) connectServerBtn.getScene().getWindow()).getTitle();
 
 		if (ip.matches("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$") && port.matches("^(\\d{1,4})")) {
 
 			if (mode == "Simulator Server") {
 				// handle connection for connecting to the simulator server
+				simServerIp.setText(ip);
+				simServerPort.setText(port);
 				viewModel.connectToSimulator();
-			} else if (mode == "Calculate Path") {
+			} else if (mode == "Path Calculation Server") {
 				// handle connection for calculating path
+				pathServerIp.setText(ip);
+				pathServerPort.setText(port);
+				viewModel.connectToSolverServer();
 			}
 
 			// need to handle connect to server
@@ -195,6 +241,7 @@ public class MainWindowController implements Observer {
 		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
 		fc.getExtensionFilters().add(extFilter);
 		File file = fc.showOpenDialog(null);
+		double startX, startY, scale;
 		if (file != null) {
 			String line;
 			Double min = null, max = null;
@@ -205,9 +252,9 @@ public class MainWindowController implements Observer {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				String[] coordinates = br.readLine().split(",");
-				double startX = Double.parseDouble(coordinates[0]);
-				double startY = Double.parseDouble(coordinates[1]);
-				double space = Double.parseDouble(br.readLine().split(",")[0]);
+				startX = Double.parseDouble(coordinates[1]); //x0
+				startY = Double.parseDouble(coordinates[0]); //y0
+				scale = Double.parseDouble(br.readLine().split(",")[0]);
 				while ((line = br.readLine()) != null) {
 					valuesTable.add(line.split(","));
 				}
@@ -227,14 +274,14 @@ public class MainWindowController implements Observer {
 					}
 				}
 				br.close();
+				topographicMapDisplayer.setGroundField(min, max, valuesInDouble, startX, startY, scale);
+				topographicColorRangeDisplayer.setColorRange(min, max);
+				minHeight.setText("" + min);
+				maxHeight.setText("" + max);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			topographicMapDisplayer.setGroundField(min, max, valuesInDouble);
-			topographicColorRangeDisplayer.setColorRange(min, max);
-			minHeight.setText("" + min);
-			maxHeight.setText("" + max);
 		}
 
 	}
@@ -254,95 +301,104 @@ public class MainWindowController implements Observer {
 				while ((line = br.readLine()) != null) {
 					script = script + line + "\n";
 				}
+				br.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			simScript.setText(script);
 		}
 	}
+
 	@FXML
 	private void runScript() {
-		if(simScript.getText().length()!=0)
+		if (simScript.getText().length() != 0)
 			viewModel.sendScriptToSimulator();
 		simScript.clear();
 	}
-	
+
 	@FXML
 	private void joystickPressed(MouseEvent me) {
-		orgSceneX = me.getSceneX();
-		orgSceneY = me.getSceneY();
-		orgTranslateX = ((Circle) (me.getSource())).getTranslateX();
-		orgTranslateY = ((Circle) (me.getSource())).getTranslateY();
+		if (manualMode.isSelected()) {
+			orgSceneX = me.getSceneX();
+			orgSceneY = me.getSceneY();
+			orgTranslateX = ((Circle) (me.getSource())).getTranslateX();
+			orgTranslateY = ((Circle) (me.getSource())).getTranslateY();
+		}
 	}
 
 	@FXML
 	private void joystickDragged(MouseEvent me) {
-		double offsetX = me.getSceneX() - orgSceneX;
-		double offsetY = me.getSceneY() - orgSceneY;
-		double newTranslateX = orgTranslateX + offsetX;
-		double newTranslateY = orgTranslateY + offsetY;
-		double joystickCenterX = frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius();
-		double joystickCenterY = frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius();
-		double frameRadius = frameCircle.getRadius();
-		double maxX = joystickCenterX + frameRadius;
-		double contractionsCenterX = joystickCenterX - frameRadius;
-		double maxY = joystickCenterY - frameRadius;
-		double contractionsCenterY = joystickCenterY + frameRadius;
-
-		double slant = Math
-				.sqrt(Math.pow(newTranslateX - joystickCenterX, 2) + Math.pow(newTranslateY - joystickCenterY, 2));
-
-		if (slant > frameRadius) {
-			double alpha = Math.atan((newTranslateY - joystickCenterY) / (newTranslateX - joystickCenterX));
-			if ((newTranslateX - joystickCenterX) < 0) {
-				alpha = alpha + Math.PI;
-			}
-			newTranslateX = Math.cos(alpha) * frameRadius + orgTranslateX;
-			newTranslateY = Math.sin(alpha) * frameRadius + orgTranslateY;
-		}
-		((Circle) (me.getSource())).setTranslateX(newTranslateX);
-		((Circle) (me.getSource())).setTranslateY(newTranslateY);
-		// normalize to range of [-1,1]
-		double normalX = Math.round(
-				((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1) * 100.00) / 100.00; 
-		// normalize to range of [-1,1]
-		double normalY = Math.round(
-				((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1) * 100.00) / 100.00;
-		System.out.println("" + normalX + " " + normalY);
-
 		if (manualMode.isSelected()) {
+			double offsetX = me.getSceneX() - orgSceneX;
+			double offsetY = me.getSceneY() - orgSceneY;
+			double newTranslateX = orgTranslateX + offsetX;
+			double newTranslateY = orgTranslateY + offsetY;
+			double joystickCenterX = frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius();
+			double joystickCenterY = frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius();
+			double frameRadius = frameCircle.getRadius();
+			double maxX = joystickCenterX + frameRadius;
+			double contractionsCenterX = joystickCenterX - frameRadius;
+			double maxY = joystickCenterY - frameRadius;
+			double contractionsCenterY = joystickCenterY + frameRadius;
+
+			double slant = Math
+					.sqrt(Math.pow(newTranslateX - joystickCenterX, 2) + Math.pow(newTranslateY - joystickCenterY, 2));
+
+			if (slant > frameRadius) {
+				double alpha = Math.atan((newTranslateY - joystickCenterY) / (newTranslateX - joystickCenterX));
+				if ((newTranslateX - joystickCenterX) < 0) {
+					alpha = alpha + Math.PI;
+				}
+				newTranslateX = Math.cos(alpha) * frameRadius + orgTranslateX;
+				newTranslateY = Math.sin(alpha) * frameRadius + orgTranslateY;
+			}
+			((Circle) (me.getSource())).setTranslateX(newTranslateX);
+			((Circle) (me.getSource())).setTranslateY(newTranslateY);
+			// normalize to range of [-1,1]
+			double normalX = Math
+					.round(((((newTranslateX - contractionsCenterX) / (maxX - contractionsCenterX)) * 2) - 1) * 100.00)
+					/ 100.00;
+			// normalize to range of [-1,1]
+			double normalY = Math
+					.round(((((newTranslateY - contractionsCenterY) / (maxY - contractionsCenterY)) * 2) - 1) * 100.00)
+					/ 100.00;
 			// send command only if manual mode is selected
 			aileronValue.setText("" + normalX);
 			elevatorValue.setText("" + normalY);
-			aileronV.set(""+normalX);
-			elevatorV.set(""+normalY);
+			aileronV.set("" + normalX);
+			elevatorV.set("" + normalY);
+
+			viewModel.setJoystickChanges();
 		}
-		// update that the value changed
-		
-		viewModel.setJoystickChanges();
+
 	}
 
 	@FXML
 	private void joystickReleased(MouseEvent me) {
-		((Circle) (me.getSource()))
-				.setTranslateX(frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius());
-		((Circle) (me.getSource()))
-				.setTranslateY(frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius());
-
 		if (manualMode.isSelected()) {
-			// send command only if manual mode is selected
+			((Circle) (me.getSource()))
+					.setTranslateX(frameCircle.getTranslateX() + frameCircle.getRadius() - joystick.getRadius());
+			((Circle) (me.getSource()))
+					.setTranslateY(frameCircle.getTranslateY() - frameCircle.getRadius() - joystick.getRadius());
+
 			aileronValue.setText("" + 0);
 			elevatorValue.setText("" + 0);
 			aileronV.set("0.0");
 			elevatorV.set("0.0");
+
+			// update that the value changed
+			viewModel.setJoystickChanges();
 		}
-		// update that the value changed
-		viewModel.setJoystickChanges();
 	}
 
+	//update the location of the plane on the map
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
+		if(o==viewModel) {
+			System.out.println(""+longitude_deg.get()+" "+latitude_deg.get());
+			topographicMapDisplayer.normalizeCurrentLandmarks(longitude_deg.get(), latitude_deg.get());
+			topographicMapDisplayer.paintPlaneLocation(mapGroup);
+		}
 
 	}
 
@@ -359,26 +415,8 @@ public class MainWindowController implements Observer {
 			mapGroup.getChildren().remove(destCircle);
 			mapGroup.getChildren().add(destCircle = circle);
 			topographicMapDisplayer.calculateCellOnMap(event.getX(), event.getY());
-		}
-	}
-
-	@FXML
-	private void sliderDrag(MouseEvent me) {
-		if (manualMode.isSelected()) {
-			if (me.getSource() == rudderSlider) {
-				// send command for rudder
-				rudderValue.setText("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00); // round to the
-																									// closest decimal
-				// update that the value changed
-				viewModel.setRudder();
-			} else if (me.getSource() == throttleSlider) {
-				// send command for throttle
-				throttleValue.setText("" + (Math.round((throttleSlider.getValue() * 10.00))) / 10.00); // round to the
-																										// closest
-																										// decimal
-				// update that the value changed
-				viewModel.setThrottle();
-			}
+			destX.set(topographicMapDisplayer.destX);
+			destY.set(topographicMapDisplayer.destY);
 		}
 	}
 
@@ -396,6 +434,8 @@ public class MainWindowController implements Observer {
 			throttleValue.setText("");
 			aileronValue.setText("");
 			elevatorValue.setText("");
+			rudderSlider.setValue(0);
+			throttleSlider.setValue(0);
 		}
 	}
 
@@ -419,4 +459,28 @@ public class MainWindowController implements Observer {
 				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,";
 		topographicMapDisplayer.paintPath(path, mapGroup);
 	}
+
+	public void setSliderOnDragEvent() {
+		rudderSlider.valueProperty().addListener(new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
+				if (manualMode.isSelected()) {
+					rudderValue.textProperty().setValue("" + (Math.round((rudderSlider.getValue() * 10.00))) / 10.00);
+					viewModel.setRudder();
+				}
+			}
+		});
+
+		throttleSlider.valueProperty().addListener(new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
+				if (manualMode.isSelected()) {
+					throttleValue.textProperty()
+							.setValue("" + (Math.round((throttleSlider.getValue() * 10.00))) / 10.00);
+					viewModel.setThrottle();
+				}
+			}
+		});
+	}
+
 }
