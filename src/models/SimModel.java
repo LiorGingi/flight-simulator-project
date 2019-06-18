@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.Observable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
@@ -19,39 +18,41 @@ import interpreter.Interpreter;
 import interpreter.MyInterpreter;
 
 public class SimModel extends Observable {
-	private class ActiveScriptSender{
+	private class ActiveScriptSender {
 		private BlockingQueue<Runnable> queue;
-		private  AtomicBoolean stop;
+		private AtomicBoolean stop;
 		private Thread scriptThread;
 		private Interpreter inter;
-		
+
 		public ActiveScriptSender() {
 			inter = new MyInterpreter();
-			queue=new LinkedBlockingQueue<>();
-			stop=new AtomicBoolean();
-			scriptThread=new Thread(()->{
-				while(!stop.get()) {
+			queue = new LinkedBlockingQueue<>();
+			stop = new AtomicBoolean();
+			scriptThread = new Thread(() -> {
+				while (!stop.get()) {
 					try {
 						queue.take().run();
 					} catch (InterruptedException e) {
 					}
 				}
-			},"script_thread");
+			}, "script_thread");
 		}
+
 		public void sendScript(String script) {
-			queue.add(()->{
+			queue.add(() -> {
 				inter.interpret(script);
 			});
 		}
-		
+
 		public void start() {
 			scriptThread.start();
 		}
+
 		public void stop() {
-			queue.add(()->stop.set(true));
+			queue.add(() -> stop.set(true));
 		}
 	}
-	
+
 	private ActiveScriptSender activeSender;
 	private ScheduledExecutorService scheduledDumper;
 	private Socket socketForPosition = null;
@@ -61,21 +62,23 @@ public class SimModel extends Observable {
 
 	public SimModel() {
 		posArray = new double[5];
-		activeSender=new ActiveScriptSender();
+		activeSender = new ActiveScriptSender();
 		activeSender.start();
 	}
 
 	public void sendScript(String script) {
 		activeSender.sendScript(script);
 	}
+
 	public void openDataServer(int port, int frequency) {
-		activeSender.sendScript("openDataServer " + port +" "+ frequency);
+		activeSender.sendScript("openDataServer " + port + " " + frequency);
 	}
+
 	public void connectToSimulator(String ip, int port) {
 		activeSender.sendScript("connect " + ip + " " + port);
 	}
 
-	public void dumpPosition(String ip, int port) {//transfer to active object
+	public void dumpPosition(String ip, int port) {// transfer to active object
 		try {
 			socketForPosition = new Socket(ip, port);
 			out = new PrintWriter(socketForPosition.getOutputStream());
@@ -99,15 +102,10 @@ public class SimModel extends Observable {
 					String[] str = builder.toString().split("[<>]");
 					for (int i = 0, j = 2; i < 5; i++, j += 4)
 						posArray[i] = Double.parseDouble(str[j]);
-					
-					
-					System.out.println(Arrays.toString(posArray));
-					
-					
+
 					setChanged();
 					notifyObservers();
 				} catch (IOException e) {
-//					System.err.println("communication error. disconnecting");
 					scheduledDumper.shutdownNow();
 				}
 			}, 0, 250, TimeUnit.MILLISECONDS);

@@ -10,8 +10,10 @@ import java.util.Observer;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -43,9 +45,11 @@ public class MainWindowController implements Observer {
 	private Circle destCircle;
 
 	// MVVM Variables
-	private IntegerProperty srcX, srcY, destX, destY;
+	private IntegerProperty destX, destY;
 	private StringProperty aileronV, elevatorV;
-	private DoubleProperty longitude_deg, latitude_deg, altitude_ft, ground_elev_m, ground_elev_ft;
+	private DoubleProperty csv_srcX, csv_srcY, csv_scale;
+	private IntegerProperty csv_rows, csv_cols;
+	private ObjectProperty<Circle> plane;
 
 	// Autopilot mode
 	@FXML
@@ -142,13 +146,14 @@ public class MainWindowController implements Observer {
 		throttleValue = new Label();
 		rudderValue = new Label();
 		autopilotMode = new RadioButton();
-		longitude_deg = new SimpleDoubleProperty();
-		latitude_deg = new SimpleDoubleProperty();
-		altitude_ft = new SimpleDoubleProperty();
-		ground_elev_m = new SimpleDoubleProperty();
-		ground_elev_ft = new SimpleDoubleProperty();
-		srcX = new SimpleIntegerProperty();
-		srcY = new SimpleIntegerProperty();
+
+		csv_srcX = new SimpleDoubleProperty();
+		csv_srcY = new SimpleDoubleProperty();
+		csv_scale = new SimpleDoubleProperty();
+		csv_rows = new SimpleIntegerProperty();
+		csv_cols = new SimpleIntegerProperty();
+
+		plane = new SimpleObjectProperty<>();
 		destX = new SimpleIntegerProperty();
 		destY = new SimpleIntegerProperty();
 	}
@@ -166,18 +171,20 @@ public class MainWindowController implements Observer {
 		viewModel.rudder.bind(rudderSlider.valueProperty());
 		viewModel.aileron.bind(aileronV);
 		viewModel.elevator.bind(elevatorV);
-		viewModel.srcX.bind(srcX);
-		viewModel.srcY.bind(srcY);
-		viewModel.destX.bind(destX);
-		viewModel.destY.bind(destY);
+
 		// current location of plane.
-		longitude_deg.bind(viewModel.longitude_deg);
-		latitude_deg.bind(viewModel.latitude_deg);
-		altitude_ft.bind(viewModel.altitude_ft);
-		ground_elev_m.bind(viewModel.ground_elev_m);
-		ground_elev_ft.bind(viewModel.ground_elev_ft);
+		viewModel.csv_srcX.bind(csv_srcX);
+		viewModel.csv_srcY.bind(csv_srcY);
+		viewModel.csv_scale.bind(csv_scale);
+		viewModel.csv_rows.bind(csv_rows);
+		viewModel.csv_cols.bind(csv_cols);
+
+		plane.bind(viewModel.plane);
+		mapGroup.getChildren().add(plane.get());
 		// ***path model***
 		// need to add data members according to notes file
+		viewModel.destX.bind(destX);
+		viewModel.destY.bind(destY);
 	}
 
 	@FXML
@@ -241,7 +248,6 @@ public class MainWindowController implements Observer {
 		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
 		fc.getExtensionFilters().add(extFilter);
 		File file = fc.showOpenDialog(null);
-		double startX, startY, scale;
 		if (file != null) {
 			String line;
 			Double min = null, max = null;
@@ -252,17 +258,18 @@ public class MainWindowController implements Observer {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				String[] coordinates = br.readLine().split(",");
-				startX = Double.parseDouble(coordinates[1]); //x0
-				startY = Double.parseDouble(coordinates[0]); //y0
-				scale = Double.parseDouble(br.readLine().split(",")[0]);
+				csv_srcX.set(Double.parseDouble(coordinates[0])); // x0
+				csv_srcY.set(Double.parseDouble(coordinates[1])); // y0
+				csv_scale.set(Double.parseDouble(br.readLine().split(",")[0]));
 				while ((line = br.readLine()) != null) {
 					valuesTable.add(line.split(","));
 				}
-				int rowSize = valuesTable.get(0).length;
-				valuesInDouble = new double[valuesTable.size()][rowSize];
-				for (int i = 0; i < valuesTable.size(); i++) {
+				csv_rows.set(valuesTable.size());
+				csv_cols.set(valuesTable.get(0).length);
+				valuesInDouble = new double[csv_rows.get()][csv_cols.get()];
+				for (int i = 0; i < csv_rows.get(); i++) {
 					currentRow = valuesTable.get(i);
-					for (int j = 0; j < rowSize; j++) {
+					for (int j = 0; j < csv_cols.get(); j++) {
 						double currentVal = Double.parseDouble(currentRow[j]);
 						valuesInDouble[i][j] = currentVal;
 						if (min == null || currentVal < min) {
@@ -274,8 +281,9 @@ public class MainWindowController implements Observer {
 					}
 				}
 				br.close();
-				topographicMapDisplayer.setGroundField(min, max, valuesInDouble, startX, startY, scale);
+				topographicMapDisplayer.setGroundField(min, max, valuesInDouble);
 				topographicColorRangeDisplayer.setColorRange(min, max);
+
 				minHeight.setText("" + min);
 				maxHeight.setText("" + max);
 			} catch (Exception e) {
@@ -391,14 +399,9 @@ public class MainWindowController implements Observer {
 		}
 	}
 
-	//update the location of the plane on the map
+	// update the location of the plane on the map
 	@Override
 	public void update(Observable o, Object arg) {
-		if(o==viewModel) {
-			System.out.println(""+longitude_deg.get()+" "+latitude_deg.get());
-			topographicMapDisplayer.normalizeCurrentLandmarks(longitude_deg.get(), latitude_deg.get());
-			topographicMapDisplayer.paintPlaneLocation(mapGroup);
-		}
 
 	}
 

@@ -11,6 +11,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import models.PathModel;
 import models.SimModel;
 
@@ -32,19 +34,17 @@ public class ViewModel extends Observable implements Observer {
 	// script text
 	public StringProperty script;
 	// plane location & destination -- data from simulator
-	public DoubleProperty longitude_deg;
-	public DoubleProperty latitude_deg;
-	public DoubleProperty altitude_ft;
-	public DoubleProperty ground_elev_m;
-	public DoubleProperty ground_elev_ft;
+
+	public DoubleProperty csv_srcX, csv_srcY, csv_scale;
+	public IntegerProperty csv_rows, csv_cols;
+	public ObjectProperty<Circle> plane;
 
 	// ** path **
 	public StringProperty solverIP;
 	public StringProperty solverPort;
+	// data from the view
 	public IntegerProperty destX;
 	public IntegerProperty destY;
-	public IntegerProperty srcX;
-	public IntegerProperty srcY;
 	public ObjectProperty<double[][]> ground;
 	public ObjectProperty<String[]> directions;
 
@@ -60,18 +60,18 @@ public class ViewModel extends Observable implements Observer {
 		elevator = new SimpleStringProperty();
 		script = new SimpleStringProperty();
 
-		longitude_deg = new SimpleDoubleProperty();
-		latitude_deg = new SimpleDoubleProperty();
-		altitude_ft = new SimpleDoubleProperty();
-		ground_elev_m = new SimpleDoubleProperty();
-		ground_elev_ft = new SimpleDoubleProperty();
+		csv_srcX = new SimpleDoubleProperty();
+		csv_srcY = new SimpleDoubleProperty();
+		csv_scale = new SimpleDoubleProperty();
+		csv_rows = new SimpleIntegerProperty();
+		csv_cols = new SimpleIntegerProperty();
 
 		solverIP = new SimpleStringProperty();
 		solverPort = new SimpleStringProperty();
 		destX = new SimpleIntegerProperty();
 		destY = new SimpleIntegerProperty();
-		srcX = new SimpleIntegerProperty();
-		srcY = new SimpleIntegerProperty();
+		plane = new SimpleObjectProperty<>(new Circle(10, Color.RED));
+		plane.get().setVisible(false);
 		ground = new SimpleObjectProperty<>();
 		directions = new SimpleObjectProperty<>();
 
@@ -111,22 +111,29 @@ public class ViewModel extends Observable implements Observer {
 		pm.connectToSolverServer(solverIP.get(), Integer.parseInt(solverPort.get()));
 	}
 
-	public void calcShortestPath() {
-		pm.calcShortestPath(ground.get(), srcX.get(), srcY.get(), destX.get(), destY.get());
-	}
+//	public void calcShortestPath() {
+//		pm.calcShortestPath(ground.get(), planeIndexX.get(), planeIndexY.get(), destX.get(), destY.get());
+//	}
 
-	private void getPosition() {
+	private void updatePlanePosition() {
 		/*
-		 * array indexes: longitude_deg x | latitude_deg y | altitude_ft | ground_elev_m | ground_elev_ft
+		 * array indexes: longitude_deg x | latitude_deg y | altitude_ft | ground_elev_m
+		 * | ground_elev_ft
 		 */
 		double[] position = sm.getPlaneLocation();
-		longitude_deg.set(position[0]);
-		latitude_deg.set(position[1]);
-		altitude_ft.set(position[2]);
-		ground_elev_m.set(position[3]);
-		ground_elev_ft.set(position[4]);
-		setChanged();
-		notifyObservers();
+		double longitude_deg = position[0];
+		double latitude_deg = position[1];
+//		double altitude_ft=position[2];
+//		double ground_elev_m=position[3];
+//		double ground_elev_ft=position[4];
+
+		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get());
+		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get()));
+		System.out.println("x: " + currentIndexX + " , y: " + currentIndexY);
+		plane.get().setCenterX(currentIndexX);
+		plane.get().setCenterY(currentIndexY);
+		if (!plane.get().isVisible())
+			plane.get().setVisible(true);
 	}
 
 	@Override
@@ -135,8 +142,7 @@ public class ViewModel extends Observable implements Observer {
 			directions.set(pm.getShortestPath());
 		}
 		if (o == sm) {
-//			get the arguments
-			getPosition();
+			updatePlanePosition();
 		}
 	}
 
