@@ -73,7 +73,8 @@ public class ViewModel extends Observable implements Observer {
 		plane = new SimpleObjectProperty<>(new Circle(10, Color.RED));
 		plane.get().setVisible(false);
 		ground = new SimpleObjectProperty<>();
-		directions = new SimpleObjectProperty<>();
+		String[] s= {""};
+		directions = new SimpleObjectProperty<>(s);
 
 		openServer();
 		System.out.println("openned server");
@@ -111,9 +112,9 @@ public class ViewModel extends Observable implements Observer {
 		pm.connectToSolverServer(solverIP.get(), Integer.parseInt(solverPort.get()));
 	}
 
-//	public void calcShortestPath() {
-//		pm.calcShortestPath(ground.get(), planeIndexX.get(), planeIndexY.get(), destX.get(), destY.get());
-//	}
+	public void calcShortestPath() {
+		pm.calcShortestPath(ground.get(), (int)plane.get().getCenterX(), (int)plane.get().getCenterY(), destX.get(), destY.get());
+	}
 
 	private void updatePlanePosition() {
 		/*
@@ -129,7 +130,7 @@ public class ViewModel extends Observable implements Observer {
 
 		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get());
 		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get()));
-		System.out.println("x: " + currentIndexX + " , y: " + currentIndexY);
+//		System.out.println("x: " + currentIndexX + " , y: " + currentIndexY);
 		plane.get().setCenterX(currentIndexX);
 		plane.get().setCenterY(currentIndexY);
 		if (!plane.get().isVisible())
@@ -140,6 +141,8 @@ public class ViewModel extends Observable implements Observer {
 	public void update(Observable o, Object arg) {
 		if (o == pm) {
 			directions.set(pm.getShortestPath());
+			setChanged();
+			notifyObservers();
 		}
 		if (o == sm) {
 			updatePlanePosition();

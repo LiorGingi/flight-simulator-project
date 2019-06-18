@@ -32,7 +32,9 @@ public class TopographicMapDisplayer extends Canvas {
 
 		draw();
 	}
-
+	public double[][] getGroundField(){
+		return this.groundField;
+	}
 	private void draw() {
 		if (groundField != null) {
 			cellW = getWidth() / groundField[0].length;
@@ -56,8 +58,7 @@ public class TopographicMapDisplayer extends Canvas {
 		destY = (int) (y / cellH);
 	}
 
-	public void paintPath(String path, Group group) {
-		String[] directions = path.split(",");
+	public void paintPath(String[] directions, Group group) {
 		double currentX = sourceX * cellW;
 		double currentY = sourceY * cellH;
 		for (int i = 0; i < directions.length; i++) {

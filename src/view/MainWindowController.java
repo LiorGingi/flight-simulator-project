@@ -50,6 +50,8 @@ public class MainWindowController implements Observer {
 	private DoubleProperty csv_srcX, csv_srcY, csv_scale;
 	private IntegerProperty csv_rows, csv_cols;
 	private ObjectProperty<Circle> plane;
+	private ObjectProperty<String[]> directions;
+	private ObjectProperty<double[][]> ground;
 
 	// Autopilot mode
 	@FXML
@@ -134,6 +136,8 @@ public class MainWindowController implements Observer {
 		simServerPort = new TextField();
 		pathServerIp = new TextField();
 		pathServerPort = new TextField();
+		directions = new SimpleObjectProperty<>();
+		ground=new SimpleObjectProperty<>();
 		rudderSlider = new Slider();
 		throttleSlider = new Slider();
 		joystick = new Circle();
@@ -185,6 +189,7 @@ public class MainWindowController implements Observer {
 		// need to add data members according to notes file
 		viewModel.destX.bind(destX);
 		viewModel.destY.bind(destY);
+		directions.bind(viewModel.directions);
 	}
 
 	@FXML
@@ -282,6 +287,8 @@ public class MainWindowController implements Observer {
 				}
 				br.close();
 				topographicMapDisplayer.setGroundField(min, max, valuesInDouble);
+				ground.set(topographicMapDisplayer.getGroundField());
+				viewModel.ground.bind(ground);
 				topographicColorRangeDisplayer.setColorRange(min, max);
 
 				minHeight.setText("" + min);
@@ -402,7 +409,7 @@ public class MainWindowController implements Observer {
 	// update the location of the plane on the map
 	@Override
 	public void update(Observable o, Object arg) {
-
+		paintPath();
 	}
 
 	@FXML
@@ -420,6 +427,7 @@ public class MainWindowController implements Observer {
 			topographicMapDisplayer.calculateCellOnMap(event.getX(), event.getY());
 			destX.set(topographicMapDisplayer.destX);
 			destY.set(topographicMapDisplayer.destY);
+			viewModel.calcShortestPath();
 		}
 	}
 
@@ -443,24 +451,25 @@ public class MainWindowController implements Observer {
 	}
 
 	@FXML
-	private void calculatePath() {
+	private void paintPath() {
 		// need to interact with solver server and get a path string
-		String path = "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
-				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
-				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
-				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
-				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
-				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
-				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
-				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
-				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,";
-		topographicMapDisplayer.paintPath(path, mapGroup);
+//		String path = "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
+//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
+//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
+//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
+//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
+//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
+//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
+//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
+//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
+//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,";
+		if(directions.get()!=null)
+			topographicMapDisplayer.paintPath(directions.get(), mapGroup);
 	}
 
 	public void setSliderOnDragEvent() {

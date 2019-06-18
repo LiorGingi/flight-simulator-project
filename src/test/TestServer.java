@@ -29,13 +29,13 @@ public class TestServer {
 
 			StringBuilder sol=new StringBuilder();
 			int i=0,j=0;
-			while(i<249 || j<349){
-				if(j<349 && r.nextBoolean()){
+			while(i<150 || j<200){
+				if(j<200 && r.nextBoolean()){
 					sol.append(",Right");
 					j++;
 					matrix[i][j]=r.nextInt(100);
 				}else{
-					if(i<249){
+					if(i<150){
 						sol.append(",Down");
 						i++;
 						matrix[i][j]=r.nextInt(100);						
@@ -54,9 +54,9 @@ public class TestServer {
 			}
 			out.println("end");
 			out.println("0,0");
-			out.println("249,349");
+			out.println("150,200");
 			out.flush();
-			System.out.println("\tend\n\t0,0\n\t199,199");
+			System.out.println("\tend\n\t0,0\n\t150,200");
 			System.out.println("\tproblem sent, waiting for solution...");
 			String usol=in.readLine();
 			System.out.println("\tsolution received");

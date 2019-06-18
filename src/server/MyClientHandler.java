@@ -50,7 +50,7 @@ public class MyClientHandler implements ClientHandler {
 				for (int i = 0; i < boardRows; i++) {
 					for (int j = 0; j < boardCols; j++) {
 						board.getBoard()[i][j] = new State<Position>(
-								new Position(i, j, Integer.parseInt(requestsArr.get(i)[j])), 0);
+								new Position(i, j, Double.parseDouble(requestsArr.get(i)[j])), 0);
 					}
 				}
 
