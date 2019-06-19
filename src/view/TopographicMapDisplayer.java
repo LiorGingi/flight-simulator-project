@@ -1,5 +1,6 @@
 package view;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javafx.fxml.FXML;
@@ -11,10 +12,13 @@ import javafx.scene.shape.Circle;
 
 public class TopographicMapDisplayer extends Canvas {
 	private double[][] groundField;
+	private ArrayList<Circle> pathObjects;
 	private double heightRange;
 	private double minHeight;
 	private double cellW;
 	private double cellH;
+	
+	
 	public double getCellW() {
 		return cellW;
 	}
@@ -38,7 +42,9 @@ public class TopographicMapDisplayer extends Canvas {
 		this.groundField = table;
 		this.minHeight = min;
 		this.heightRange = max - min;
-
+		if (pathObjects==null) {
+			pathObjects = new ArrayList<Circle>();
+		}
 		draw();
 	}
 	public double[][] getGroundField(){
@@ -66,6 +72,12 @@ public class TopographicMapDisplayer extends Canvas {
 		System.out.println(sourceX+","+sourceY);
 		double currentX = sourceX;
 		double currentY = sourceY;
+		ArrayList<Circle> newPath = new ArrayList<Circle>();
+		
+		pathObjects.forEach((circle) -> {
+			group.getChildren().remove(circle);
+		});
+		
 		for (int i = 0; i < directions.length; i++) {
 			Circle positionInPath = new Circle();
 			switch (directions[i]) {
@@ -87,7 +99,8 @@ public class TopographicMapDisplayer extends Canvas {
 				positionInPath.setCenterX(currentX);
 				positionInPath.setCenterY(currentY);
 				group.getChildren().add(positionInPath);
-			
+				newPath.add(positionInPath);
 		}
+		pathObjects = newPath;
 	}
 }
