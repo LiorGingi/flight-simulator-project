@@ -113,7 +113,7 @@ public class ViewModel extends Observable implements Observer {
 	}
 
 	public void calcShortestPath() {
-		pm.calcShortestPath(ground.get(), (int)plane.get().getCenterX(), (int)plane.get().getCenterY(), destY.get(), destX.get());
+		pm.calcShortestPath(ground.get(), (int)plane.get().getCenterX(), (int)plane.get().getCenterY(), destX.get(), destY.get());
 	}
 
 	private void updatePlanePosition() {

@@ -74,8 +74,6 @@ public class MainWindowController implements Observer {
 	private Label minHeight;
 	@FXML
 	private Label maxHeight;
-	@FXML
-	private PathDisplayer pathDisplayer;
 
 	// Connect to server/path solver window
 	@FXML
@@ -124,7 +122,6 @@ public class MainWindowController implements Observer {
 		calculatePathBtn = new Button();
 		topographicMapDisplayer = new TopographicMapDisplayer();
 		topographicColorRangeDisplayer = new TopographicColorRangeDisplayer();
-		pathDisplayer = new PathDisplayer();
 		simScript = new TextArea();
 		connectDataErrorMsg = new Label();
 		minHeight = new Label();
@@ -427,6 +424,7 @@ public class MainWindowController implements Observer {
 			topographicMapDisplayer.calculateCellOnMap(event.getX(), event.getY());
 			destX.set(topographicMapDisplayer.destX);
 			destY.set(topographicMapDisplayer.destY);
+			System.out.println(""+topographicMapDisplayer.destX+" "+topographicMapDisplayer.destY);
 			viewModel.calcShortestPath();
 		}
 	}
