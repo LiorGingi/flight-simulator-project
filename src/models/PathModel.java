@@ -40,8 +40,8 @@ public class PathModel extends Observable {
 			out.println(field[i][j]);
 		}
 		out.println("end");
-		out.println(0 + "," + 0);
-		out.println(120 + "," + 120);
+		out.println(srcY + "," + srcX);
+		out.println(dstY + "," + dstX);
 		out.flush();
 		try {
 			// get the result from solver server (directions delimited by ,)
