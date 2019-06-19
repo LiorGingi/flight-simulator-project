@@ -10,9 +10,9 @@ import java.util.Observable;
 
 public class PathModel extends Observable {
 
-	private Socket solverServer = null;
-	private PrintWriter out = null;
-	private BufferedReader in = null;
+	private static Socket solverServer = null;
+	private static PrintWriter out = null;
+	private static BufferedReader in = null;
 	private String[] directions;
 
 	public void connectToSolverServer(String ip, int port) {
@@ -31,21 +31,20 @@ public class PathModel extends Observable {
 		// send problem according to solver server protocol
 		int i, j;
 		for (i = 0; i < field.length; i++) {
-			System.out.print("\t");
-			for (j = 0; j < field[i].length - 1; j++) {
+			for (j = 0; j < field[i].length-1; j++) {
 				out.print(field[i][j] + ",");
-				System.out.print(field[i][j] + ",");
 			}
 			out.println(field[i][j]);
-			System.out.println(field[i][j]);
 		}
 		out.println("end");
-		out.println(srcX + "," + srcY);
-		out.println(dstX + "," + dstY);
+		out.println(srcY + "," + srcX);
+		out.println(dstY + "," + dstX);
 		out.flush();
 		try {
 			// get the result from solver server (directions delimited by ,)
-			directions = in.readLine().split(",");
+			String response=in.readLine();
+			System.out.println(response);
+			directions = response.split(",");
 			setChanged();
 			notifyObservers();
 		} catch (IOException e) {

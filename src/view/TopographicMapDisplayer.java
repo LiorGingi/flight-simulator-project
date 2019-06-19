@@ -1,5 +1,8 @@
 package view;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -9,15 +12,25 @@ import javafx.scene.shape.Circle;
 
 public class TopographicMapDisplayer extends Canvas {
 	private double[][] groundField;
+	private ArrayList<Circle> pathObjects;
 	private double heightRange;
 	private double minHeight;
 	private double cellW;
 	private double cellH;
+	
+	
+	public double getCellW() {
+		return cellW;
+	}
+	public double getCellH() {
+		return cellH;
+	}
+
 	public static boolean mapLoaded = false;
 
 	// source and destination cells in the grid
-	public static int destX; // the destination point on the grid itself
-	public static int destY;
+	public static double destX; // the destination point on the grid itself
+	public static double destY;
 	public static int sourceX; // the source point of the grid itself
 	public static int sourceY;
 	public Circle planeLocation;
@@ -29,10 +42,14 @@ public class TopographicMapDisplayer extends Canvas {
 		this.groundField = table;
 		this.minHeight = min;
 		this.heightRange = max - min;
-
+		if (pathObjects==null) {
+			pathObjects = new ArrayList<Circle>();
+		}
 		draw();
 	}
-
+	public double[][] getGroundField(){
+		return this.groundField;
+	}
 	private void draw() {
 		if (groundField != null) {
 			cellW = getWidth() / groundField[0].length;
@@ -51,38 +68,39 @@ public class TopographicMapDisplayer extends Canvas {
 		}
 	}
 
-	public void calculateCellOnMap(double x, double y) {
-		destX = (int) (x / cellW);
-		destY = (int) (y / cellH);
-	}
-
-	public void paintPath(String path, Group group) {
-		String[] directions = path.split(",");
-		double currentX = sourceX * cellW;
-		double currentY = sourceY * cellH;
+	public void paintPath(String[] directions, Group group, double sourceX, double sourceY) {
+		System.out.println(sourceX+","+sourceY);
+		double currentX = sourceX;
+		double currentY = sourceY;
+		ArrayList<Circle> newPath = new ArrayList<Circle>();
+		
+		pathObjects.forEach((circle) -> {
+			group.getChildren().remove(circle);
+		});
+		
 		for (int i = 0; i < directions.length; i++) {
 			Circle positionInPath = new Circle();
 			switch (directions[i]) {
 			case "Up":
-				currentY = currentY - cellH;
+				currentY -=cellH;
 				break;
 			case "Down":
-				currentY = currentY + cellH;
+				currentY +=cellH;
 				break;
 			case "Right":
-				currentX = currentX + cellW;
+				currentX +=cellW;
 				break;
 			case "Left":
-				currentX = currentX - cellW;
+				currentX -=cellW;
 				break;
 			}
-			if ((i % 15 == 0) && (currentX >= 0 && currentX <= getWidth())
-					&& (currentY >= 0 && currentY <= getHeight())) { // paint the point
+			 // paint the point
 				positionInPath = new Circle(2, Color.BLUE);
 				positionInPath.setCenterX(currentX);
 				positionInPath.setCenterY(currentY);
 				group.getChildren().add(positionInPath);
-			}
+				newPath.add(positionInPath);
 		}
+		pathObjects = newPath;
 	}
 }

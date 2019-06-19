@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import models.PathModel;
 import models.SimModel;
+import view.TopographicMapDisplayer;
 
 public class ViewModel extends Observable implements Observer {
 	// models
@@ -43,10 +44,11 @@ public class ViewModel extends Observable implements Observer {
 	public StringProperty solverIP;
 	public StringProperty solverPort;
 	// data from the view
-	public IntegerProperty destX;
-	public IntegerProperty destY;
+	public DoubleProperty destX;
+	public DoubleProperty destY;
 	public ObjectProperty<double[][]> ground;
 	public ObjectProperty<String[]> directions;
+	public DoubleProperty groundCellW, groundCellH;
 
 	// *** end of variables
 	public ViewModel(PathModel pm, SimModel sm) {
@@ -65,15 +67,19 @@ public class ViewModel extends Observable implements Observer {
 		csv_scale = new SimpleDoubleProperty();
 		csv_rows = new SimpleIntegerProperty();
 		csv_cols = new SimpleIntegerProperty();
+		
+		groundCellH=new SimpleDoubleProperty();
+		groundCellW=new SimpleDoubleProperty();
 
 		solverIP = new SimpleStringProperty();
 		solverPort = new SimpleStringProperty();
-		destX = new SimpleIntegerProperty();
-		destY = new SimpleIntegerProperty();
+		destX = new SimpleDoubleProperty();
+		destY = new SimpleDoubleProperty();
 		plane = new SimpleObjectProperty<>(new Circle(10, Color.RED));
 		plane.get().setVisible(false);
 		ground = new SimpleObjectProperty<>();
-		directions = new SimpleObjectProperty<>();
+		String[] s= {""};
+		directions = new SimpleObjectProperty<>(s);
 
 		openServer();
 		System.out.println("openned server");
@@ -111,9 +117,13 @@ public class ViewModel extends Observable implements Observer {
 		pm.connectToSolverServer(solverIP.get(), Integer.parseInt(solverPort.get()));
 	}
 
-//	public void calcShortestPath() {
-//		pm.calcShortestPath(ground.get(), planeIndexX.get(), planeIndexY.get(), destX.get(), destY.get());
-//	}
+	public void calcShortestPath() {
+		int destX_index=(int)(destX.get()/groundCellW.get());
+		int destY_index=(int)(destY.get()/groundCellH.get());
+		int planeX_index=(int)(plane.get().getCenterX()/groundCellW.get());
+		int planeY_index=(int)(plane.get().getCenterY()/groundCellH.get());
+		pm.calcShortestPath(ground.get(), planeX_index, planeY_index, destX_index, destY_index);
+	}
 
 	private void updatePlanePosition() {
 		/*
@@ -127,9 +137,9 @@ public class ViewModel extends Observable implements Observer {
 //		double ground_elev_m=position[3];
 //		double ground_elev_ft=position[4];
 
-		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get());
-		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get()));
-		System.out.println("x: " + currentIndexX + " , y: " + currentIndexY);
+		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get()*groundCellW.get());
+		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get())*groundCellH.get());
+//		System.out.println("x: " + currentIndexX + " , y: " + currentIndexY);
 		plane.get().setCenterX(currentIndexX);
 		plane.get().setCenterY(currentIndexY);
 		if (!plane.get().isVisible())
@@ -140,6 +150,8 @@ public class ViewModel extends Observable implements Observer {
 	public void update(Observable o, Object arg) {
 		if (o == pm) {
 			directions.set(pm.getShortestPath());
+			setChanged();
+			notifyObservers();
 		}
 		if (o == sm) {
 			updatePlanePosition();

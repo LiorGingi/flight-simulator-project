@@ -21,7 +21,7 @@
 <?import view.TopographicColorRangeDisplayer?>
 <?import view.TopographicMapDisplayer?>
 
-<BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
+<BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
    <left>
       <VBox maxHeight="-Infinity" prefHeight="450.0" prefWidth="400.0" BorderPane.alignment="TOP_CENTER">
          <children>
