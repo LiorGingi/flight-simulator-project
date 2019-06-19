@@ -10,9 +10,9 @@ import java.util.Observable;
 
 public class PathModel extends Observable {
 
-	private Socket solverServer = null;
-	private PrintWriter out = null;
-	private BufferedReader in = null;
+	private static Socket solverServer = null;
+	private static PrintWriter out = null;
+	private static BufferedReader in = null;
 	private String[] directions;
 
 	public void connectToSolverServer(String ip, int port) {
@@ -29,6 +29,9 @@ public class PathModel extends Observable {
 
 	public void calcShortestPath(double[][] field, int srcX, int srcY, int dstX, int dstY) {
 		// send problem according to solver server protocol
+		System.out.println("path_model src: "+srcX+ " ," +srcY);
+		System.out.println("path_model dest: "+dstX+ " ," +dstY);
+		System.out.println("field cols: "+field[0].length +"\nfield rows: "+field.length);
 		int i, j;
 		for (i = 0; i < field.length; i++) {
 			for (j = 0; j < field[i].length-1; j++) {
@@ -37,12 +40,13 @@ public class PathModel extends Observable {
 			out.println(field[i][j]);
 		}
 		out.println("end");
-		out.println(srcX + "," + srcY);
-		out.println(dstX + "," + dstY);
+		out.println(0 + "," + 0);
+		out.println(120 + "," + 120);
 		out.flush();
 		try {
 			// get the result from solver server (directions delimited by ,)
 			String response=in.readLine();
+			System.out.println(response);
 			directions = response.split(",");
 			setChanged();
 			notifyObservers();

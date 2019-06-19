@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import models.PathModel;
 import models.SimModel;
+import view.TopographicMapDisplayer;
 
 public class ViewModel extends Observable implements Observer {
 	// models
@@ -43,10 +44,11 @@ public class ViewModel extends Observable implements Observer {
 	public StringProperty solverIP;
 	public StringProperty solverPort;
 	// data from the view
-	public IntegerProperty destX;
-	public IntegerProperty destY;
+	public DoubleProperty destX;
+	public DoubleProperty destY;
 	public ObjectProperty<double[][]> ground;
 	public ObjectProperty<String[]> directions;
+	public DoubleProperty groundCellW, groundCellH;
 
 	// *** end of variables
 	public ViewModel(PathModel pm, SimModel sm) {
@@ -65,11 +67,14 @@ public class ViewModel extends Observable implements Observer {
 		csv_scale = new SimpleDoubleProperty();
 		csv_rows = new SimpleIntegerProperty();
 		csv_cols = new SimpleIntegerProperty();
+		
+		groundCellH=new SimpleDoubleProperty();
+		groundCellW=new SimpleDoubleProperty();
 
 		solverIP = new SimpleStringProperty();
 		solverPort = new SimpleStringProperty();
-		destX = new SimpleIntegerProperty();
-		destY = new SimpleIntegerProperty();
+		destX = new SimpleDoubleProperty();
+		destY = new SimpleDoubleProperty();
 		plane = new SimpleObjectProperty<>(new Circle(10, Color.RED));
 		plane.get().setVisible(false);
 		ground = new SimpleObjectProperty<>();
@@ -113,7 +118,14 @@ public class ViewModel extends Observable implements Observer {
 	}
 
 	public void calcShortestPath() {
-		pm.calcShortestPath(ground.get(), (int)plane.get().getCenterX(), (int)plane.get().getCenterY(), destX.get(), destY.get());
+		int destX_index=(int)(destX.get()/groundCellW.get());
+		int destY_index=(int)(destY.get()/groundCellH.get());
+		System.out.println("destX , destY   -  view_model: "+ destX.get()+" , "+destY.get());
+		int planeX_index=(int)(plane.get().getCenterX()/groundCellW.get());
+		int planeY_index=(int)(plane.get().getCenterY()/groundCellH.get());
+		System.out.println("dest indexes: "+destX_index +","+destY_index);
+		System.out.println("plane indexes: "+planeX_index +","+planeY_index);
+		pm.calcShortestPath(ground.get(), planeX_index, planeY_index, destX_index, destY_index);
 	}
 
 	private void updatePlanePosition() {

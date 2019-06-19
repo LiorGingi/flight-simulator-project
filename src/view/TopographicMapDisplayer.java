@@ -15,11 +15,18 @@ public class TopographicMapDisplayer extends Canvas {
 	private double minHeight;
 	private double cellW;
 	private double cellH;
+	public double getCellW() {
+		return cellW;
+	}
+	public double getCellH() {
+		return cellH;
+	}
+
 	public static boolean mapLoaded = false;
 
 	// source and destination cells in the grid
-	public static int destX; // the destination point on the grid itself
-	public static int destY;
+	public static double destX; // the destination point on the grid itself
+	public static double destY;
 	public static int sourceX; // the source point of the grid itself
 	public static int sourceY;
 	public Circle planeLocation;
@@ -55,29 +62,24 @@ public class TopographicMapDisplayer extends Canvas {
 		}
 	}
 
-	public void calculateCellOnMap(double x, double y) {
-		destX = (int) (x / cellW);
-		destY = (int) (y / cellH);
-	}
-
-	public void paintPath(String[] directions, Group group, int sourceX, int sourceY) {
-		System.out.println(Arrays.toString(directions));
-		int currentX = sourceX;
-		int currentY = sourceY;
+	public void paintPath(String[] directions, Group group, double sourceX, double sourceY) {
+		System.out.println(sourceX+","+sourceY);
+		double currentX = sourceX;
+		double currentY = sourceY;
 		for (int i = 0; i < directions.length; i++) {
 			Circle positionInPath = new Circle();
 			switch (directions[i]) {
 			case "Up":
-				currentY --;
+				currentY -=cellH;
 				break;
 			case "Down":
-				currentY ++;
+				currentY +=cellH;
 				break;
 			case "Right":
-				currentX ++;
+				currentX +=cellW;
 				break;
 			case "Left":
-				currentX --;
+				currentX -=cellW;
 				break;
 			}
 			 // paint the point

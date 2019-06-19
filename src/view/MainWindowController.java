@@ -45,13 +45,14 @@ public class MainWindowController implements Observer {
 	private Circle destCircle;
 
 	// MVVM Variables
-	private IntegerProperty destX, destY;
+	private DoubleProperty destX, destY;
 	private StringProperty aileronV, elevatorV;
 	private DoubleProperty csv_srcX, csv_srcY, csv_scale;
 	private IntegerProperty csv_rows, csv_cols;
 	private ObjectProperty<Circle> plane;
 	private ObjectProperty<String[]> directions;
 	private ObjectProperty<double[][]> ground;
+	private DoubleProperty gridCellH,gridCellW;
 
 	// Autopilot mode
 	@FXML
@@ -153,10 +154,13 @@ public class MainWindowController implements Observer {
 		csv_scale = new SimpleDoubleProperty();
 		csv_rows = new SimpleIntegerProperty();
 		csv_cols = new SimpleIntegerProperty();
+		
+		gridCellH=new SimpleDoubleProperty();
+		gridCellW=new SimpleDoubleProperty();
 
 		plane = new SimpleObjectProperty<>();
-		destX = new SimpleIntegerProperty();
-		destY = new SimpleIntegerProperty();
+		destX = new SimpleDoubleProperty();
+		destY = new SimpleDoubleProperty();
 	}
 
 	public void setViewModel(ViewModel vm) {
@@ -179,14 +183,14 @@ public class MainWindowController implements Observer {
 		viewModel.csv_scale.bind(csv_scale);
 		viewModel.csv_rows.bind(csv_rows);
 		viewModel.csv_cols.bind(csv_cols);
-
 		plane.bind(viewModel.plane);
 		mapGroup.getChildren().add(plane.get());
 		// ***path model***
-		// need to add data members according to notes file
 		viewModel.destX.bind(destX);
 		viewModel.destY.bind(destY);
 		directions.bind(viewModel.directions);
+		viewModel.groundCellH.bind(gridCellH);
+		viewModel.groundCellW.bind(gridCellW);
 	}
 
 	@FXML
@@ -284,6 +288,8 @@ public class MainWindowController implements Observer {
 				}
 				br.close();
 				topographicMapDisplayer.setGroundField(min, max, valuesInDouble);
+				gridCellH.set(topographicMapDisplayer.getCellH());
+				gridCellW.set(topographicMapDisplayer.getCellW());
 				ground.set(topographicMapDisplayer.getGroundField());
 				viewModel.ground.bind(ground);
 				topographicColorRangeDisplayer.setColorRange(min, max);
@@ -417,14 +423,12 @@ public class MainWindowController implements Observer {
 				&& event.getY() >= 5 && event.getY() <= 295) {
 
 			Circle circle = new Circle(5, Color.BLACK);
-			circle.setCenterX(event.getX());
+			circle.setCenterX(event.getX()); //coordinates on the map
 			circle.setCenterY(event.getY());
 			mapGroup.getChildren().remove(destCircle);
 			mapGroup.getChildren().add(destCircle = circle);
-			topographicMapDisplayer.calculateCellOnMap(event.getX(), event.getY());
-			destX.set(topographicMapDisplayer.destX);
-			destY.set(topographicMapDisplayer.destY);
-			System.out.println(""+topographicMapDisplayer.destX+" "+topographicMapDisplayer.destY);
+			destX.set(event.getX()); //cells on grid
+			destY.set(event.getY());
 			viewModel.calcShortestPath();
 		}
 	}
@@ -467,7 +471,7 @@ public class MainWindowController implements Observer {
 //				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
 //				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,";
 		if(directions.get()!=null)
-			topographicMapDisplayer.paintPath(directions.get(), mapGroup, (int)plane.get().getCenterX(),(int)plane.get().getCenterY());
+			topographicMapDisplayer.paintPath(directions.get(), mapGroup, plane.get().getCenterX(),plane.get().getCenterY());
 	}
 
 	public void setSliderOnDragEvent() {
