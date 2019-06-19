@@ -29,9 +29,6 @@ public class PathModel extends Observable {
 
 	public void calcShortestPath(double[][] field, int srcX, int srcY, int dstX, int dstY) {
 		// send problem according to solver server protocol
-		System.out.println("path_model src: "+srcX+ " ," +srcY);
-		System.out.println("path_model dest: "+dstX+ " ," +dstY);
-		System.out.println("field cols: "+field[0].length +"\nfield rows: "+field.length);
 		int i, j;
 		for (i = 0; i < field.length; i++) {
 			for (j = 0; j < field[i].length-1; j++) {

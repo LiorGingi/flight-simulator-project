@@ -120,11 +120,8 @@ public class ViewModel extends Observable implements Observer {
 	public void calcShortestPath() {
 		int destX_index=(int)(destX.get()/groundCellW.get());
 		int destY_index=(int)(destY.get()/groundCellH.get());
-		System.out.println("destX , destY   -  view_model: "+ destX.get()+" , "+destY.get());
 		int planeX_index=(int)(plane.get().getCenterX()/groundCellW.get());
 		int planeY_index=(int)(plane.get().getCenterY()/groundCellH.get());
-		System.out.println("dest indexes: "+destX_index +","+destY_index);
-		System.out.println("plane indexes: "+planeX_index +","+planeY_index);
 		pm.calcShortestPath(ground.get(), planeX_index, planeY_index, destX_index, destY_index);
 	}
 
@@ -140,8 +137,8 @@ public class ViewModel extends Observable implements Observer {
 //		double ground_elev_m=position[3];
 //		double ground_elev_ft=position[4];
 
-		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get());
-		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get()));
+		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get()*groundCellW.get());
+		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get())*groundCellH.get());
 //		System.out.println("x: " + currentIndexX + " , y: " + currentIndexY);
 		plane.get().setCenterX(currentIndexX);
 		plane.get().setCenterY(currentIndexY);
