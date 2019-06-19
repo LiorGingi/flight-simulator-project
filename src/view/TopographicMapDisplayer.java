@@ -1,5 +1,7 @@
 package view;
 
+import java.util.Arrays;
+
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -58,32 +60,32 @@ public class TopographicMapDisplayer extends Canvas {
 		destY = (int) (y / cellH);
 	}
 
-	public void paintPath(String[] directions, Group group) {
-		double currentX = sourceX * cellW;
-		double currentY = sourceY * cellH;
+	public void paintPath(String[] directions, Group group, int sourceX, int sourceY) {
+		System.out.println(Arrays.toString(directions));
+		int currentX = sourceX;
+		int currentY = sourceY;
 		for (int i = 0; i < directions.length; i++) {
 			Circle positionInPath = new Circle();
 			switch (directions[i]) {
 			case "Up":
-				currentY = currentY - cellH;
+				currentY --;
 				break;
 			case "Down":
-				currentY = currentY + cellH;
+				currentY ++;
 				break;
 			case "Right":
-				currentX = currentX + cellW;
+				currentX ++;
 				break;
 			case "Left":
-				currentX = currentX - cellW;
+				currentX --;
 				break;
 			}
-			if ((i % 15 == 0) && (currentX >= 0 && currentX <= getWidth())
-					&& (currentY >= 0 && currentY <= getHeight())) { // paint the point
+			 // paint the point
 				positionInPath = new Circle(2, Color.BLUE);
 				positionInPath.setCenterX(currentX);
 				positionInPath.setCenterY(currentY);
 				group.getChildren().add(positionInPath);
-			}
+			
 		}
 	}
 }

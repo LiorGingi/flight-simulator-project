@@ -469,7 +469,7 @@ public class MainWindowController implements Observer {
 //				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
 //				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,";
 		if(directions.get()!=null)
-			topographicMapDisplayer.paintPath(directions.get(), mapGroup);
+			topographicMapDisplayer.paintPath(directions.get(), mapGroup, (int)plane.get().getCenterX(),(int)plane.get().getCenterY());
 	}
 
 	public void setSliderOnDragEvent() {
