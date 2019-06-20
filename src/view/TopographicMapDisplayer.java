@@ -1,7 +1,6 @@
 package view;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -69,7 +68,6 @@ public class TopographicMapDisplayer extends Canvas {
 	}
 
 	public void paintPath(String[] directions, Group group, double sourceX, double sourceY) {
-		System.out.println(sourceX+","+sourceY);
 		double currentX = sourceX;
 		double currentY = sourceY;
 		ArrayList<Circle> newPath = new ArrayList<Circle>();

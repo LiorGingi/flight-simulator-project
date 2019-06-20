@@ -52,7 +52,7 @@ public class MainWindowController implements Observer {
 	private ObjectProperty<Circle> plane;
 	private ObjectProperty<String[]> directions;
 	private ObjectProperty<double[][]> ground;
-	private DoubleProperty gridCellH,gridCellW;
+	private DoubleProperty gridCellH, gridCellW;
 
 	// Autopilot mode
 	@FXML
@@ -135,7 +135,7 @@ public class MainWindowController implements Observer {
 		pathServerIp = new TextField();
 		pathServerPort = new TextField();
 		directions = new SimpleObjectProperty<>();
-		ground=new SimpleObjectProperty<>();
+		ground = new SimpleObjectProperty<>();
 		rudderSlider = new Slider();
 		throttleSlider = new Slider();
 		joystick = new Circle();
@@ -154,9 +154,9 @@ public class MainWindowController implements Observer {
 		csv_scale = new SimpleDoubleProperty();
 		csv_rows = new SimpleIntegerProperty();
 		csv_cols = new SimpleIntegerProperty();
-		
-		gridCellH=new SimpleDoubleProperty();
-		gridCellW=new SimpleDoubleProperty();
+
+		gridCellH = new SimpleDoubleProperty();
+		gridCellW = new SimpleDoubleProperty();
 
 		plane = new SimpleObjectProperty<>();
 		destX = new SimpleDoubleProperty();
@@ -423,11 +423,11 @@ public class MainWindowController implements Observer {
 				&& event.getY() >= 5 && event.getY() <= 295) {
 
 			Circle circle = new Circle(5, Color.BLACK);
-			circle.setCenterX(event.getX()); //coordinates on the map
+			circle.setCenterX(event.getX()); // coordinates on the map
 			circle.setCenterY(event.getY());
 			mapGroup.getChildren().remove(destCircle);
 			mapGroup.getChildren().add(destCircle = circle);
-			destX.set(event.getX()); //cells on grid
+			destX.set(event.getX()); // cells on grid
 			destY.set(event.getY());
 			viewModel.calcShortestPath();
 		}
@@ -454,24 +454,9 @@ public class MainWindowController implements Observer {
 
 	@FXML
 	private void paintPath() {
-		// need to interact with solver server and get a path string
-//		String path = "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
-//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
-//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
-//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right,"
-//				+ "Up,Up,Up,Up,Up,Up,Up,Up,Up,Up,Right,Right,Right,Right,Right,Right,Right"
-//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
-//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
-//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
-//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,"
-//				+ "Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,Right, Right,";
-		if(directions.get()!=null)
-			topographicMapDisplayer.paintPath(directions.get(), mapGroup, plane.get().getCenterX(),plane.get().getCenterY());
+		if (directions.get() != null)
+			topographicMapDisplayer.paintPath(directions.get(), mapGroup, plane.get().getCenterX(),
+					plane.get().getCenterY());
 	}
 
 	public void setSliderOnDragEvent() {
