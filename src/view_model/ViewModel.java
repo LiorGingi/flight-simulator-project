@@ -15,7 +15,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import models.PathModel;
 import models.SimModel;
-import view.TopographicMapDisplayer;
 
 public class ViewModel extends Observable implements Observer {
 	// models
@@ -67,9 +66,9 @@ public class ViewModel extends Observable implements Observer {
 		csv_scale = new SimpleDoubleProperty();
 		csv_rows = new SimpleIntegerProperty();
 		csv_cols = new SimpleIntegerProperty();
-		
-		groundCellH=new SimpleDoubleProperty();
-		groundCellW=new SimpleDoubleProperty();
+
+		groundCellH = new SimpleDoubleProperty();
+		groundCellW = new SimpleDoubleProperty();
 
 		solverIP = new SimpleStringProperty();
 		solverPort = new SimpleStringProperty();
@@ -78,7 +77,7 @@ public class ViewModel extends Observable implements Observer {
 		plane = new SimpleObjectProperty<>(new Circle(10, Color.RED));
 		plane.get().setVisible(false);
 		ground = new SimpleObjectProperty<>();
-		String[] s= {""};
+		String[] s = { "" };
 		directions = new SimpleObjectProperty<>(s);
 
 		openServer();
@@ -107,8 +106,6 @@ public class ViewModel extends Observable implements Observer {
 	}
 
 	public void setJoystickChanges() {
-		System.out.println("aileron: " + aileron.get());
-		System.out.println("elevator: " + elevator.get());
 		sm.setAileron(Double.parseDouble(aileron.get()));
 		sm.setElevator(Double.parseDouble(elevator.get()));
 	}
@@ -118,10 +115,10 @@ public class ViewModel extends Observable implements Observer {
 	}
 
 	public void calcShortestPath() {
-		int destX_index=(int)(destX.get()/groundCellW.get());
-		int destY_index=(int)(destY.get()/groundCellH.get());
-		int planeX_index=(int)(plane.get().getCenterX()/groundCellW.get());
-		int planeY_index=(int)(plane.get().getCenterY()/groundCellH.get());
+		int destX_index = (int) (destX.get() / groundCellW.get());
+		int destY_index = (int) (destY.get() / groundCellH.get());
+		int planeX_index = (int) (plane.get().getCenterX() / groundCellW.get());
+		int planeY_index = (int) (plane.get().getCenterY() / groundCellH.get());
 		pm.calcShortestPath(ground.get(), planeX_index, planeY_index, destX_index, destY_index);
 	}
 
@@ -137,9 +134,8 @@ public class ViewModel extends Observable implements Observer {
 //		double ground_elev_m=position[3];
 //		double ground_elev_ft=position[4];
 
-		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get()*groundCellW.get());
-		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get())*groundCellH.get());
-//		System.out.println("x: " + currentIndexX + " , y: " + currentIndexY);
+		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get() * groundCellW.get());
+		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get()) * groundCellH.get());
 		plane.get().setCenterX(currentIndexX);
 		plane.get().setCenterY(currentIndexY);
 		if (!plane.get().isVisible())
