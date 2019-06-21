@@ -21,24 +21,24 @@
 <?import view.TopographicColorRangeDisplayer?>
 <?import view.TopographicMapDisplayer?>
 
-<BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
+<BorderPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
    <left>
       <VBox maxHeight="-Infinity" prefHeight="450.0" prefWidth="400.0" BorderPane.alignment="TOP_CENTER">
          <children>
-            <ButtonBar prefHeight="40.0" prefWidth="400.0">
+            <ButtonBar maxWidth="-Infinity" prefHeight="40.0" prefWidth="400.0">
               <buttons>
                 <Button fx:id="openConnectWindow" mnemonicParsing="false" onAction="#openConnectWindow" text="Connect" />
-                  <Button mnemonicParsing="false" onAction="#loadData" text="Load Data" />
-                  <Button fx:id="calculatePathBtn" mnemonicParsing="false" onAction="#openConnectWindow" text="Calculate Path" />
+                  <Button fx:id="loadMapBtn" mnemonicParsing="false" onAction="#loadData" text="Load Data" visible="false" />
+                  <Button fx:id="calculatePathBtn" mnemonicParsing="false" onAction="#openConnectWindow" prefHeight="25.0" prefWidth="120.0" text="Calculate Path" visible="false" />
               </buttons>
             </ButtonBar>
            <Group fx:id="mapGroup" onMouseClicked="#mapMouseClick">
                <children>
       		 <TopographicMapDisplayer fx:id="topographicMapDisplayer" height="300.0" width="350.0" />
                </children>
-           <!--     <VBox.margin>
+               <VBox.margin>
                   <Insets left="25.0" top="60.0" />
-               </VBox.margin> -->
+               </VBox.margin>
             </Group>
             <TopographicColorRangeDisplayer fx:id="topographicColorRangeDisplayer" height="23.0" width="350.0">
                <VBox.margin>
@@ -47,15 +47,15 @@
             </TopographicColorRangeDisplayer>
             <HBox prefHeight="25.0" prefWidth="400.0">
                <children>
-                  <Label fx:id="minHeight">
+                  <Label fx:id="minHeight" textFill="WHITE">
                      <HBox.margin>
                         <Insets left="15.0" />
                      </HBox.margin>
                      <font>
-                        <Font name="System Bold" size="11.0" />
+                        <Font size="11.0" />
                      </font>
                   </Label>
-                  <Label fx:id="maxHeight">
+                  <Label fx:id="maxHeight" textFill="WHITE">
                      <HBox.margin>
                         <Insets left="330.0" />
                      </HBox.margin>
@@ -71,23 +71,23 @@
    <right>
       <VBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="400.0" prefWidth="340.0" BorderPane.alignment="TOP_CENTER">
          <children>
-            <RadioButton fx:id="manualMode" mnemonicParsing="false" onAction="#radioButtonClicked" prefHeight="30.0" text="Manual" translateX="30.0" translateY="10.0">
+            <RadioButton fx:id="manualMode" mnemonicParsing="false" onAction="#radioButtonClicked" prefHeight="30.0" text="Manual" textFill="WHITE" translateX="30.0" translateY="10.0">
                <toggleGroup>
                   <ToggleGroup fx:id="simulatorMode" />
                </toggleGroup>
             </RadioButton>
             <TextFlow prefHeight="200.0" prefWidth="200.0" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="⇦ Aileron ⇨" translateX="127.0" translateY="60.0">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="⇦ Aileron ⇨" translateX="127.0" translateY="60.0">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Text>
-            <Text rotate="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⇦ Elevator ⇨" translateX="245.0" translateY="156.0">
+            <Text fill="WHITE" rotate="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⇦ Elevator ⇨" translateX="245.0" translateY="156.0">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Text>
-            <Circle fx:id="frameCircle" fill="#797979" radius="100.0" stroke="BLACK" strokeType="INSIDE" translateX="90.0" translateY="40.0" />
+            <Circle fx:id="frameCircle" fill="#797979" radius="100.0" stroke="WHITE" strokeType="INSIDE" translateX="90.0" translateY="40.0" />
             <Circle fx:id="joystick" onMouseDragged="#joystickDragged" onMousePressed="#joystickPressed" onMouseReleased="#joystickReleased" radius="33.0" stroke="BLACK" strokeType="INSIDE" translateX="157.0" translateY="-93.0">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
@@ -97,26 +97,26 @@
                      </stops>
                   </LinearGradient>
                </fill></Circle>
-            <Slider fx:id="rudderSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxWidth="-Infinity" min="-1.0" minorTickCount="0" prefWidth="250.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" translateX="65.0" translateY="-20.0" />
-            <Slider fx:id="throttleSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minorTickCount="0" orientation="VERTICAL" prefHeight="120.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" translateX="40.0" translateY="-224.0" />
+            <Slider fx:id="rudderSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxWidth="-Infinity" min="-1.0" minorTickCount="0" prefWidth="250.0" showTickMarks="true" snapToTicks="true" translateX="65.0" translateY="-20.0" />
+            <Slider fx:id="throttleSlider" blockIncrement="0.1" majorTickUnit="0.1" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minorTickCount="0" orientation="VERTICAL" prefHeight="141.0" prefWidth="43.0" showTickMarks="true" snapToTicks="true" translateX="40.0" translateY="-224.0" />
          </children>
       </VBox>
    </right>
    <center>
       <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="450.0" prefWidth="225.0" BorderPane.alignment="TOP_CENTER">
          <children>
-            <HBox prefHeight="40.0" prefWidth="225.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="225.0">
                <children>
-                  <RadioButton fx:id="autopilotMode" mnemonicParsing="false" onAction="#radioButtonClicked" prefHeight="30.0" prefWidth="101.0" selected="true" text="Autopilot" toggleGroup="$simulatorMode">
+                  <RadioButton fx:id="autopilotMode" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#radioButtonClicked" prefHeight="18.0" prefWidth="101.0" selected="true" text="Autopilot" textFill="WHITE" toggleGroup="$simulatorMode">
                      <HBox.margin>
-                        <Insets left="10.0" top="5.0" />
+                        <Insets left="10.0" />
                      </HBox.margin>
                   </RadioButton>
                </children>
             </HBox>
-            <ButtonBar prefHeight="40.0" prefWidth="200.0">
+            <ButtonBar maxWidth="-Infinity" prefHeight="40.0" prefWidth="210.0">
                <buttons>
-                  <Button mnemonicParsing="false" onAction="#loadScript" text="Load Script" />
+                  <Button mnemonicParsing="false" onAction="#loadScript" prefWidth="100.0" text="Load Script" />
                   <Button mnemonicParsing="false" onAction="#runScript" text="Run Script" />
                </buttons>
                <VBox.margin>
@@ -125,7 +125,7 @@
             </ButtonBar>
             <TextArea fx:id="simScript" maxWidth="-Infinity" prefHeight="350.0" prefWidth="205.0">
                <VBox.margin>
-                  <Insets left="10.0" right="10.0" top="40.0" />
+                  <Insets left="10.0" right="10.0" top="30.0" />
                </VBox.margin>
             </TextArea>
          </children>
@@ -138,14 +138,14 @@
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Label text="Aileron">
+                        <Label text="Aileron" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="aileronValue">
+                        <Label fx:id="aileronValue" textFill="WHITE">
                            <font>
-                              <Font name="System Bold" size="17.0" />
+                              <Font size="17.0" />
                            </font></Label>
                      </children>
                   </VBox>
@@ -155,12 +155,12 @@
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Label text="Elevator">
+                        <Label text="Elevator" textFill="WHITE">
                            <font>
-                              <Font name="System Bold Italic" size="15.0" />
+                              <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="elevatorValue">
+                        <Label fx:id="elevatorValue" textFill="WHITE">
                            <font>
                               <Font size="17.0" />
                            </font></Label>
@@ -172,12 +172,12 @@
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Label text="Rudder">
+                        <Label text="Rudder" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="rudderValue">
+                        <Label fx:id="rudderValue" textFill="WHITE">
                            <font>
                               <Font size="17.0" />
                            </font></Label>
@@ -189,12 +189,12 @@
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Label text="Throttle">
+                        <Label text="Throttle" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="throttleValue">
+                        <Label fx:id="throttleValue" textFill="WHITE">
                            <font>
                               <Font size="17.0" />
                            </font></Label>

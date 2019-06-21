@@ -30,11 +30,12 @@ public class Main extends Application {
 		try {
 			FXMLLoader fxml=new FXMLLoader();
 			BorderPane root = fxml.load(getClass().getResource("MainWindow.fxml").openStream());
+			root.setStyle("-fx-background-image: url(\"/resources/Background.jpg\");");
 			MainWindowController mainWindowC=fxml.getController();//view
 			mainWindowC.setViewModel(viewModel);
 			viewModel.addObserver(mainWindowC);
+			primaryStage.setTitle("Flight Simulator Project - Lior Gingihashvili & Nir Shmuel");
 			Scene scene = new Scene(root,1000,500);
-
 //			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
