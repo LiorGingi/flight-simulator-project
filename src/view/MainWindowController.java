@@ -66,6 +66,8 @@ public class MainWindowController implements Observer {
 	@FXML
 	private Button calculatePathBtn;
 	@FXML
+	private Button loadMapBtn;
+	@FXML
 	private TopographicMapDisplayer topographicMapDisplayer;
 	@FXML
 	private TopographicColorRangeDisplayer topographicColorRangeDisplayer;
@@ -121,6 +123,7 @@ public class MainWindowController implements Observer {
 	public MainWindowController() {
 		openConnectWindow = new Button();
 		calculatePathBtn = new Button();
+		loadMapBtn = new Button();
 		topographicMapDisplayer = new TopographicMapDisplayer();
 		topographicColorRangeDisplayer = new TopographicColorRangeDisplayer();
 		simScript = new TextArea();
@@ -232,6 +235,7 @@ public class MainWindowController implements Observer {
 				// handle connection for connecting to the simulator server
 				simServerIp.setText(ip);
 				simServerPort.setText(port);
+				loadMapBtn.setVisible(true);
 				viewModel.connectToSimulator();
 			} else if (mode == "Path Calculation Server") {
 				// handle connection for calculating path
@@ -293,9 +297,9 @@ public class MainWindowController implements Observer {
 				ground.set(topographicMapDisplayer.getGroundField());
 				viewModel.ground.bind(ground);
 				topographicColorRangeDisplayer.setColorRange(min, max);
-
 				minHeight.setText("" + min);
 				maxHeight.setText("" + max);
+				calculatePathBtn.setVisible(true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
