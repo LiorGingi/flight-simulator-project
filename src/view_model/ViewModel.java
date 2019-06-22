@@ -145,8 +145,6 @@ public class ViewModel extends Observable implements Observer {
 		plane.get().setX(currentIndexX);
 		plane.get().setY(currentIndexY);
 		plane.get().setRotate(45);
-		if (!plane.get().isVisible())
-			plane.get().setVisible(true);
 	}
 
 	@Override
