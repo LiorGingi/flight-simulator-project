@@ -11,6 +11,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import models.PathModel;
@@ -37,7 +39,7 @@ public class ViewModel extends Observable implements Observer {
 
 	public DoubleProperty csv_srcX, csv_srcY, csv_scale;
 	public IntegerProperty csv_rows, csv_cols;
-	public ObjectProperty<Circle> plane;
+	public ObjectProperty<ImageView> plane;
 
 	// ** path **
 	public StringProperty solverIP;
@@ -74,14 +76,15 @@ public class ViewModel extends Observable implements Observer {
 		solverPort = new SimpleStringProperty();
 		destX = new SimpleDoubleProperty();
 		destY = new SimpleDoubleProperty();
-		plane = new SimpleObjectProperty<>(new Circle(10, Color.RED));
+		plane = new SimpleObjectProperty<>(new ImageView());
+		plane.get().setImage(new Image("https://emojipedia.org/facebook/3.1/airplane/"));
 		plane.get().setVisible(false);
 		ground = new SimpleObjectProperty<>();
 		String[] s = { "" };
 		directions = new SimpleObjectProperty<>(s);
 
 		openServer();
-		System.out.println("openned server");
+		System.out.println("opened server");
 	}
 
 	private void openServer() {
@@ -117,8 +120,8 @@ public class ViewModel extends Observable implements Observer {
 	public void calcShortestPath() {
 		int destX_index = (int) (destX.get() / groundCellW.get());
 		int destY_index = (int) (destY.get() / groundCellH.get());
-		int planeX_index = (int) (plane.get().getCenterX() / groundCellW.get());
-		int planeY_index = (int) (plane.get().getCenterY() / groundCellH.get());
+		int planeX_index = (int) (plane.get().getX() / groundCellW.get());
+		int planeY_index = (int) (plane.get().getY() / groundCellH.get());
 		pm.calcShortestPath(ground.get(), planeX_index, planeY_index, destX_index, destY_index);
 	}
 
@@ -136,8 +139,8 @@ public class ViewModel extends Observable implements Observer {
 
 		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get() * groundCellW.get());
 		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get()) * groundCellH.get());
-		plane.get().setCenterX(currentIndexX);
-		plane.get().setCenterY(currentIndexY);
+		plane.get().setX(currentIndexX);
+		plane.get().setY(currentIndexY);
 		if (!plane.get().isVisible())
 			plane.get().setVisible(true);
 	}

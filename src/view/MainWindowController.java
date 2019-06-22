@@ -30,6 +30,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -49,7 +50,7 @@ public class MainWindowController implements Observer {
 	private StringProperty aileronV, elevatorV;
 	private DoubleProperty csv_srcX, csv_srcY, csv_scale;
 	private IntegerProperty csv_rows, csv_cols;
-	private ObjectProperty<Circle> plane;
+	private ObjectProperty<ImageView> plane;
 	private ObjectProperty<String[]> directions;
 	private ObjectProperty<double[][]> ground;
 	private DoubleProperty gridCellH, gridCellW;
@@ -459,8 +460,8 @@ public class MainWindowController implements Observer {
 	@FXML
 	private void paintPath() {
 		if (directions.get() != null)
-			topographicMapDisplayer.paintPath(directions.get(), mapGroup, plane.get().getCenterX(),
-					plane.get().getCenterY());
+			topographicMapDisplayer.paintPath(directions.get(), mapGroup,
+					plane.get().getX(), plane.get().getY());
 	}
 
 	public void setSliderOnDragEvent() {
