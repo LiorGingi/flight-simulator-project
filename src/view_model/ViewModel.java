@@ -19,6 +19,8 @@ import models.PathModel;
 import models.SimModel;
 
 public class ViewModel extends Observable implements Observer {
+	private double currentLongtitude;
+	private double currentLatitude;
 	// models
 	private PathModel pm;
 	private SimModel sm;
@@ -77,7 +79,7 @@ public class ViewModel extends Observable implements Observer {
 		destX = new SimpleDoubleProperty();
 		destY = new SimpleDoubleProperty();
 		plane = new SimpleObjectProperty<>(new ImageView());
-		plane.get().setImage(new Image("https://emojipedia.org/facebook/3.1/airplane/"));
+		plane.get().setImage(new Image("/resources/airplane.png"));
 		plane.get().setVisible(false);
 		ground = new SimpleObjectProperty<>();
 		String[] s = { "" };
@@ -136,11 +138,13 @@ public class ViewModel extends Observable implements Observer {
 //		double altitude_ft=position[2];
 //		double ground_elev_m=position[3];
 //		double ground_elev_ft=position[4];
-
+		 
 		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get() * groundCellW.get());
 		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get()) * groundCellH.get());
+		
 		plane.get().setX(currentIndexX);
 		plane.get().setY(currentIndexY);
+		plane.get().setRotate(45);
 		if (!plane.get().isVisible())
 			plane.get().setVisible(true);
 	}

@@ -236,8 +236,8 @@ public class MainWindowController implements Observer {
 				// handle connection for connecting to the simulator server
 				simServerIp.setText(ip);
 				simServerPort.setText(port);
-				loadMapBtn.setVisible(true);
 				viewModel.connectToSimulator();
+				loadMapBtn.setVisible(true);
 			} else if (mode == "Path Calculation Server") {
 				// handle connection for calculating path
 				pathServerIp.setText(ip);
