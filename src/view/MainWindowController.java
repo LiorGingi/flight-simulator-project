@@ -300,6 +300,7 @@ public class MainWindowController implements Observer {
 				minHeight.setText("" + min);
 				maxHeight.setText("" + max);
 				calculatePathBtn.setVisible(true);
+				plane.get().setVisible(true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

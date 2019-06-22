@@ -81,7 +81,7 @@ public class ViewModel extends Observable implements Observer {
 		directions = new SimpleObjectProperty<>(s);
 
 		openServer();
-		System.out.println("openned server");
+		System.out.println("opened server");
 	}
 
 	private void openServer() {
@@ -138,8 +138,6 @@ public class ViewModel extends Observable implements Observer {
 		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get()) * groundCellH.get());
 		plane.get().setCenterX(currentIndexX);
 		plane.get().setCenterY(currentIndexY);
-		if (!plane.get().isVisible())
-			plane.get().setVisible(true);
 	}
 
 	@Override
