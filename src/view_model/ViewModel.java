@@ -141,7 +141,6 @@ public class ViewModel extends Observable implements Observer {
 		 
 		int currentIndexX = (int) (((longitude_deg - csv_srcX.get())) / csv_scale.get() * groundCellW.get());
 		int currentIndexY = (int) (((csv_srcY.get() - latitude_deg) / csv_scale.get()) * groundCellH.get());
-		
 		plane.get().setX(currentIndexX);
 		plane.get().setY(currentIndexY);
 		plane.get().setRotate(45);
