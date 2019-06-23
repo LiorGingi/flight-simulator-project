@@ -127,10 +127,10 @@
                   </RadioButton>
                </children>
             </HBox>
-            <ButtonBar maxWidth="-Infinity" prefHeight="40.0" prefWidth="210.0">
+            <ButtonBar maxWidth="-Infinity" prefHeight="50.0" prefWidth="210.0">
                <buttons>
-                  <Button mnemonicParsing="false" onAction="#loadScript" prefWidth="100.0" text="Load Script" />
-                  <Button mnemonicParsing="false" onAction="#runScript" text="Run Script" />
+                  <Button mnemonicParsing="false" onAction="#loadScript" prefWidth="100.0" text="Load" />
+                  <Button mnemonicParsing="false" onAction="#runScript" text="Run" />
                </buttons>
                <VBox.margin>
                   <Insets top="10.0" />
