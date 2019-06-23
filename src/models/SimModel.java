@@ -110,9 +110,9 @@ public class SimModel extends Observable {
 				}
 			}, 0, 250, TimeUnit.MILLISECONDS);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			System.out.println("A problem occured with connecting to the server");
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("A problem occured with connecting to the server");
 		}
 	}
 
