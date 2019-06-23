@@ -12,5 +12,4 @@ public class StringExpression implements Expression {
 	public String calculate() throws Exception {
 		return str;
 	}
-
 }

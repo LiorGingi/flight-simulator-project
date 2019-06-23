@@ -14,5 +14,4 @@ public class Minus extends BinaryExpression {
 			return "" + (0 - Double.parseDouble(right.calculate()));
 		}
 	}
-
 }

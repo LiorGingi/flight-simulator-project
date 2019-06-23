@@ -12,5 +12,4 @@ public class Or extends BinaryExpression {
 			return "true";
 		return "" + right.calculate().equals("true");
 	}
-
 }

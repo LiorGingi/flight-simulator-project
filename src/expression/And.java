@@ -12,5 +12,4 @@ public class And extends BinaryExpression {
 			return "false";
 		return "" + right.calculate().equals("true");
 	}
-
 }

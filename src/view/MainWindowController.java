@@ -170,9 +170,6 @@ public class MainWindowController implements Observer {
 	public void setViewModel(ViewModel vm) {
 		viewModel = vm;
 		// *** sim model***
-		// connection to simulator
-//		viewModel.simulatorIP.bind(simServerIp.textProperty());
-//		viewModel.simulatorPort.bind(simServerPort.textProperty());
 		// autopilot
 		viewModel.script.bind(simScript.textProperty());
 		// manual
@@ -461,8 +458,7 @@ public class MainWindowController implements Observer {
 	@FXML
 	private void paintPath() {
 		if (directions.get() != null)
-			topographicMapDisplayer.paintPath(directions.get(), mapGroup,
-					plane.get().getX(), plane.get().getY());
+			topographicMapDisplayer.paintPath(directions.get(), mapGroup, plane.get().getX(), plane.get().getY());
 	}
 
 	public void setSliderOnDragEvent() {

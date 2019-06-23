@@ -27,9 +27,9 @@ public class PathModel extends Observable {
 			out = new PrintWriter(solverServer.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(solverServer.getInputStream()));
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			System.out.println("A problem occured with connecting to the server");
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("A problem occured with connecting to the server");
 		}
 	}
 
@@ -64,10 +64,10 @@ public class PathModel extends Observable {
 				in = new BufferedReader(new InputStreamReader(solverServer.getInputStream()));
 				calcShortestPath(field, srcX, srcY, dstX, dstY);
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				System.out.println("A problem occured with connecting to the server");
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("A problem occured with connecting to the server");
 		}
 	}
 

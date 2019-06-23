@@ -12,5 +12,4 @@ public class Number implements Expression {
 	public String calculate() throws Exception {
 		return "" + this.value;
 	}
-
 }

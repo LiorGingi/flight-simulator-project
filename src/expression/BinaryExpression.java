@@ -13,5 +13,4 @@ public abstract class BinaryExpression implements Expression {
 		this.left = left;
 		this.right = right;
 	}
-
 }

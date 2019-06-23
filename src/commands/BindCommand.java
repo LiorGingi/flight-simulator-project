@@ -5,7 +5,7 @@ import java.util.ListIterator;
 import interpreter.MyInterpreter;
 
 public class BindCommand implements Command {
-	private  String localVarName;
+	private String localVarName;
 	private String simVarName;
 
 	@Override
@@ -25,6 +25,7 @@ public class BindCommand implements Command {
 		it.next();
 		simVarName = fixSimVarName(it.next());
 	}
+
 	private static String fixSimVarName(String name) {
 		if (name != null) {
 			String[] str = name.split("\"");

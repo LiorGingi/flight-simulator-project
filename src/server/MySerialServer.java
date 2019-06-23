@@ -15,7 +15,7 @@ public class MySerialServer implements Server {
 	private ExecutorService es;
 
 	public MySerialServer() {
-		stop=new AtomicBoolean();
+		stop = new AtomicBoolean();
 		es = Executors.newFixedThreadPool(5);
 	}
 
@@ -63,7 +63,7 @@ public class MySerialServer implements Server {
 			try {
 				if (server != null) {
 					server.close();
-					server=null;
+					server = null;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

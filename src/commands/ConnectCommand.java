@@ -47,7 +47,7 @@ public class ConnectCommand implements Command {
 			if (simulatorReady)
 				activeUpdater.start();
 			else {
-				System.out.println("wait for simulator to be ready");
+				System.out.println("waiting for simulator to be ready");
 				Thread.sleep(35 * 1000);
 				startCommunicationWithSimulator();
 			}
