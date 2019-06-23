@@ -461,8 +461,7 @@ public class MainWindowController implements Observer {
 	@FXML
 	private void paintPath() {
 		if (directions.get() != null)
-			topographicMapDisplayer.paintPath(directions.get(), mapGroup,
-					plane.get().getX(), plane.get().getY());
+			topographicMapDisplayer.paintPath(directions.get(), mapGroup, plane.get().getX(), plane.get().getY());
 	}
 
 	public void setSliderOnDragEvent() {

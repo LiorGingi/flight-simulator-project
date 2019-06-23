@@ -29,7 +29,5 @@ public class MyInterpreter implements Interpreter {
 		List<String> tokens = lexer.tokenize(script);
 		parser.parse(tokens);
 		return 0;
-
 	}
-
 }

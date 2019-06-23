@@ -8,11 +8,11 @@ public abstract class ConditionCommand extends ScopeCommand {
 	protected String conditionsLine;
 
 	protected void setConditionLine(ListIterator<String> it) {
-		String token=null;
-		StringBuilder builder=new StringBuilder();
-		while(!(token=it.next()).equals("{"))
+		String token = null;
+		StringBuilder builder = new StringBuilder();
+		while (!(token = it.next()).equals("{"))
 			builder.append(token);
-		conditionsLine=builder.toString();
+		conditionsLine = builder.toString();
 		it.next();// pass {
 	}
 

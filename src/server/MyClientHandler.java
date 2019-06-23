@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import algorithms.BestFS;
 
 public class MyClientHandler implements ClientHandler {
-	
+
 	Solver<Board, LinkedList<State<Position>>> solver;
 	CacheManager<String, String> cm;
 
@@ -41,7 +41,7 @@ public class MyClientHandler implements ClientHandler {
 			}
 			String pathSolution;
 			if (cm.isExist(String.valueOf(problemName.hashCode()))) {
-				pathSolution=cm.get(problemName);
+				pathSolution = cm.get(problemName);
 			} else {
 				boardRows = requestsArr.size();
 				boardCols = requestsArr.get(0).length;
@@ -83,7 +83,7 @@ public class MyClientHandler implements ClientHandler {
 	}
 
 	private String listToDirections(LinkedList<State<Position>> path) {
-		String directions="";
+		String directions = "";
 		for (int i = 0; i < path.size() - 1; i++) {
 			if (path.get(i + 1).getState().getColumn() - path.get(i).getState().getColumn() == 1)
 				directions += "Right";

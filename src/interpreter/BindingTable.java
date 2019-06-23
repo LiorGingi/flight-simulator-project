@@ -17,7 +17,7 @@ public class BindingTable {
 				result = bindTable;
 				if (result == null) {
 					bindTable = result = new ConcurrentHashMap<>();
-					//reset the control from ViewModel
+					// reset the control from ViewModel
 					addBinding("VM_Throttle", "/controls/engines/current-engine/throttle");
 					addBinding("VM_Rudder", "/controls/flight/rudder");
 					addBinding("VM_Aileron", "/controls/flight/aileron");

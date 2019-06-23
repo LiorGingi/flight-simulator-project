@@ -10,5 +10,4 @@ public class Equals extends BinaryExpression {
 	public String calculate() throws Exception {
 		return "" + (Double.parseDouble(left.calculate()) == Double.parseDouble(right.calculate()));
 	}
-
 }

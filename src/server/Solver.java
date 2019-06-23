@@ -1,5 +1,5 @@
 package server;
 
-public interface Solver<Problem,Solution> {
+public interface Solver<Problem, Solution> {
 	Solution solve(Problem p);
 }

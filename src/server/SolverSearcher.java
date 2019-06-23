@@ -9,9 +9,9 @@ public class SolverSearcher<Problem, Solution> implements Solver<Problem, Soluti
 		super();
 		this.searcher = searcher;
 	}
-	
+
 	@Override
 	public Solution solve(Problem p) {
-		return (Solution)searcher.search((Searchable<Problem>)p);
+		return (Solution) searcher.search((Searchable<Problem>) p);
 	}
 }

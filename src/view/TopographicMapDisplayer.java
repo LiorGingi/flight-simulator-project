@@ -16,11 +16,11 @@ public class TopographicMapDisplayer extends Canvas {
 	private double minHeight;
 	private double cellW;
 	private double cellH;
-	
-	
+
 	public double getCellW() {
 		return cellW;
 	}
+
 	public double getCellH() {
 		return cellH;
 	}
@@ -41,14 +41,16 @@ public class TopographicMapDisplayer extends Canvas {
 		this.groundField = table;
 		this.minHeight = min;
 		this.heightRange = max - min;
-		if (pathObjects==null) {
+		if (pathObjects == null) {
 			pathObjects = new ArrayList<Circle>();
 		}
 		draw();
 	}
-	public double[][] getGroundField(){
+
+	public double[][] getGroundField() {
 		return this.groundField;
 	}
+
 	private void draw() {
 		if (groundField != null) {
 			cellW = getWidth() / groundField[0].length;
@@ -71,33 +73,33 @@ public class TopographicMapDisplayer extends Canvas {
 		double currentX = sourceX;
 		double currentY = sourceY;
 		ArrayList<Circle> newPath = new ArrayList<Circle>();
-		
+
 		pathObjects.forEach((circle) -> {
 			group.getChildren().remove(circle);
 		});
-		
+
 		for (int i = 0; i < directions.length; i++) {
 			Circle positionInPath = new Circle();
 			switch (directions[i]) {
 			case "Up":
-				currentY -=cellH;
+				currentY -= cellH;
 				break;
 			case "Down":
-				currentY +=cellH;
+				currentY += cellH;
 				break;
 			case "Right":
-				currentX +=cellW;
+				currentX += cellW;
 				break;
 			case "Left":
-				currentX -=cellW;
+				currentX -= cellW;
 				break;
 			}
-			 // paint the point
-				positionInPath = new Circle(2, Color.BLUE);
-				positionInPath.setCenterX(currentX);
-				positionInPath.setCenterY(currentY);
-				group.getChildren().add(positionInPath);
-				newPath.add(positionInPath);
+			// paint the point
+			positionInPath = new Circle(2, Color.BLUE);
+			positionInPath.setCenterX(currentX);
+			positionInPath.setCenterY(currentY);
+			group.getChildren().add(positionInPath);
+			newPath.add(positionInPath);
 		}
 		pathObjects = newPath;
 	}

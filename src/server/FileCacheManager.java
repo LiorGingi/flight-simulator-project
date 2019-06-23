@@ -55,7 +55,7 @@ public class FileCacheManager<Problem, Solution> implements CacheManager<Problem
 	public Solution get(Problem p) {
 		if (!this.isExist(p))
 			return null;
-		
+
 		ObjectInputStream objectInFromFile = null;
 		try {
 			objectInFromFile = new ObjectInputStream(new FileInputStream(p.toString() + ".txt"));
@@ -89,7 +89,7 @@ public class FileCacheManager<Problem, Solution> implements CacheManager<Problem
 			e.printStackTrace();
 		} finally {
 			try {
-				if(objectOutToFile !=null) {
+				if (objectOutToFile != null) {
 					objectOutToFile.close();
 				}
 			} catch (IOException e) {
@@ -113,7 +113,7 @@ public class FileCacheManager<Problem, Solution> implements CacheManager<Problem
 			e1.printStackTrace();
 		} finally {
 			try {
-				if(outToFile !=null) {
+				if (outToFile != null) {
 					outToFile.close();
 				}
 			} catch (IOException e) {
