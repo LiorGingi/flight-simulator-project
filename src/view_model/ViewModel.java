@@ -17,8 +17,7 @@ import models.PathModel;
 import models.SimModel;
 
 public class ViewModel extends Observable implements Observer {
-	private double currentLongtitude;
-	private double currentLatitude;
+
 	// models
 	private PathModel pm;
 	private SimModel sm;

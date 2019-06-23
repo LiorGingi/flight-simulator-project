@@ -170,9 +170,6 @@ public class MainWindowController implements Observer {
 	public void setViewModel(ViewModel vm) {
 		viewModel = vm;
 		// *** sim model***
-		// connection to simulator
-//		viewModel.simulatorIP.bind(simServerIp.textProperty());
-//		viewModel.simulatorPort.bind(simServerPort.textProperty());
 		// autopilot
 		viewModel.script.bind(simScript.textProperty());
 		// manual

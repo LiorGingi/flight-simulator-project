@@ -103,9 +103,6 @@ public class ShuntingYard {
 					}
 					stack.pop();
 					break;
-				default:
-//					if((c=cf.createCommand(s))!=null)
-//						stack.push(s);
 				}
 			}
 		}
@@ -161,15 +158,6 @@ public class ShuntingYard {
 				case "-":
 					stackExp.push(new Minus(left, right));
 					break;
-				default:
-//					if ((c=cf.createCommand(str))!=null) {
-//						stackExp.push(c);
-//					}
-//					else{//string parameter
-//					stackExp.push(left);
-//					stackExp.push(right);
-//					stackExp.push(new StringExpression(str));
-//					}
 				}
 			}
 		}
@@ -181,8 +169,6 @@ public class ShuntingYard {
 		Queue<String> queue = new LinkedList<String>();
 		Stack<String> stack = new Stack<String>();
 		Stack<Expression> stackExp = new Stack<Expression>();
-//		ExpressionCommand c = null;
-//		ExpressionCommandFactory cf = new ExpressionCommandFactory();
 
 		String[] split = expression.split("(?<=[-+*/()])|(?=[-+*/()])");
 		for (String s : split) {
@@ -208,9 +194,6 @@ public class ShuntingYard {
 					}
 					stack.pop();
 					break;
-				default:
-//					if((c=cf.createCommand(s))!=null)
-//						stack.push(s);
 				}
 			}
 		}
@@ -242,14 +225,9 @@ public class ShuntingYard {
 					stackExp.push(new Minus(left, right));
 					break;
 				default:
-//					if ((c=cf.createCommand(str))!=null) {
-//						stackExp.push(c);
-//					}
-//					else{//string parameter
 					stackExp.push(left);
 					stackExp.push(right);
 					stackExp.push(new StringExpression(str));
-//					}
 				}
 			}
 		}
@@ -291,11 +269,4 @@ public class ShuntingYard {
 		}
 	}
 
-	public static void main(String[] args) {
-		try {
-			System.out.println(calcLogic("10 < (200*2+100*3)  && 10 <=5000/10"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
