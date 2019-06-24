@@ -1,4 +1,4 @@
-# Flight Simulator Project - Advanced Programming Course
+# Flight Simulator Project, Advanced Software Development Course
 The project was developed by [Lior Gingihashvili](https://www.linkedin.com/in/lior-gingi/) and [Nir Shmuel](https://www.linkedin.com/in/nir-shmuel/).
 
 
